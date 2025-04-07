@@ -2,35 +2,63 @@
 <html lang="en">
 
 <head>
+  <!-- Meta Tags -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Skill Tree 🌱</title>
-  <link href="./dist/output.css" rel="stylesheet" />
+
+  <!-- External Libraries -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <title>Skill Tree</title>
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
+  <!-- Custom Styles -->
   <style>
+    /* Background and Particles */
     .background-particles {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
-      height: 100%;
+      height: 100vh;
       z-index: -1;
       overflow: hidden;
+      filter: blur(5px);
+      background: inherit;
     }
 
     .particle {
-      position: absolute;
-      width: 8px;
-      height: 8px;
-      background-color: rgba(255, 255, 255, 0.1);
+      position: fixed;
+      width: 5px;
+      height: 5px;
+      background: radial-gradient(circle, rgba(0, 191, 255, 0.9) 0%, rgba(0, 191, 255, 0.3) 70%);
       border-radius: 50%;
-      animation: float 15s infinite ease-in-out;
+      box-shadow: 0 0 8px rgba(0, 191, 255, 0.6);
+      pointer-events: none;
+      z-index: 2;
+      animation: pulse 1.5s infinite ease-in-out;
     }
 
-    @keyframes float {
-      0% { transform: translateY(0); opacity: 0.2; }
-      50% { opacity: 0.6; }
-      100% { transform: translateY(-100vh); opacity: 0; }
+    /* Cursor White Hole */
+    .cursor-white-hole {
+      position: fixed;
+      width: 40px;
+      height: 40px;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0) 70%);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 100;
+      transform: translate(-50%, -50%); /* Ensures centering on mouse position */
+      transition: all 0.05s ease-out; /* Ultra-fast for cursor-like feel */
+      box-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+      will-change: transform; /* Optimize with GPU acceleration */
+    }
+
+    /* Animations */
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 0.7; }
+      50% { transform: scale(1.2); opacity: 1; }
     }
 
     @keyframes fadeIn {
@@ -38,57 +66,138 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    .animate-fade-in {
-      animation: fadeIn 1s ease-out forwards;
+    .animate-fade-in { animation: fadeIn 1s ease-out forwards; }
+    .animate-fade-in-slow { animation: fadeIn 1.5s ease-out forwards; }
+
+    /* Input Autofill */
+    input:-webkit-autofill {
+      -webkit-box-shadow: 0 0 0 30px white inset !important;
     }
 
-    .animate-fade-in-slow {
-      animation: fadeIn 1.5s ease-out forwards;
+    /* Password Toggle */
+    .password-toggle {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+    }
+
+    /* Success Message */
+    .success-message {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0, 255, 255, 0.8); /* Adjusted for visibility */
+      color: white;
+      padding: 10px 20px;
+      border-radius: 8px;
+      z-index: 100;
+      animation: fadeIn 0.5s ease-out, fadeOut 0.5s ease-out 2s forwards;
+    }
+
+    @keyframes fadeOut {
+      from { opacity: 1; }
+      to { opacity: 0; display: none; }
+    }
+
+    /* Header Styling */
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 50;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(10px);
+      padding: 0.75rem 1.5rem;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    /* About Section Styling */
+    #intro {
+      background: linear-gradient(to bottom, #1a1a1a, #2d2d2d);
+      color: #e0e0e0;
+    }
+
+    #intro h2 {
+      color: #00ffcc;
+      text-shadow: 0 0 5px rgba(0, 255, 204, 0.5);
+    }
+
+    #intro p {
+      font-size: 1.125rem;
+      line-height: 1.75;
+      max-width: 4xl;
+    }
+
+    #intro strong {
+      color: #00cc99;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .particle { width: 3px; height: 3px; }
+      .cursor-white-hole { width: 30px; height: 30px; }
+      header .flex.items-center.gap-3 {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        right: 1.5rem;
+        flex-direction: row;
+        gap: 0.5rem;
+      }
+      header button {
+        padding: 0.25rem 0.75rem;
+        font-size: 12px;
+      }
+      #intro p {
+        font-size: 1rem;
+      }
     }
   </style>
 </head>
 
 <body class="bg-black text-white font-sans">
-
   <!-- Background Particles -->
-  <div class="background-particles">
-    <div class="particle" style="top: 10%; left: 20%; animation-delay: 0s;"></div>
-    <div class="particle" style="top: 25%; left: 75%; animation-delay: 2s;"></div>
-    <div class="particle" style="top: 40%; left: 50%; animation-delay: 4s;"></div>
-    <div class="particle" style="top: 60%; left: 30%; animation-delay: 6s;"></div>
-    <div class="particle" style="top: 80%; left: 80%; animation-delay: 8s;"></div>
-  </div>
+  <div class="background-particles"></div>
 
-  <!-- Navbar -->
-  <header class="flex justify-between items-center px-6 py-3 bg-black/40 backdrop-blur-md shadow-md sticky top-0 z-10">
-    <div class="text-xl font-bold">Skill Tree</div>
+  <!-- Cursor White Hole -->
+  <div class="cursor-white-hole" id="cursorWhiteHole"></div>
+
+  <!-- Header Section -->
+  <header class="flex justify-between items-center px-6 py-3">
+    <div class="text-xl font-bold" id="logoPlaceholder" style="width: 120px; height: 30px;">
+      <!-- Placeholder for future logo -->
+    </div>
     <div class="flex items-center gap-3">
-      <button onclick="toggleModal('signinModal')" class="flex items-center gap-2 px-3 h-9 text-sm font-medium border border-white rounded-lg hover:bg-white hover:text-black transition-all">
-        <i data-lucide="log-in" class="w-4 h-4"></i> Sign In
+      <button onclick="toggleModal('signinModal')" class="flex items-center gap-2 px-3 h-9 text-sm font-medium border border-white rounded-lg hover:bg-white hover:text-black transition-all" aria-label="Open sign-in modal">
+        <i data-lucide="log-in" class="w-4 h-4" aria-hidden="true"></i> Sign In
       </button>
-      <button onclick="toggleModal('signupModal')" class="flex items-center gap-2 px-3 h-9 text-sm font-bold text-black bg-green-400 hover:bg-green-300 rounded-lg transition-all">
-        <i data-lucide="user-plus" class="w-4 h-4"></i> Sign Up
+      <button onclick="toggleModal('signupModal')" class="flex items-center gap-2 px-3 h-9 text-sm font-bold text-black bg-green-400 hover:bg-green-300 rounded-lg transition-all" aria-label="Open sign-up modal">
+        <i data-lucide="user-plus" class="w-4 h-4" aria-hidden="true"></i> Sign Up
       </button>
     </div>
   </header>
 
-  <!-- Hero Section -->
-  <section class="h-screen flex flex-col justify-center items-center text-center px-4 bg-gradient-to-b from-black via-gray-900 to-black">
+  <!-- Welcome Section -->
+  <section class="h-screen flex flex-col justify-center items-center text-center px-4 bg-gradient-to-b from-black via-gray-900 to-black pt-16" style="margin-top: 60px;">
     <h1 class="text-5xl md:text-6xl font-extrabold mb-4 bg-gradient-to-r from-green-400 via-blue-500 to-purple-600 bg-clip-text text-transparent animate-fade-in">
       Welcome to Skill Tree
     </h1>
     <p class="text-lg md:text-xl max-w-xl mb-8 text-gray-300 animate-fade-in-slow">
-       Let's Embark on a journey of knowledge and create a world of unforgatable memories.
+      Let's embark on a journey of knowledge and create a world of unforgettable memories.
     </p>
-    <a href="#intro" class="mt-4 px-6 py-3 bg-gradient-to-r from-green-400 to-blue-500 text-black font-semibold rounded-xl hover:scale-105 transition-all shadow-lg">
+    <button id="startExploring" class="mt-4 px-6 py-3 bg-gradient-to-r from-green-400 to-blue-500 text-black font-semibold rounded-xl hover:scale-105 transition-all shadow-lg" aria-label="Scroll to About section">
       Start Exploring 🚀
-    </a>
+    </button>
   </section>
 
   <!-- About Section -->
-  <section id="intro" class="min-h-screen px-6 py-16 bg-gradient-to-b from-black via-gray-900 to-black">
-    <h2 class="text-4xl font-bold text-center mb-8 text-teal-400">Who We Are</h2>
-    <div class="max-w-5xl mx-auto text-gray-300 space-y-6 text-lg leading-relaxed">
+  <section id="intro" class="min-h-screen px-6 py-16">
+    <h2 class="text-4xl font-bold text-center mb-8 animate-fade-in">Who We Are</h2>
+    <div class="max-w-4xl mx-auto text-gray-300 space-y-6 text-lg leading-relaxed">
       <p><strong>🌿 Our Mission:</strong> We’re building a platform that helps learners visualize their progress like a tree — where each branch is a skill and every leaf is growth.</p>
       <p><strong>📚 How It Works:</strong> Pick a topic, track your learning, and see your tree evolve. Whether it’s coding, art, language, or science — every step is recorded as part of your journey.</p>
       <p><strong>🤖 Powered by AI:</strong> Smart paths, goal tracking, and personalized resources designed just for your pace and interests.</p>
@@ -97,39 +206,381 @@
     </div>
   </section>
 
-  <!-- Sign In Modal -->
-  <div id="signinModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 hidden">
+  <!-- Sign-up Modal -->
+  <div id="signupModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 hidden" role="dialog" aria-modal="true" tabindex="-1">
     <div class="bg-white text-black rounded-xl w-full max-w-md p-6 space-y-4 relative shadow-2xl">
-      <button onclick="toggleModal('signinModal')" class="absolute top-4 right-4 text-gray-600 hover:text-red-500 text-xl">&times;</button>
-      <h2 class="text-2xl font-bold mb-4 text-center">Sign In</h2>
-      <input type="email" placeholder="Email" class="w-full p-3 border rounded-md" />
-      <input type="password" placeholder="Password" class="w-full p-3 border rounded-md" />
-      <button class="w-full bg-black text-white font-semibold py-2 rounded-md hover:bg-gray-800 transition-all">Login</button>
-    </div>
-  </div>
-
-  <!-- Sign Up Modal -->
-  <div id="signupModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 hidden">
-    <div class="bg-white text-black rounded-xl w-full max-w-md p-6 space-y-4 relative shadow-2xl">
-      <button onclick="toggleModal('signupModal')" class="absolute top-4 right-4 text-gray-600 hover:text-red-500 text-xl">&times;</button>
+      <button onclick="toggleModal('signupModal')" class="absolute top-4 right-4 text-gray-600 hover:text-red-500 text-xl" aria-label="Close sign-up modal">×</button>
       <h2 class="text-2xl font-bold mb-4 text-center">Sign Up</h2>
-      <input type="text" placeholder="Name" class="w-full p-3 border rounded-md" />
-      <input type="email" placeholder="Email" class="w-full p-3 border rounded-md" />
-      <input type="password" placeholder="Password" class="w-full p-3 border rounded-md" />
-      <button class="w-full bg-green-500 text-white font-semibold py-2 rounded-md hover:bg-green-400 transition-all">Create Account</button>
+      <form id="signupForm" onsubmit="handleSignUp(event)" class="space-y-4">
+        <input type="text" placeholder="Full Name" class="w-full p-3 border rounded-md" autocomplete="name" aria-label="Full Name" required />
+        <input id="dobPicker" type="text" placeholder="Date of Birth" class="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-400" readonly aria-label="Date of Birth" required />
+        <input id="username" type="text" placeholder="Username" class="w-full p-3 border rounded-md" autocomplete="username" aria-label="Username" required />
+        <div id="usernameFeedback" class="text-sm text-gray-600"></div>
+        <div class="relative w-full">
+          <input id="emailInput" type="email" placeholder="Email Address" class="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-400" autocomplete="off" aria-label="Email Address" required />
+          <ul id="emailSuggestions" class="absolute z-10 bg-white border border-gray-200 rounded-md mt-1 hidden w-full max-h-40 overflow-auto text-sm"></ul>
+        </div>
+        <div class="relative w-full">
+          <input id="password" type="password" placeholder="Create Password" class="w-full p-3 border rounded-md pr-12" autocomplete="new-password" aria-label="Create Password" required />
+          <i data-target="password" class="password-toggle w-5 h-5 text-gray-600" data-lucide="eye" aria-label="Toggle password visibility"></i>
+        </div>
+        <div id="passwordStrength" class="text-sm text-gray-600"></div>
+        <div class="relative w-full">
+          <input id="repeatPassword" type="password" placeholder="Repeat Password" class="w-full p-3 border rounded-md pr-12" autocomplete="new-password" aria-label="Repeat Password" required />
+          <i data-target="repeatPassword" class="password-toggle w-5 h-5 text-gray-600" data-lucide="eye" aria-label="Toggle repeat password visibility"></i>
+        </div>
+        <div id="passwordMatchFeedback" class="text-sm text-red-500 hidden"></div>
+        <button type="submit" class="w-full bg-green-500 text-white font-semibold py-2 rounded-md hover:bg-green-400 transition-all" aria-label="Submit sign-up form" disabled>Create Account</button>
+      </form>
     </div>
   </div>
 
-  <!-- Modal Toggle Script -->
+  <!-- Sign-in Modal -->
+  <div id="signinModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 hidden" role="dialog" aria-modal="true" tabindex="-1">
+    <div class="bg-white text-black rounded-xl w-full max-w-md p-6 space-y-4 relative shadow-2xl">
+      <button onclick="toggleModal('signinModal')" class="absolute top-4 right-4 text-gray-600 hover:text-red-500 text-xl" aria-label="Close sign-in modal">×</button>
+      <h2 class="text-2xl font-bold mb-4 text-center">Sign In</h2>
+      <form id="signinForm" onsubmit="handleSignIn(event)" class="space-y-4">
+        <input id="signinEmail" type="text" placeholder="Email or Username" class="w-full p-3 border rounded-md" autocomplete="email" required aria-label="Email or Username" />
+        <div class="relative w-full">
+          <input id="signinPassword" type="password" placeholder="Password" class="w-full p-3 border rounded-md pr-12" autocomplete="current-password" required aria-label="Password" />
+          <i data-target="signinPassword" class="password-toggle w-5 h-5 text-gray-600" data-lucide="eye" aria-label="Toggle password visibility"></i>
+        </div>
+        <div id="signinFeedback" class="text-sm text-red-500 hidden"></div>
+        <button type="submit" class="w-full bg-green-500 text-white font-semibold py-2 rounded-md hover:bg-green-400 transition-all" aria-label="Submit sign-in form">Login</button>
+        <button type="button" onclick="alert('Google Login Coming Soon!')" class="w-full bg-white text-black px-4 py-2 rounded shadow mt-2 hover:bg-gray-100 transition-all" aria-label="Sign in with Google (coming soon)">
+          <img src="https://www.svgrepo.com/show/475656/google-color.svg" class="inline w-5 h-5 mr-2" alt="Google logo" aria-hidden="true">
+          Sign in with Google (Coming Soon)
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- External Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+  <!-- JavaScript -->
   <script>
-    lucide.createIcons();
+    // Utility Functions
+    function showSuccessMessage(text) {
+      const msg = document.createElement("div");
+      msg.className = "success-message";
+      msg.textContent = text;
+      document.body.appendChild(msg);
+      setTimeout(() => msg.remove(), 2500);
+    }
 
     function toggleModal(id) {
       const modal = document.getElementById(id);
-      modal.classList.toggle('hidden');
+      modal.classList.toggle("hidden");
+      if (!modal.classList.contains("hidden")) {
+        const firstInput = modal.querySelector("input");
+        firstInput.focus();
+        modal.addEventListener("keydown", trapFocus);
+      } else {
+        modal.removeEventListener("keydown", trapFocus);
+      }
     }
-  </script>
 
+    function trapFocus(event) {
+      const modal = document.querySelector(".fixed:not(.hidden)");
+      const focusable = modal.querySelectorAll('input, button, [tabindex]:not([tabindex="-1"])');
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.key === "Tab") {
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first.focus();
+        }
+      }
+    }
+
+    function scrollToSection(id) {
+      document.getElementById(id).scrollIntoView({ behavior: "smooth" });
+    }
+
+    // Password Management
+    function setupPasswordToggles() {
+      document.querySelectorAll(".password-toggle").forEach(icon => {
+        icon.addEventListener("click", () => {
+          const targetId = icon.getAttribute("data-target");
+          const input = document.getElementById(targetId);
+          if (input) {
+            const type = input.type === "password" ? "text" : "password";
+            input.type = type;
+            icon.setAttribute("data-lucide", type === "password" ? "eye" : "eye-off");
+            lucide.createIcons();
+          }
+        });
+      });
+    }
+
+    function validatePasswords(password, repeatPassword, matchFeedback) {
+      if (!password || !repeatPassword) {
+        matchFeedback.textContent = "⚠️ Both password fields are required!";
+        matchFeedback.classList.remove("hidden");
+        return false;
+      }
+      if (password !== repeatPassword) {
+        matchFeedback.textContent = "❌ Passwords do not match!";
+        matchFeedback.classList.remove("hidden");
+        return false;
+      }
+      matchFeedback.classList.add("hidden");
+      return true;
+    }
+
+    // Form Handling
+    function handleSignUp(event) {
+      event.preventDefault();
+      const form = document.getElementById("signupForm");
+      const fullName = form.querySelector("input[placeholder='Full Name']").value.trim();
+      const dob = document.getElementById("dobPicker").value;
+      const username = document.getElementById("username").value.trim();
+      const email = document.getElementById("emailInput").value.trim();
+      const password = document.getElementById("password").value;
+      const repeatPassword = document.getElementById("repeatPassword").value;
+      const matchFeedback = document.getElementById("passwordMatchFeedback");
+
+      if (!fullName || !dob || !username || !email || !password || !repeatPassword) {
+        alert("Please fill in all fields!");
+        return;
+      }
+      if (!validatePasswords(password, repeatPassword, matchFeedback)) {
+        return;
+      }
+
+      const existing = JSON.parse(localStorage.getItem("user") || "{}");
+      if (existing.email?.toLowerCase() === email.toLowerCase() || existing.username?.split("#")[0].toLowerCase() === username.toLowerCase()) {
+        alert("User already exists! Try a different email/username.");
+        return;
+      }
+
+      const user = { fullName, dob, username: `${username}#${Math.floor(1000 + Math.random() * 9000)}`, email, password };
+      localStorage.setItem("user", JSON.stringify(user));
+      toggleModal("signupModal");
+      showSuccessMessage(`Sign-up successful! Welcome, ${username}!`);
+    }
+
+    function handleSignIn(event) {
+      event.preventDefault();
+      const emailOrUsername = document.getElementById("signinEmail").value.trim().toLowerCase();
+      const password = document.getElementById("signinPassword").value;
+      const feedback = document.getElementById("signinFeedback");
+      if (!emailOrUsername || !password) {
+        feedback.textContent = "⚠️ Please enter both email/username and password.";
+        feedback.classList.remove("hidden");
+        return;
+      }
+      const storedUser = JSON.parse(localStorage.getItem("user") || "{}");
+      if ((storedUser.email?.toLowerCase() === emailOrUsername || storedUser.username?.split("#")[0].toLowerCase() === emailOrUsername) && storedUser.password === password) {
+        toggleModal("signinModal");
+        showSuccessMessage(`Welcome back, ${storedUser.username.split("#")[0]}!`);
+        feedback.classList.add("hidden");
+      } else {
+        feedback.textContent = "❌ Invalid email/username or password!";
+        feedback.classList.remove("hidden");
+      }
+    }
+
+    // Animation and Interaction
+    document.addEventListener("DOMContentLoaded", () => {
+      let generatedTag = "";
+      let debounceTimer;
+      lucide.createIcons();
+      setupPasswordToggles();
+
+      // Date Picker
+      flatpickr("#dobPicker", {
+        dateFormat: "Y-m-d",
+        maxDate: "today",
+        disableMobile: true,
+        altInput: true,
+        altFormat: "F j, Y",
+        onChange: function(selectedDates, dateStr, instance) {
+          const formatted = instance.altInput.value.replace("D.O.B - ", "");
+          instance.altInput.value = "D.O.B - " + formatted;
+        }
+      });
+
+      // Password Strength
+      const password = document.getElementById("password");
+      const passwordStrength = document.getElementById("passwordStrength");
+      password.addEventListener("input", () => {
+        const val = password.value;
+        let strength = "Weak";
+        if (val.length >= 6 && /[A-Za-z]/.test(val) && /\d/.test(val)) strength = "Medium";
+        if (val.length >= 8 && /[A-Za-z]/.test(val) && /\d/.test(val) && /[\W]/.test(val)) strength = "Strong";
+        passwordStrength.textContent = `Strength: ${strength}`;
+      });
+
+      // Username Validation
+      const username = document.getElementById("username");
+      const feedback = document.getElementById("usernameFeedback");
+      const signupButton = document.querySelector("#signupForm button[type='submit']");
+      const validPattern = /^[A-Za-z]+$/;
+
+      username.addEventListener("input", () => {
+        clearTimeout(debounceTimer);
+        const value = username.value.trim();
+        if (value === "" || value.length < 3) {
+          feedback.textContent = value === "" ? "" : "Username must be at least 3 characters.";
+          feedback.className = "text-sm text-gray-600";
+          signupButton.disabled = true;
+          return;
+        }
+        if (!validPattern.test(value)) {
+          feedback.textContent = "⚠️ Username should contain only alphabets (A–Z). No numbers or special characters allowed.";
+          feedback.className = "text-sm text-red-500";
+          signupButton.disabled = true;
+          return;
+        }
+        debounceTimer = setTimeout(() => {
+          generatedTag = Math.floor(1000 + Math.random() * 9000);
+          const finalUsername = `${value}#${generatedTag}`;
+          const takenUsernames = ["admin", "testuser", "sam123"];
+          if (takenUsernames.includes(value.toLowerCase())) {
+            feedback.textContent = `❌ Sorry, "${value}" is already taken.`;
+            feedback.className = "text-sm text-red-500";
+            signupButton.disabled = true;
+          } else {
+            feedback.textContent = `✅ Hi ${value}! Your username will be ${finalUsername}`;
+            feedback.className = "text-sm text-green-600";
+            signupButton.disabled = false;
+          }
+        }, 500);
+      });
+
+      // Email Suggestions
+      const emailInput = document.getElementById("emailInput");
+      const emailSuggestions = document.getElementById("emailSuggestions");
+      const domains = ["gmail.com", "yahoo.com", "outlook.com", "protonmail.com"];
+      emailInput.addEventListener("input", () => {
+        const value = emailInput.value;
+        const atIndex = value.indexOf("@");
+        if (atIndex === -1) {
+          emailSuggestions.classList.add("hidden");
+          return;
+        }
+        const base = value.slice(0, atIndex);
+        const afterAt = value.slice(atIndex + 1).toLowerCase();
+        const filteredDomains = domains.filter(domain => domain.startsWith(afterAt));
+        if (filteredDomains.length === 0 || afterAt.length > domains[0].length) {
+          emailSuggestions.classList.add("hidden");
+          return;
+        }
+        emailSuggestions.innerHTML = filteredDomains
+          .map(domain => `<li class="px-3 py-1 hover:bg-gray-100 cursor-pointer">${base}@${domain}</li>`)
+          .join("");
+        emailSuggestions.classList.remove("hidden");
+        emailSuggestions.querySelectorAll("li").forEach(item => {
+          item.addEventListener("click", () => {
+            emailInput.value = item.textContent;
+            emailSuggestions.classList.add("hidden");
+          });
+        });
+      });
+
+      // Start Exploring Button
+      document.getElementById("startExploring").addEventListener("click", () => {
+        scrollToSection("intro");
+      });
+
+      // Particle Animation
+      const particles = [];
+      const particleCount = 40;
+
+      function createParticle() {
+        return {
+          x: Math.random() * window.innerWidth,
+          y: Math.random() * window.innerHeight,
+          vx: (Math.random() - 0.5) * 2,
+          vy: (Math.random() - 0.5) * 2,
+          opacity: Math.random() * 0.5 + 0.3,
+          life: Math.random() * 200 + 100,
+          color: `hsl(${Math.random() * 360}, 70%, 60%)`
+        };
+      }
+
+      for (let i = 0; i < particleCount; i++) particles.push(createParticle());
+
+      function updateParticles() {
+        const cursor = document.getElementById("cursorWhiteHole");
+        const cursorRect = cursor.getBoundingClientRect();
+        const cursorX = cursorRect.left + cursorRect.width / 2 + window.scrollX;
+        const cursorY = cursorRect.top + cursorRect.height / 2 + window.scrollY;
+
+        particles.forEach((p, i) => {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.life--;
+
+          const dx = p.x - cursorX;
+          const dy = p.y - cursorY;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+          if (distance < 70) {
+            const force = 0.12; // Maintains the reflection you liked
+            const angle = Math.atan2(dy, dx);
+            p.vx += Math.cos(angle) * force;
+            p.vy += Math.sin(angle) * force;
+          }
+
+          if (p.life <= 0 || p.x < 0 || p.x > window.innerWidth || p.y < 0 || p.y > window.innerHeight) {
+            particles[i] = createParticle();
+          }
+        });
+
+        const particleElements = document.querySelectorAll(".particle");
+        particles.forEach((p, i) => {
+          const el = particleElements[i];
+          el.style.left = `${p.x}px`;
+          el.style.top = `${p.y}px`;
+          el.style.background = `radial-gradient(circle, ${p.color} 0%, rgba(${parseInt(p.color.split(',')[0].split('(')[1])}, ${parseInt(p.color.split(',')[1])}, ${parseInt(p.color.split(',')[2])}, 0.3) 70%)`;
+          el.style.opacity = p.opacity;
+        });
+
+        requestAnimationFrame(updateParticles);
+      }
+
+      for (let i = 0; i < particleCount; i++) {
+        const div = document.createElement("div");
+        div.className = "particle";
+        document.body.appendChild(div);
+      }
+
+      updateParticles();
+
+      // Cursor Logic
+      const cursorWhiteHole = document.getElementById("cursorWhiteHole");
+      let lastX = window.innerWidth / 2;
+      let lastY = window.innerHeight / 2;
+
+      function updateCursorPosition(x, y) {
+        lastX = x;
+        lastY = y;
+        // Use direct coordinates with CSS transform for perfect centering
+        cursorWhiteHole.style.transform = `translate(${x}px, ${y}px)`;
+      }
+
+      document.addEventListener("mousemove", (e) => {
+        requestAnimationFrame(() => updateCursorPosition(e.pageX, e.pageY));
+      });
+
+      // Maintain cursor on scroll with throttling
+      let scrollTimeout;
+      window.addEventListener("scroll", () => {
+        if (!scrollTimeout) {
+          scrollTimeout = setTimeout(() => {
+            requestAnimationFrame(() => updateCursorPosition(lastX, lastY));
+            scrollTimeout = null;
+          }, 16); // ~60fps
+        }
+      }, { passive: true });
+    });
+  </script>
 </body>
 
 </html>

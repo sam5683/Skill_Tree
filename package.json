@@ -1,10 +1,22 @@
 {
-  "devDependencies": {
-    "autoprefixer": "^10.4.21",
-    "postcss": "^8.5.3",
-    "tailwindcss": "^3.4.1"
-  },
+  "name": "skill-tree",
+  "version": "1.0.0",
+  "main": "main.js",
   "scripts": {
-    "dev": "tailwindcss -i ./src/input.css -o ./dist/output.css --watch"
+    "start": "electron .",
+    "start:server": "node backend/server.js",
+    "build:css": "npx tailwindcss -i ./assets/css/input.css -o ./assets/css/output.css --watch"
+
+
+  },
+  "dependencies": {
+    "electron": "^30.0.0",
+    "express": "^4.18.2",
+    "mongoose": "^7.6.3",
+    "bcrypt": "^5.1.1",
+    "axios": "^1.6.7"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.0"
   }
 }
