@@ -3,7 +3,9 @@
 
 <head>
   <!-- Meta Tags -->
-  <meta charset="UTF-8" />
+ <meta charset="UTF-8" />
+  
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <!-- External Libraries -->
@@ -23,14 +25,13 @@
       height: 100vh;
       z-index: -1;
       overflow: hidden;
-      filter: blur(5px);
       background: inherit;
     }
 
     .particle {
       position: fixed;
-      width: 5px;
-      height: 5px;
+      width: 6px;
+      height: 6px;
       background: radial-gradient(circle, rgba(0, 191, 255, 0.9) 0%, rgba(0, 191, 255, 0.3) 70%);
       border-radius: 50%;
       box-shadow: 0 0 8px rgba(0, 191, 255, 0.6);
@@ -48,12 +49,64 @@
       border: 1px solid rgba(255, 255, 255, 0.2);
       border-radius: 50%;
       pointer-events: none;
-      z-index: 100;
-      transform: translate(-50%, -50%); /* Ensures centering on mouse position */
-      transition: all 0.05s ease-out; /* Ultra-fast for cursor-like feel */
+      z-index: 1000;
+      transform: translate(-50%, -50%);
+      transition: all 0.05s ease-out;
       box-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
-      will-change: transform; /* Optimize with GPU acceleration */
+      will-change: left, top;
+      display: none; /* Hide initially */
     }
+
+    /* Letter Styling for Reflection */
+    .letter {
+      display: inline-block;
+      transition: transform 0.2s ease-out;
+    }
+     
+    /*word spacing in who we are */
+    .word {
+     white-space: nowrap;
+     display: inline-block;
+     }
+
+     /* Glowing dots behind "Who We Are" section */
+     .glow-dot {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background: radial-gradient(circle, rgba(0, 255, 255, 1), rgba(0, 255, 255, 0.2) 80%);
+  border-radius: 9999px;
+  animation: blink 1.2s infinite ease-in-out alternate;
+  z-index: 1;
+}
+
+       }
+      @keyframes blink {
+      0% {
+      opacity: 0.4;
+      transform: scale(1);
+      }
+       100% {
+         opacity: 1;
+          transform: scale(1.6);
+          }
+       }
+
+    /* Ensure card stays above glow */
+    .relative .bg-white\/5 {
+  position: relative;
+  z-index: 2;
+  }
+
+.glow-dot {
+  z-index: 1;
+}
+
+
+    
+
+
+
 
     /* Animations */
     @keyframes pulse {
@@ -89,7 +142,7 @@
       top: 20px;
       left: 50%;
       transform: translateX(-50%);
-      background: rgba(0, 255, 255, 0.8); /* Adjusted for visibility */
+      background: rgba(0, 255, 255, 0.8);
       color: white;
       padding: 10px 20px;
       border-radius: 8px;
@@ -119,6 +172,8 @@
     #intro {
       background: linear-gradient(to bottom, #1a1a1a, #2d2d2d);
       color: #e0e0e0;
+      position: relative;
+      overflow: visible;
     }
 
     #intro h2 {
@@ -195,16 +250,64 @@
   </section>
 
   <!-- About Section -->
-  <section id="intro" class="min-h-screen px-6 py-16">
-    <h2 class="text-4xl font-bold text-center mb-8 animate-fade-in">Who We Are</h2>
-    <div class="max-w-4xl mx-auto text-gray-300 space-y-6 text-lg leading-relaxed">
-      <p><strong>🌿 Our Mission:</strong> We’re building a platform that helps learners visualize their progress like a tree — where each branch is a skill and every leaf is growth.</p>
-      <p><strong>📚 How It Works:</strong> Pick a topic, track your learning, and see your tree evolve. Whether it’s coding, art, language, or science — every step is recorded as part of your journey.</p>
-      <p><strong>🤖 Powered by AI:</strong> Smart paths, goal tracking, and personalized resources designed just for your pace and interests.</p>
-      <p><strong>🌍 Built for Everyone:</strong> Study solo or with friends. Skill Tree is ad-free, open-source, and learner-first.</p>
-      <p><strong>🚀 The Vision:</strong> Democratize knowledge. Empower minds. Grow trees of wisdom together.</p>
-    </div>
+  <section id="intro" class="min-h-screen px-6 py-16 text-gray-100 bg-gradient-to-b from-black via-gray-900 to-black">
+    <h2 class="text-4xl font-bold text-center mb-12 text-amber-400 animate-fade-in">Who We Are</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto text-lg leading-relaxed">
+      
+      <div class="relative">
+        <div class="glow-dot" style="top: 5px; left: 5px;"></div>
+        <div class="bg-white/5 backdrop-blur-md p-6 rounded-xl shadow-xl border border-white/10 transform transition-transform duration-500 ease-in-out hover:scale-110 hover:-rotate-1 animate-fade-in">
+        <h3 class="text-xl font-semibold text-green-300 mb-2 flex items-center gap-2">
+            <i data-lucide="leaf" class="w-5 h-5"></i> Our Mission
+          </h3>
+          <p>We’re building a platform that helps learners visualize their knowledge like a growing tree — where each branch is a topic and every leaf is a lesson learned. It's a space to evolve.</p>
+        </div>
+      </div>
+      
+      <div class="relative">
+        <div class="glow-dot" style="top: 20px; left: 85px;"></div>
+        <div class="bg-white/5 backdrop-blur-md p-6 rounded-xl shadow-xl border border-white/10 transform transition-transform duration-500 ease-in-out hover:scale-110 hover:-rotate-1 animate-fade-in">
+        <h3 class="text-xl font-semibold text-purple-300 mb-2 flex items-center gap-2">
+            <i data-lucide="book-open" class="w-5 h-5"></i> How It Works
+          </h3>
+          <p>Choose a subject. Grow your tree. From science to coding, store what you learn forever. Let AI adapt to your memory, track your growth, and guide you to your best self.</p>
+        </div>
+      </div>
+      
+      <div class="relative">
+        <div class="glow-dot" style="top: 10px; left: 70px;"></div>
+        <div class="bg-white/5 backdrop-blur-md p-6 rounded-xl shadow-xl border border-white/10 transform transition-transform duration-500 ease-in-out hover:scale-110 hover:-rotate-1 animate-fade-in">
+         <h3 class="text-xl font-semibold text-yellow-300 mb-2 flex items-center gap-2">
+            <i data-lucide="brain" class="w-5 h-5"></i> Powered by Psychology & AI
+          </h3>
+          <p>Using psychology-backed techniques like spaced repetition, mnemonics, and behavior analysis, we help you retain what matters. AI learns your style and evolves with you.</p>
+        </div>
+      </div>
+      
+      <div class="relative">
+        <div class="glow-dot" style="top: 18px; left: 40px;"></div>
+        <div class="bg-white/5 backdrop-blur-md p-6 rounded-xl shadow-xl border border-white/10 transform transition-transform duration-500 ease-in-out hover:scale-110 hover:-rotate-1 animate-fade-in">
+        <h3 class="text-xl font-semibold text-pink-300 mb-2 flex items-center gap-2">
+            <i data-lucide="users" class="w-5 h-5"></i> Study. Connect. Grow.
+          </h3>
+          <p>Study solo or with friends. Watch your learning evolve into a majestic tree. Earn certificates, unlock achievements, bloom your blue lily when you master a skill, and inspire others.</p>
+        </div>
+      </div>
+      
+      <div class="relative col-span-1 md:col-span-2">
+        <div class="glow-dot" style="top: 10px; left: 90%;"></div>
+        <div class="bg-white/5 backdrop-blur-md p-6 rounded-xl shadow-xl border border-white/10 transform transition-transform duration-500 ease-in-out hover:scale-110 hover:-rotate-1 animate-fade-in">
+        <h3 class="text-xl font-semibold text-cyan-300 mb-2 flex items-center gap-2">
+            <i data-lucide="lightbulb" class="w-5 h-5"></i> Why Skill Tree Exists
+          </h3>
+          <p>
+            Too often we forget what we’ve learned. Skill Tree is here to change that. This is your memory palace, your personal knowledge garden.
+            Whether you’re mastering math or psychology, Skill Tree helps you remember it all — and makes it fun.
+          </p>
+        </div>
+      </div>
   </section>
+  
 
   <!-- Sign-up Modal -->
   <div id="signupModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 hidden" role="dialog" aria-modal="true" tabindex="-1">
@@ -353,16 +456,25 @@
         return;
       }
 
-      const existing = JSON.parse(localStorage.getItem("user") || "{}");
-      if (existing.email?.toLowerCase() === email.toLowerCase() || existing.username?.split("#")[0].toLowerCase() === username.toLowerCase()) {
-        alert("User already exists! Try a different email/username.");
+      const existing = JSON.parse(localStorage.getItem("users") || "[]");
+      const usernameBase = username.split("#")[0].toLowerCase();
+      const isTaken = existing.some(user => user.usernameBase === usernameBase);
+      if (isTaken) {
+        alert("Username base already taken! Try a different name.");
         return;
       }
 
-      const user = { fullName, dob, username: `${username}#${Math.floor(1000 + Math.random() * 9000)}`, email, password };
-      localStorage.setItem("user", JSON.stringify(user));
+      let finalUsername;
+      if (username.endsWith("#0000")) {
+        finalUsername = username; // Allow special names like sam#0000
+      } else {
+        finalUsername = `${username}#${Math.floor(1000 + Math.random() * 9000)}`; // Random for others
+      }
+      const user = { fullName, dob, username: finalUsername, usernameBase, email, password };
+      existing.push(user);
+      localStorage.setItem("users", JSON.stringify(existing));
       toggleModal("signupModal");
-      showSuccessMessage(`Sign-up successful! Welcome, ${username}!`);
+      showSuccessMessage(`Sign-up successful! Welcome, ${usernameBase}!`);
     }
 
     function handleSignIn(event) {
@@ -370,15 +482,18 @@
       const emailOrUsername = document.getElementById("signinEmail").value.trim().toLowerCase();
       const password = document.getElementById("signinPassword").value;
       const feedback = document.getElementById("signinFeedback");
+      const existing = JSON.parse(localStorage.getItem("users") || "[]");
+
       if (!emailOrUsername || !password) {
         feedback.textContent = "⚠️ Please enter both email/username and password.";
         feedback.classList.remove("hidden");
         return;
       }
-      const storedUser = JSON.parse(localStorage.getItem("user") || "{}");
-      if ((storedUser.email?.toLowerCase() === emailOrUsername || storedUser.username?.split("#")[0].toLowerCase() === emailOrUsername) && storedUser.password === password) {
+
+      const user = existing.find(u => (u.email?.toLowerCase() === emailOrUsername || u.usernameBase === emailOrUsername) && u.password === password);
+      if (user) {
         toggleModal("signinModal");
-        showSuccessMessage(`Welcome back, ${storedUser.username.split("#")[0]}!`);
+        showSuccessMessage(`Welcome back, ${user.usernameBase}!`);
         feedback.classList.add("hidden");
       } else {
         feedback.textContent = "❌ Invalid email/username or password!";
@@ -392,6 +507,18 @@
       let debounceTimer;
       lucide.createIcons();
       setupPasswordToggles();
+     
+      // Wrap letters in spans for "Who We Are" section (preserving spaces and formatting)
+      document.querySelectorAll("#intro p").forEach(p => {
+      const words = p.textContent.trim().split(/\s+/); // handles multiple spaces
+      p.innerHTML = words
+      .map(word =>
+       `<span class="word">${[...word].map(char => `<span class="letter">${char}</span>`).join('')}</span>`
+       )
+      .join(' ');
+    });
+
+
 
       // Date Picker
       flatpickr("#dobPicker", {
@@ -421,7 +548,7 @@
       const username = document.getElementById("username");
       const feedback = document.getElementById("usernameFeedback");
       const signupButton = document.querySelector("#signupForm button[type='submit']");
-      const validPattern = /^[A-Za-z]+$/;
+      const validPattern = /^[A-Za-z]+(#0000)?$/;
 
       username.addEventListener("input", () => {
         clearTimeout(debounceTimer);
@@ -433,21 +560,21 @@
           return;
         }
         if (!validPattern.test(value)) {
-          feedback.textContent = "⚠️ Username should contain only alphabets (A–Z). No numbers or special characters allowed.";
+          feedback.textContent = "⚠️ Username should contain only alphabets (A–Z), optionally ending with '#0000'.";
           feedback.className = "text-sm text-red-500";
           signupButton.disabled = true;
           return;
         }
         debounceTimer = setTimeout(() => {
-          generatedTag = Math.floor(1000 + Math.random() * 9000);
-          const finalUsername = `${value}#${generatedTag}`;
-          const takenUsernames = ["admin", "testuser", "sam123"];
-          if (takenUsernames.includes(value.toLowerCase())) {
-            feedback.textContent = `❌ Sorry, "${value}" is already taken.`;
+          const usernameBase = value.split("#")[0];
+          const existing = JSON.parse(localStorage.getItem("users") || "[]");
+          const isTaken = existing.some(user => user.usernameBase === usernameBase);
+          if (isTaken) {
+            feedback.textContent = `❌ Sorry, "${usernameBase}" is already taken.`;
             feedback.className = "text-sm text-red-500";
             signupButton.disabled = true;
           } else {
-            feedback.textContent = `✅ Hi ${value}! Your username will be ${finalUsername}`;
+            feedback.textContent = `✅ Hi ${usernameBase}! Your username will be ${value.endsWith("#0000") ? value : `${value}#${Math.floor(1000 + Math.random() * 9000)}`}`;
             feedback.className = "text-sm text-green-600";
             signupButton.disabled = false;
           }
@@ -491,7 +618,7 @@
 
       // Particle Animation
       const particles = [];
-      const particleCount = 40;
+      const particleCount = 60;
 
       function createParticle() {
         return {
@@ -500,7 +627,7 @@
           vx: (Math.random() - 0.5) * 2,
           vy: (Math.random() - 0.5) * 2,
           opacity: Math.random() * 0.5 + 0.3,
-          life: Math.random() * 200 + 100,
+          life: Math.random() * 300 + 200,
           color: `hsl(${Math.random() * 360}, 70%, 60%)`
         };
       }
@@ -522,7 +649,7 @@
           const dy = p.y - cursorY;
           const distance = Math.sqrt(dx * dx + dy * dy);
           if (distance < 70) {
-            const force = 0.12; // Maintains the reflection you liked
+            const force = 0.15;
             const angle = Math.atan2(dy, dx);
             p.vx += Math.cos(angle) * force;
             p.vy += Math.sin(angle) * force;
@@ -542,6 +669,26 @@
           el.style.opacity = p.opacity;
         });
 
+        // Reflect letters in "Who We Are" section with distance-based strength
+        const letters = document.querySelectorAll("#intro .letter");
+        letters.forEach(letter => {
+          const rect = letter.getBoundingClientRect();
+          const letterX = rect.left + rect.width / 2 + window.scrollX;
+          const letterY = rect.top + rect.height / 2 + window.scrollY;
+          const dx = letterX - cursorX;
+          const dy = letterY - cursorY;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+          if (distance < 100) { // Reflection range
+            const repelStrength = (1 - distance / 100) * 30; // Stronger closer to cursor
+            const angle = Math.atan2(dy, dx);
+            const repelX = Math.cos(angle) * repelStrength;
+            const repelY = Math.sin(angle) * repelStrength;
+            letter.style.transform = `translate(${repelX}px, ${repelY}px)`;
+          } else {
+            letter.style.transform = 'translate(0, 0)'; // Smooth pull-back
+          }
+        });
+
         requestAnimationFrame(updateParticles);
       }
 
@@ -555,30 +702,25 @@
 
       // Cursor Logic
       const cursorWhiteHole = document.getElementById("cursorWhiteHole");
-      let lastX = window.innerWidth / 2;
-      let lastY = window.innerHeight / 2;
+      let lastX = 0;
+      let lastY = 0;
+      let isFirstMove = true;
 
       function updateCursorPosition(x, y) {
         lastX = x;
         lastY = y;
-        // Use direct coordinates with CSS transform for perfect centering
-        cursorWhiteHole.style.transform = `translate(${x}px, ${y}px)`;
+        cursorWhiteHole.style.left = `${x}px`;
+        cursorWhiteHole.style.top = `${y}px`;
+        if (isFirstMove) {
+          cursorWhiteHole.style.display = 'block';
+          isFirstMove = false;
+        }
       }
 
+      // Mouse movement tracking
       document.addEventListener("mousemove", (e) => {
-        requestAnimationFrame(() => updateCursorPosition(e.pageX, e.pageY));
+        requestAnimationFrame(() => updateCursorPosition(e.clientX, e.clientY));
       });
-
-      // Maintain cursor on scroll with throttling
-      let scrollTimeout;
-      window.addEventListener("scroll", () => {
-        if (!scrollTimeout) {
-          scrollTimeout = setTimeout(() => {
-            requestAnimationFrame(() => updateCursorPosition(lastX, lastY));
-            scrollTimeout = null;
-          }, 16); // ~60fps
-        }
-      }, { passive: true });
     });
   </script>
 </body>
