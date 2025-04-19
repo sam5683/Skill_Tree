@@ -10,6 +10,10 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="mobile-web-app-capable" content="yes" />
 
+  <!-- Favicon for Professionalism -->
+  <link rel="icon" href="https://via.placeholder.com/32" type="image/x-icon">
+  <!-- Replace with your favicon path, e.g., '/favicon.ico' -->
+
   <!-- External Libraries -->
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
@@ -84,21 +88,22 @@
       z-index: 1;
     }
 
-    /* Ensure card stays above glow */
-    .relative .bg-white\/5 {
+    /* Ensure card stays above glow and remains clear */
+    .relative.no-blur .bg-white\/5 {
       position: relative;
       z-index: 2;
       background-color: rgba(255, 255, 255, 0.05);
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px); /* Safari fix */
+      filter: none !important; /* Prevent blur */
     }
 
-    /* Card Pop Effect with Shadow and Light */
+    /* Card Pop Effect with Enhanced Scale */
     .card-pop {
       transition: transform 0.3s ease-out, box-shadow 0.3s ease-out;
     }
     .card-pop:hover {
-      transform: scale(1.05);
+      transform: scale(1.08); /* Slightly more pop-up */
       box-shadow: 0 10px 20px rgba(0, 255, 255, 0.3);
     }
     .card-pop:hover::before {
@@ -139,24 +144,24 @@
     }
 
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    @keyframes lightPulse {
-      0% { opacity: 0.3; }
-      100% { opacity: 0.6; }
-    }
-
-    @keyframes blinkLight {
-      0% { opacity: 0.1; }
-      50% { opacity: 0.3; }
-      100% { opacity: 0.1; }
+      from { opacity: 0; }
+      to { opacity: 1; }
     }
 
     @keyframes fadeOut {
       from { opacity: 1; }
-      to { opacity: 0; display: none; }
+      to { opacity: 0; }
+    }
+
+    @keyframes lightPulse {
+      0% { opacity: 0.5; }
+      100% { opacity: 1; }
+    }
+
+    @keyframes blinkLight {
+      0% { opacity: 0; }
+      50% { opacity: 0.5; }
+      100% { opacity: 0; }
     }
 
     .animate-fade-in { animation: fadeIn 1s ease-out forwards; }
@@ -183,12 +188,35 @@
       top: 20px;
       left: 50%;
       transform: translateX(-50%);
-      background: rgba(0, 255, 255, 0.8);
+      background: #2E7D32; /* Darker, professional green */
       color: white;
       padding: 10px 20px;
       border-radius: 8px;
       z-index: 100;
-      animation: fadeIn 0.5s ease-out, fadeOut 0.5s ease-out 2s forwards;
+      opacity: 0; /* Start invisible */
+      animation: fadeIn 0.5s ease-out forwards, fadeOut 0.5s ease-out 2s forwards; /* Fade in and out only */
+    }
+
+    /* Warning Message */
+    .warning-message {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #F44336; /* Professional red for warnings */
+      color: white;
+      padding: 10px 20px;
+      border-radius: 8px;
+      z-index: 100;
+      opacity: 0; /* Start invisible */
+      animation: fadeIn 0.5s ease-out forwards, fadeOut 0.5s ease-out 3s forwards; /* Fade in and out only */
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .warning-message i {
+      color: #FFEB3B; /* Yellow warning icon */
+      font-size: 1.2rem;
     }
 
     /* Header Styling */
@@ -249,11 +277,16 @@
       }
     }
 
-    /* Modal Blur for Cursor */
+    /* Modal Blur for Cursor Only */
     .modal-open .cursor-white-hole {
       filter: blur(5px);
       opacity: 0.3;
       pointer-events: none;
+    }
+
+    /* Ensure cards remain clear in modal context */
+    .no-blur {
+      filter: none !important;
     }
 
     /* Password Visibility Feedback */
@@ -302,7 +335,7 @@
   <section id="intro" class="min-h-screen px-6 py-16 text-gray-100">
     <h2 class="text-4xl font-bold text-center mb-12 text-amber-400 animate-fade-in">Who We Are</h2>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto text-lg leading-relaxed">
-      <div class="relative">
+      <div class="relative no-blur">
         <div class="glow-dot" style="top: 5px; left: 5px;"></div>
         <div class="bg-white/5 backdrop-blur-md p-6 rounded-xl shadow-xl border border-white/10 card-pop relative">
           <div class="card-blink"></div>
@@ -312,7 +345,7 @@
           <p>We’re building a platform that helps learners visualize their knowledge like a growing tree — where each branch is a topic and every leaf is a lesson learned. It's a space to evolve.</p>
         </div>
       </div>
-      <div class="relative">
+      <div class="relative no-blur">
         <div class="glow-dot" style="top: 20px; left: 85px;"></div>
         <div class="bg-white/5 backdrop-blur-md p-6 rounded-xl shadow-xl border border-white/10 card-pop relative">
           <div class="card-blink"></div>
@@ -322,7 +355,7 @@
           <p>Choose a subject. Grow your tree. From science to coding, store what you learn forever. Let AI adapt to your memory, track your growth, and guide you to your best self.</p>
         </div>
       </div>
-      <div class="relative">
+      <div class="relative no-blur">
         <div class="glow-dot" style="top: 10px; left: 70px;"></div>
         <div class="bg-white/5 backdrop-blur-md p-6 rounded-xl shadow-xl border border-white/10 card-pop relative">
           <div class="card-blink"></div>
@@ -332,7 +365,7 @@
           <p>Using psychology-backed techniques like spaced repetition, mnemonics, and behavior analysis, we help you retain what matters. AI learns your style and evolves with you.</p>
         </div>
       </div>
-      <div class="relative">
+      <div class="relative no-blur">
         <div class="glow-dot" style="top: 18px; left: 40px;"></div>
         <div class="bg-white/5 backdrop-blur-md p-6 rounded-xl shadow-xl border border-white/10 card-pop relative">
           <div class="card-blink"></div>
@@ -342,7 +375,7 @@
           <p>Study solo or with friends. Watch your learning evolve into a majestic tree. Earn certificates, unlock achievements, bloom your blue lily when you master a skill, and inspire others.</p>
         </div>
       </div>
-      <div class="relative col-span-1 md:col-span-2">
+      <div class="relative no-blur col-span-1 md:col-span-2">
         <div class="glow-dot" style="top: 10px; left: 90%;"></div>
         <div class="bg-white/5 backdrop-blur-md p-6 rounded-xl shadow-xl border border-white/10 card-pop relative">
           <div class="card-blink"></div>
@@ -393,7 +426,7 @@
       <button onclick="toggleModal('signinModal')" class="absolute top-4 right-4 text-gray-600 hover:text-red-500 text-xl" aria-label="Close sign-in modal">×</button>
       <h2 class="text-2xl font-bold mb-4 text-center">Sign In</h2>
       <form id="signinForm" onsubmit="handleSignIn(event)" class="space-y-4">
-        <input id="signinEmail" type="email" placeholder="Email Address" class="w-full p-3 border rounded-md" autocomplete="email" required aria-label="Email Address" />
+        <input id="signinUsername" type="text" placeholder="Enter your email" class="w-full p-3 border rounded-md" autocomplete="username" required aria-label="Enter your email" />
         <div class="relative w-full password-wrapper">
           <input id="signinPassword" type="password" placeholder="Password" class="w-full p-3 border rounded-md pr-10 password-input" autocomplete="current-password" required aria-label="Password" />
           <i id="toggleSigninPassword" class="fa-solid fa-eye password-toggle" style="color: #6b7280;"></i>
@@ -416,11 +449,23 @@
   <script>
     // Utility Functions
     function showSuccessMessage(text) {
+      const existingMessages = document.querySelectorAll(".success-message, .warning-message");
+      existingMessages.forEach(msg => msg.remove());
       const msg = document.createElement("div");
       msg.className = "success-message";
       msg.textContent = text;
       document.body.appendChild(msg);
       setTimeout(() => msg.remove(), 2500);
+    }
+
+    function showWarningMessage(text) {
+      const existingMessages = document.querySelectorAll(".success-message, .warning-message");
+      existingMessages.forEach(msg => msg.remove());
+      const msg = document.createElement("div");
+      msg.className = "warning-message";
+      msg.innerHTML = `<i class="fa-solid fa-exclamation-triangle"></i> ${text}`;
+      document.body.appendChild(msg);
+      setTimeout(() => msg.remove(), 3000);
     }
 
     function toggleModal(id) {
@@ -497,48 +542,26 @@
     }
 
     // Backend API Calls
-    async function register(fullName, username, email, password, dob) {
-      try {
-        const response = await fetch('http://localhost:8080/api/users/register', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ fullName, username, email, password, dob })
-        });
-        const data = await response.json();
-        if (!response.ok) throw new Error(data.message || 'Registration failed');
-        return data;
-      } catch (error) {
-        alert(`Registration error: ${error.message}`);
-        throw error;
-      }
-    }
-
-    async function login(email, password) {
-      try {
-        const response = await fetch('http://localhost:8080/api/users/login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, password })
-        });
-        const data = await response.json();
-        if (!response.ok) throw new Error(data.message || 'Login failed');
-        return data;
-      } catch (error) {
-        alert(`Login error: ${error.message}`);
-        throw error;
-      }
-    }
-
     async function checkEmail(email) {
       try {
-        const response = await fetch(`http://localhost:8080/api/users/check-email?email=${encodeURIComponent(email)}`, {
+        console.log("Checking email:", email);
+        const url = `http://localhost:8080/api/users/check-email?email=${encodeURIComponent(email)}`;
+        console.log("Fetching:", url);
+        const response = await fetch(url, {
           method: 'GET',
           headers: { 'Content-Type': 'application/json' }
         });
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
         const data = await response.json();
-        return data.exists || false;
+        console.log("Response data:", data);
+        return data.data || false; // True if email exists
       } catch (error) {
         console.error("Error checking email:", error);
+        setTimeout(() => {
+          showWarningMessage("⚠ Unable to check email. Please check your connection and try again.");
+        }, 2000); // 2-second delay for network error
         return false;
       }
     }
@@ -571,9 +594,11 @@
       }
 
       const exists = await checkEmail(email);
+      console.log("Email exists:", exists);
       if (exists) {
-        usernameFeedback.textContent = "❌ This email is already linked to a username!";
-        usernameFeedback.className = "text-sm text-red-600 font-semibold";
+        showWarningMessage("⚠ This email is already registered. Please use a different email.");
+        usernameFeedback.textContent = "";
+        usernameFeedback.className = "text-sm text-gray-600";
         signupButton.disabled = true;
         return;
       }
@@ -584,37 +609,54 @@
       usernameFeedback.className = "text-sm text-green-600 font-semibold";
 
       try {
-        const data = await register(fullName, finalUsername, email, password, dob);
-        if (data) {
+        const response = await fetch('http://localhost:8080/api/users', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ fullName, username: finalUsername, email, password, dob })
+        });
+        const data = await response.json();
+        if (data.success) {
           toggleModal("signupModal");
           showSuccessMessage(`Sign-up successful! Welcome, ${username}!`);
+        } else {
+          showWarningMessage(data.message || "Registration failed");
         }
       } catch (error) {
         console.error(error);
+        showWarningMessage("Registration failed. Try again.");
       }
     }
 
     async function handleSignIn(event) {
       event.preventDefault();
-      const email = document.getElementById("signinEmail").value.trim().toLowerCase();
+      const username = document.getElementById("signinUsername").value.trim().toLowerCase();
       const password = document.getElementById("signinPassword").value;
       const feedback = document.getElementById("signinFeedback");
 
-      if (!email || !password) {
-        feedback.textContent = "Please enter both email and password.";
+      if (!username || !password) {
+        feedback.textContent = "Please enter both username or email and password.";
         feedback.classList.remove("hidden");
         return;
       }
 
       try {
-        const data = await login(email, password);
-        if (data) {
+        const response = await fetch('http://localhost:8080/api/users/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password, email: username.includes('@') ? username : '' })
+        });
+        const data = await response.json();
+        if (data.success) {
           toggleModal("signinModal");
-          showSuccessMessage(`Welcome back, ${email.split('@')[0]}!`);
+          const displayUsername = data.data.username;
+          showSuccessMessage(`Welcome back, ${displayUsername}!`);
           feedback.classList.add("hidden");
+        } else {
+          feedback.textContent = `Invalid username, email, or password.`;
+          feedback.classList.remove("hidden");
         }
       } catch (error) {
-        feedback.textContent = `Invalid email or password.`;
+        feedback.textContent = "Error logging in.";
         feedback.classList.remove("hidden");
       }
     }
@@ -718,7 +760,7 @@
 
       // Particle Animation
       const particles = [];
-      const particleCount = 55; // Reduced by 5 from 60
+      const particleCount = 55;
 
       function createParticle() {
         return {
@@ -827,6 +869,9 @@
       }, { passive: true });
     });
   </script>
+
+  <!-- Load External script.js -->
+  <script src="script.js" defer></script>
 </body>
 
 </html>
