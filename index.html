@@ -543,28 +543,28 @@
 
     // Backend API Calls
     async function checkEmail(email) {
-      try {
-        console.log("Checking email:", email);
-        const url = `http://localhost:8080/api/users/check-email?email=${encodeURIComponent(email)}`;
-        console.log("Fetching:", url);
-        const response = await fetch(url, {
-          method: 'GET',
-          headers: { 'Content-Type': 'application/json' }
-        });
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        const data = await response.json();
-        console.log("Response data:", data);
-        return data.data || false; // True if email exists
-      } catch (error) {
-        console.error("Error checking email:", error);
-        setTimeout(() => {
-          showWarningMessage("⚠ Unable to check email. Please check your connection and try again.");
-        }, 2000); // 2-second delay for network error
-        return false;
-      }
+  try {
+    console.log("Checking email:", email);
+    const url = `http://localhost:8080/api/users/check-email?email=${encodeURIComponent(email)}`;
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' }
+    });
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
     }
+    const data = await response.json();
+    if (data.data) {
+      showWarningMessage("⚠ This email is already registered. Please use a different email.");
+      return true; // Email exists
+    }
+    return false; // Email does not exist
+  } catch (error) {
+    console.error("Error checking email:", error);
+    showWarningMessage("⚠ Unable to check email. Please try again later.");
+    return false;
+  }
+}
 
     // Form Handling
     async function handleSignUp(event) {
