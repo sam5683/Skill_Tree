@@ -1,0 +1,22 @@
+/* Logo placeholder */
+#logoPlaceholder {
+    width: 120px;
+    height: 30px;
+}
+
+/* Section spacing */
+.hero-section {
+    margin-top: 60px;
+}
+
+/* Glow dot positions */
+.glow-dot-1 { top: 5px; left: 5px; }
+.glow-dot-2 { top: 20px; left: 85px; }
+.glow-dot-3 { top: 10px; left: 70px; }
+.glow-dot-4 { top: 18px; left: 40px; }
+.glow-dot-5 { top: 10px; left: 90%; }
+
+/* Password toggle icon color */
+.password-toggle {
+    color: #6b7280;
+}

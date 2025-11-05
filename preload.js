@@ -1,14 +1,18 @@
+// preload.js
 const { contextBridge, ipcRenderer } = require('electron');
 
+// Secure API bridge
 contextBridge.exposeInMainWorld('api', {
-  fetch: (url, options = {}) => fetch(url, { ...options, headers: { 'Content-Type': 'application/json' } }).then(res => res.json().catch(() => ({ success: false, message: 'Invalid response' }))),
-  post: (url, data) => fetch(url, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data)
-  }).then(res => res.json().catch(() => ({ success: false, message: 'Invalid response' }))),
   send: (channel, data) => {
-    console.log(`Sending IPC message to channel: ${channel}, data: ${JSON.stringify(data)}`);
-    ipcRenderer.send(channel, data);
+    const validSendChannels = ['redirect-to-tree', 'load-main-page'];
+    if (validSendChannels.includes(channel)) {
+      ipcRenderer.send(channel, data);
+    }
+  },
+  on: (channel, func) => {
+    const validReceiveChannels = ['redirect-error'];
+    if (validReceiveChannels.includes(channel)) {
+      ipcRenderer.on(channel, (event, ...args) => func(...args));
+    }
   }
 });

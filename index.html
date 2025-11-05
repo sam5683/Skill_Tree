@@ -1,342 +1,71 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <!-- Meta Tags -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Skill Tree - Build and grow your knowledge tree with AI-powered learning." />
   <meta name="keywords" content="skill tree, learning, AI, education" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="mobile-web-app-capable" content="yes" />
-
-  <!-- Favicon for Professionalism -->
+  <meta name="theme-color" content="#000000" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)" />
   <link rel="icon" href="https://via.placeholder.com/32" type="image/x-icon">
-  <!-- Replace with your favicon path, e.g., '/favicon.ico' -->
+  <title>Skill Tree</title>
 
-  <!-- External Libraries -->
+  <!-- Preload Critical Assets -->
+  <link rel="preload" href="assets/css/custom.css" as="style">
+  <link rel="preload" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" as="style">
+
+  <!-- Libraries -->
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-  <title>Skill Tree</title>
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-  <link rel="stylesheet" href="styles.css"> <!-- Assuming this exists -->
-
-  <!-- Custom Styles -->
-  <style>
-    /* Background and Particles */
-    .background-particles {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100vh;
-      z-index: -1;
-      overflow: hidden;
-      background: inherit;
-    }
-
-    .particle {
-      position: fixed;
-      width: 6px;
-      height: 6px;
-      background: radial-gradient(circle, rgba(0, 191, 255, 0.9) 0%, rgba(0, 191, 255, 0.3) 70%);
-      border-radius: 50%;
-      box-shadow: 0 0 8px rgba(0, 191, 255, 0.6);
-      pointer-events: none;
-      z-index: 2;
-      animation: pulse 1.5s infinite ease-in-out;
-    }
-
-    /* Cursor White Hole */
-    .cursor-white-hole {
-      position: fixed;
-      width: 40px;
-      height: 40px;
-      background: radial-gradient(circle, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0) 70%);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 1000;
-      transform: translate(-50%, -50%);
-      transition: all 0.05s ease-out;
-      box-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
-      will-change: left, top;
-      display: none;
-    }
-
-    /* Letter Styling for Reflection */
-    .letter {
-      display: inline-block;
-      transition: transform 0.2s ease-out;
-    }
-
-    /* Word spacing in "Who We Are" */
-    .word {
-      white-space: nowrap;
-      display: inline-block;
-    }
-
-    /* Glowing dots behind "Who We Are" section */
-    .glow-dot {
-      position: absolute;
-      width: 12px;
-      height: 12px;
-      background: radial-gradient(circle, rgba(0, 255, 255, 1), rgba(0, 255, 255, 0.2) 80%);
-      border-radius: 9999px;
-      animation: blink 1.2s infinite ease-in-out alternate;
-      z-index: 1;
-    }
-
-    /* Ensure card stays above glow and remains clear */
-    .relative.no-blur .bg-white\/5 {
-      position: relative;
-      z-index: 2;
-      background-color: rgba(255, 255, 255, 0.05);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px); /* Safari fix */
-      filter: none !important; /* Prevent blur */
-    }
-
-    /* Card Pop Effect with Enhanced Scale */
-    .card-pop {
-      transition: transform 0.3s ease-out, box-shadow 0.3s ease-out;
-    }
-    .card-pop:hover {
-      transform: scale(1.08); /* Slightly more pop-up */
-      box-shadow: 0 10px 20px rgba(0, 255, 255, 0.3);
-    }
-    .card-pop:hover::before {
-      content: '';
-      position: absolute;
-      top: -5px;
-      left: -5px;
-      right: -5px;
-      bottom: -5px;
-      background: radial-gradient(circle, rgba(0, 255, 255, 0.2), transparent 70%);
-      border-radius: inherit;
-      z-index: -1;
-      animation: lightPulse 1s infinite alternate;
-    }
-
-    /* Blinking Light Background for Cards */
-    .card-blink {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: radial-gradient(circle, rgba(0, 255, 255, 0.1), transparent 70%);
-      border-radius: inherit;
-      animation: blinkLight 2s infinite ease-in-out;
-      z-index: 0;
-    }
-
-    /* Animations */
-    @keyframes blink {
-      0% { opacity: 0.4; transform: scale(1); }
-      100% { opacity: 1; transform: scale(1.6); }
-    }
-
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); opacity: 0.7; }
-      50% { transform: scale(1.2); opacity: 1; }
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-
-    @keyframes fadeOut {
-      from { opacity: 1; }
-      to { opacity: 0; }
-    }
-
-    @keyframes lightPulse {
-      0% { opacity: 0.5; }
-      100% { opacity: 1; }
-    }
-
-    @keyframes blinkLight {
-      0% { opacity: 0; }
-      50% { opacity: 0.5; }
-      100% { opacity: 0; }
-    }
-
-    .animate-fade-in { animation: fadeIn 1s ease-out forwards; }
-    .animate-fade-in-slow { animation: fadeIn 1.5s ease-out forwards; }
-
-    /* Input Autofill */
-    input:-webkit-autofill {
-      -webkit-box-shadow: 0 0 0 30px white inset !important;
-    }
-
-    /* Password Toggle */
-    .password-toggle {
-      position: absolute;
-      right: 10px;
-      top: 50%;
-      transform: translateY(-50%);
-      cursor: pointer;
-      color: #6b7280;
-    }
-
-    /* Success Message */
-    .success-message {
-      position: fixed;
-      top: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: #2E7D32; /* Darker, professional green */
-      color: white;
-      padding: 10px 20px;
-      border-radius: 8px;
-      z-index: 100;
-      opacity: 0; /* Start invisible */
-      animation: fadeIn 0.5s ease-out forwards, fadeOut 0.5s ease-out 2s forwards; /* Fade in and out only */
-    }
-
-    /* Warning Message */
-    .warning-message {
-      position: fixed;
-      top: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: #F44336; /* Professional red for warnings */
-      color: white;
-      padding: 10px 20px;
-      border-radius: 8px;
-      z-index: 100;
-      opacity: 0; /* Start invisible */
-      animation: fadeIn 0.5s ease-out forwards, fadeOut 0.5s ease-out 3s forwards; /* Fade in and out only */
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .warning-message i {
-      color: #FFEB3B; /* Yellow warning icon */
-      font-size: 1.2rem;
-    }
-
-    /* Header Styling */
-    header {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      z-index: 50;
-      background: rgba(0, 0, 0, 0.7);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px); /* Safari fix */
-      padding: 0.75rem 1.5rem;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-    }
-
-    /* About Section Styling */
-    #intro {
-      background: linear-gradient(to bottom, #1a1a1a, #2d2d2d);
-      color: #e0e0e0;
-      position: relative;
-      overflow: visible;
-    }
-
-    #intro h2 {
-      color: #00ffcc;
-      text-shadow: 0 0 5px rgba(0, 255, 204, 0.5);
-    }
-
-    #intro p {
-      font-size: 1.125rem;
-      line-height: 1.75;
-      max-width: 48rem;
-    }
-
-    #intro strong {
-      color: #00cc99;
-    }
-
-    /* Responsive Design */
-    @media (max-width: 768px) {
-      .particle { width: 3px; height: 3px; }
-      .cursor-white-hole { width: 30px; height: 30px; }
-      header .flex.items-center.gap-3 {
-        position: absolute;
-        top: 50%;
-        transform: translateY(-50%);
-        right: 1.5rem;
-        flex-direction: row;
-        gap: 0.5rem;
-      }
-      header button {
-        padding: 0.25rem 0.75rem;
-        font-size: 12px;
-      }
-      #intro p {
-        font-size: 1rem;
-      }
-    }
-
-    /* Modal Blur for Cursor Only */
-    .modal-open .cursor-white-hole {
-      filter: blur(5px);
-      opacity: 0.3;
-      pointer-events: none;
-    }
-
-    /* Ensure cards remain clear in modal context */
-    .no-blur {
-      filter: none !important;
-    }
-
-    /* Password Visibility Feedback */
-    .password-toggle.active {
-      color: #6b7280;
-    }
-  </style>
+  
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="assets/css/custom.css" />
 </head>
+<body class="bg-black text-white font-sans overflow-x-hidden">
 
-<body class="bg-black text-white font-sans">
   <!-- Background Particles -->
   <div class="background-particles"></div>
 
   <!-- Cursor White Hole -->
   <div class="cursor-white-hole" id="cursorWhiteHole"></div>
 
-  <!-- Header Section -->
-  <header class="flex justify-between items-center px-6 py-3">
-    <div class="text-xl font-bold" id="logoPlaceholder" style="width: 120px; height: 30px;">
-      <!-- Placeholder for future logo -->
-    </div>
+  <!-- Header -->
+  <header class="fixed top-0 left-0 right-0 z-50 flex justify-between items-center px-6 py-3 bg-black/70 backdrop-blur-md border-b border-white/10">
+    <div class="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-green-400 bg-clip-text text-transparent">Skill Tree</div>
     <div class="flex items-center gap-3">
-      <button onclick="toggleModal('signinModal')" class="flex items-center gap-2 px-3 h-9 text-sm font-medium border border-white rounded-lg hover:bg-white hover:text-black transition-all" aria-label="Open sign-in modal">
-        <i data-lucide="log-in" class="w-4 h-4" aria-hidden="true"></i> Sign In
+      <button id="signinButton" class="flex items-center gap-2 px-3 h-9 text-sm font-medium border border-white rounded-lg hover:bg-white hover:text-black transition-all">
+        <i data-lucide="log-in" class="w-4 h-4"></i> Sign In
       </button>
-      <button onclick="toggleModal('signupModal')" class="flex items-center gap-2 px-3 h-9 text-sm font-bold text-black bg-green-400 hover:bg-green-300 rounded-lg transition-all" aria-label="Open sign-up modal">
-        <i data-lucide="user-plus" class="w-4 h-4" aria-hidden="true"></i> Sign Up
+      <button id="signupButton" class="flex items-center gap-2 px-3 h-9 text-sm font-bold text-black bg-green-400 hover:bg-green-300 rounded-lg transition-all">
+        <i data-lucide="user-plus" class="w-4 h-4"></i> Sign Up
       </button>
     </div>
   </header>
 
   <!-- Welcome Section -->
-  <section class="h-screen flex flex-col justify-center items-center text-center px-4 bg-gradient-to-b from-black via-gray-900 to-black pt-16" style="margin-top: 60px;">
+  <section class="h-screen flex flex-col justify-center items-center text-center px-4 bg-gradient-to-b from-black via-gray-900 to-black pt-16">
     <h1 class="text-5xl md:text-6xl font-extrabold mb-4 bg-gradient-to-r from-green-400 via-blue-500 to-purple-600 bg-clip-text text-transparent animate-fade-in">
       Welcome to Skill Tree
     </h1>
     <p class="text-lg md:text-xl max-w-xl mb-8 text-gray-300 animate-fade-in-slow">
       Let's embark on a journey of knowledge and create a world of unforgettable memories.
     </p>
-    <button id="startExploring" class="mt-4 px-6 py-3 bg-gradient-to-r from-green-400 to-blue-500 text-black font-semibold rounded-xl hover:scale-105 transition-all shadow-lg" aria-label="Scroll to About section">
-      Start Exploring 🚀
+    <button id="startExploring" class="mt-4 px-6 py-3 bg-gradient-to-r from-green-400 to-blue-500 text-black font-semibold rounded-xl hover:scale-105 transition-all shadow-lg">
+      Start Exploring
     </button>
   </section>
 
-  <!-- About Section -->
+  <!-- Who We Are -->
   <section id="intro" class="min-h-screen px-6 py-16 text-gray-100">
     <h2 class="text-4xl font-bold text-center mb-12 text-amber-400 animate-fade-in">Who We Are</h2>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto text-lg leading-relaxed">
       <div class="relative no-blur">
-        <div class="glow-dot" style="top: 5px; left: 5px;"></div>
+      <div class="glow-dot glow-dot-1"></div>
         <div class="bg-white/5 backdrop-blur-md p-6 rounded-xl shadow-xl border border-white/10 card-pop relative">
           <div class="card-blink"></div>
           <h3 class="text-xl font-semibold text-green-300 mb-2 flex items-center gap-2">
@@ -346,7 +75,7 @@
         </div>
       </div>
       <div class="relative no-blur">
-        <div class="glow-dot" style="top: 20px; left: 85px;"></div>
+      <div class="glow-dot glow-dot-2"></div>
         <div class="bg-white/5 backdrop-blur-md p-6 rounded-xl shadow-xl border border-white/10 card-pop relative">
           <div class="card-blink"></div>
           <h3 class="text-xl font-semibold text-purple-300 mb-2 flex items-center gap-2">
@@ -356,7 +85,7 @@
         </div>
       </div>
       <div class="relative no-blur">
-        <div class="glow-dot" style="top: 10px; left: 70px;"></div>
+      <div class="glow-dot glow-dot-3"></div>
         <div class="bg-white/5 backdrop-blur-md p-6 rounded-xl shadow-xl border border-white/10 card-pop relative">
           <div class="card-blink"></div>
           <h3 class="text-xl font-semibold text-yellow-300 mb-2 flex items-center gap-2">
@@ -366,7 +95,7 @@
         </div>
       </div>
       <div class="relative no-blur">
-        <div class="glow-dot" style="top: 18px; left: 40px;"></div>
+      <div class="glow-dot glow-dot-4"></div>
         <div class="bg-white/5 backdrop-blur-md p-6 rounded-xl shadow-xl border border-white/10 card-pop relative">
           <div class="card-blink"></div>
           <h3 class="text-xl font-semibold text-pink-300 mb-2 flex items-center gap-2">
@@ -376,502 +105,121 @@
         </div>
       </div>
       <div class="relative no-blur col-span-1 md:col-span-2">
-        <div class="glow-dot" style="top: 10px; left: 90%;"></div>
+      <div class="glow-dot glow-dot-5"></div>
         <div class="bg-white/5 backdrop-blur-md p-6 rounded-xl shadow-xl border border-white/10 card-pop relative">
           <div class="card-blink"></div>
           <h3 class="text-xl font-semibold text-cyan-300 mb-2 flex items-center gap-2">
             <i data-lucide="lightbulb" class="w-5 h-5"></i> Why Skill Tree Exists
           </h3>
-          <p>
-            Too often we forget what we’ve learned. Skill Tree is here to change that. This is your memory palace, your personal knowledge garden.
-            Whether you’re mastering math or psychology, Skill Tree helps you remember it all — and makes it fun.
-          </p>
+          <p>Too often we forget what we’ve learned. Skill Tree is here to change that. This is your memory palace, your personal knowledge garden. Whether you’re mastering math or psychology, Skill Tree helps you remember it all — and makes it fun.</p>
         </div>
       </div>
     </div>
   </section>
 
   <!-- Sign-up Modal -->
-  <div id="signupModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 hidden modal-open" role="dialog" aria-modal="true" tabindex="-1">
+  <div id="signupModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 hidden modal-open" role="dialog" aria-modal="true">
     <div class="bg-white text-black rounded-xl w-full max-w-md p-6 space-y-4 relative shadow-2xl">
-      <button onclick="toggleModal('signupModal')" class="absolute top-4 right-4 text-gray-600 hover:text-red-500 text-xl" aria-label="Close sign-up modal">×</button>
+      <button id="closeSignup" class="absolute top-4 right-4 text-gray-600 hover:text-red-500 text-xl">×</button>
       <h2 class="text-2xl font-bold mb-4 text-center">Sign Up</h2>
-      <form id="signupForm" onsubmit="handleSignUp(event)" class="space-y-4">
-        <input type="text" placeholder="Full Name" class="w-full p-3 border rounded-md" autocomplete="name" aria-label="Full Name" required />
-        <input id="dobPicker" type="text" placeholder="Date of Birth" class="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-400" readonly aria-label="Date of Birth" required />
-        <div class="relative w-full">
-          <input id="emailInput" type="email" placeholder="Email Address" class="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-400" autocomplete="off" aria-label="Email Address" required />
+      <form id="signupForm" class="space-y-4">
+        <input type="text" placeholder="Full Name" class="w-full p-3 border rounded-md" autocomplete="name" required />
+        <input id="dobPicker" type="text" placeholder="Date of Birth" class="w-full p-3 border rounded-md" readonly required />
+        <div class="relative">
+          <input id="emailInput" type="email" placeholder="Email Address" class="w-full p-3 border rounded-md" autocomplete="off" required />
           <ul id="emailSuggestions" class="absolute z-10 bg-white border border-gray-200 rounded-md mt-1 hidden w-full max-h-40 overflow-auto text-sm"></ul>
         </div>
-        <input id="username" type="text" placeholder="Username" class="w-full p-3 border rounded-md" autocomplete="username" aria-label="Username" required />
+        <input id="username" type="text" placeholder="Username" class="w-full p-3 border rounded-md" autocomplete="username" required />
         <div id="usernameFeedback" class="text-sm text-gray-600"></div>
-        <div class="relative w-full password-wrapper">
-          <input id="password" type="password" placeholder="Create Password" class="w-full p-3 border rounded-md pr-10 password-input" autocomplete="new-password" aria-label="Create Password" required />
-          <i id="togglePassword" class="fa-solid fa-eye password-toggle" style="color: #6b7280;"></i>
+        <div class="space-y-2">
+          <div class="relative">
+            <input id="password" type="password" placeholder="Create Password" class="w-full p-3 border rounded-md pr-10" autocomplete="new-password" required />
+            <i id="togglePassword" class="fa-solid fa-eye password-toggle"></i>
+          </div>
+          <div class="grid grid-cols-2 gap-2 text-sm password-requirements">
+            <div id="letterCheckContainer" class="flex items-center gap-2">
+              <i id="letterCheck" class="fas fa-times text-red-500"></i>
+              <span>3 Letters</span>
+            </div>
+            <div id="numberCheckContainer" class="flex items-center gap-2">
+              <i id="numberCheck" class="fas fa-times text-red-500"></i>
+              <span>2 Numbers</span>
+            </div>
+            <div id="specialCheckContainer" class="flex items-center gap-2">
+              <i id="specialCheck" class="fas fa-times text-red-500"></i>
+              <span>1 Special Character</span>
+            </div>
+            <div id="lengthCheckContainer" class="flex items-center gap-2">
+              <i id="lengthCheck" class="fas fa-times text-red-500"></i>
+              <span>8+ Characters</span>
+            </div>
+          </div>
         </div>
-        <div id="passwordStrength" class="text-sm text-gray-600"></div>
-        <div class="relative w-full password-wrapper">
-          <input id="repeatPassword" type="password" placeholder="Repeat Password" class="w-full p-3 border rounded-md pr-10 password-input" autocomplete="new-password" aria-label="Repeat Password" required />
-          <i id="toggleRepeatPassword" class="fa-solid fa-eye password-toggle" style="color: #6b7280;"></i>
+        <div class="relative">
+          <input id="repeatPassword" type="password" placeholder="Repeat Password" class="w-full p-3 border rounded-md pr-10" autocomplete="new-password" required />
+          <i id="toggleRepeatPassword" class="fa-solid fa-eye password-toggle"></i>
         </div>
-        <div id="passwordMatchFeedback" class="text-sm text-red-500 font-medium" role="alert"></div>
-        <button type="submit" class="w-full bg-green-500 text-white font-semibold py-2 rounded-md hover:bg-green-400 transition-all" aria-label="Submit sign-up form" disabled>Create Account</button>
+        <div id="passwordMatchFeedback" class="text-sm text-red-500 font-medium hidden"></div>
+        <button type="submit" class="w-full bg-green-500 text-white font-semibold py-2 rounded-md hover:bg-green-400 transition-all" disabled>Create Account</button>
       </form>
     </div>
   </div>
 
   <!-- Sign-in Modal -->
-  <div id="signinModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 hidden modal-open" role="dialog" aria-modal="true" tabindex="-1">
+  <div id="signinModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 hidden modal-open" role="dialog" aria-modal="true">
     <div class="bg-white text-black rounded-xl w-full max-w-md p-6 space-y-4 relative shadow-2xl">
-      <button onclick="toggleModal('signinModal')" class="absolute top-4 right-4 text-gray-600 hover:text-red-500 text-xl" aria-label="Close sign-in modal">×</button>
+      <button id="closeSignin" class="absolute top-4 right-4 text-gray-600 hover:text-red-500 text-xl">×</button>
       <h2 class="text-2xl font-bold mb-4 text-center">Sign In</h2>
-      <form id="signinForm" onsubmit="handleSignIn(event)" class="space-y-4">
-        <input id="signinUsername" type="text" placeholder="Enter your email" class="w-full p-3 border rounded-md" autocomplete="username" required aria-label="Enter your email" />
-        <div class="relative w-full password-wrapper">
-          <input id="signinPassword" type="password" placeholder="Password" class="w-full p-3 border rounded-md pr-10 password-input" autocomplete="current-password" required aria-label="Password" />
-          <i id="toggleSigninPassword" class="fa-solid fa-eye password-toggle" style="color: #6b7280;"></i>
+      <form id="signinForm" class="space-y-4">
+        <input id="signinUsername" type="text" placeholder="Email or Username" class="w-full p-3 border rounded-md" required />
+        <div class="relative">
+          <input id="signinPassword" type="password" placeholder="Password" class="w-full p-3 border rounded-md pr-10" required />
+          <i id="toggleSigninPassword" class="fa-solid fa-eye password-toggle"></i>
         </div>
         <div id="signinFeedback" class="text-sm text-red-500 hidden"></div>
-        <button type="submit" class="w-full bg-green-500 text-white font-semibold py-2 rounded-md hover:bg-green-400 transition-all" aria-label="Submit sign-in form">Login</button>
-        <button type="button" class="w-full text-center text-gray-500 text-sm mt-2 opacity-50 cursor-not-allowed" disabled aria-label="Forgot Password (Coming Soon)">Forgot Password? (Coming Soon)</button>
-        <button type="button" onclick="alert('Google Login Coming Soon!')" class="w-full bg-white text-black px-4 py-2 rounded shadow mt-2 hover:bg-gray-100 transition-all" aria-label="Sign in with Google (coming soon)">
-          <img src="https://www.svgrepo.com/show/475656/google-color.svg" class="inline w-5 h-5 mr-2" alt="Google logo" aria-hidden="true">
-          Sign in with Google (Coming Soon)
+        <button type="submit" class="w-full bg-green-500 text-white font-semibold py-2 rounded-md hover:bg-green-400 transition-all">Login</button>
+        <button type="button" class="w-full text-center text-gray-500 text-sm mt-2 opacity-50 cursor-not-allowed" disabled>Forgot Password? (Soon)</button>
+        <button type="button" onclick="alert('Google Login Coming Soon!')" class="w-full bg-white text-black px-4 py-2 rounded shadow mt-2 hover:bg-gray-100 transition-all flex items-center justify-center gap-2">
+          <img src="https://www.svgrepo.com/show/475656/google-color.svg" class="w-5 h-5" alt="Google">
+          Sign in with Google (Soon)
         </button>
       </form>
     </div>
   </div>
 
-  <!-- External Scripts -->
-  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <!-- Dashboard Modal -->
+  <div id="dashboardModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 hidden modal-open" role="dialog" aria-modal="true">
+    <div class="bg-white text-black rounded-xl w-full max-w-md p-6 space-y-4 relative shadow-2xl">
+      <button id="closeDashboard" class="absolute top-4 right-4 text-gray-600 hover:text-red-500 text-xl">×</button>
+      <h2 class="text-2xl font-bold text-center">Welcome Back!</h2>
+      <p id="welcomeMessage" class="text-lg font-semibold text-center"></p>
+      <p id="lastLoginDate" class="text-sm text-gray-600 text-center"></p>
+      <button onclick="redirectToTree()" class="w-full bg-gradient-to-r from-green-400 to-blue-500 text-black font-bold py-3 rounded-xl hover:scale-105 transition-all">
+        Enter Your Skill Tree
+      </button>
+    </div>
+  </div>
 
-  <!-- JavaScript -->
-  <script>
-    // Utility Functions
-    function showSuccessMessage(text) {
-      const existingMessages = document.querySelectorAll(".success-message, .warning-message");
-      existingMessages.forEach(msg => msg.remove());
-      const msg = document.createElement("div");
-      msg.className = "success-message";
-      msg.textContent = text;
-      document.body.appendChild(msg);
-      setTimeout(() => msg.remove(), 2500);
-    }
+  <!-- Footer -->
+  <footer class="py-6 text-center bg-gray-900 border-t border-gray-800">
+    <div class="flex justify-center space-x-8">
+      <a href="https://github.com" target="_blank" rel="noopener noreferrer" aria-label="GitHub" class="text-white hover:text-green-400 transition-colors">
+        <i class="fab fa-github text-3xl"></i>
+      </a>
+      <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" class="text-white hover:text-green-400 transition-colors">
+        <i class="fab fa-linkedin text-3xl"></i>
+      </a>
+      <a href="https://fiverr.com" target="_blank" rel="noopener noreferrer" aria-label="Fiverr" class="text-white hover:text-green-400 transition-colors">
+        <i class="fab fa-f text-3xl"></i>
+      </a>
+      <a href="https://yourwebsite.com" target="_blank" rel="noopener noreferrer" aria-label="Website" class="text-white hover:text-green-400 transition-colors">
+        <i class="fas fa-globe text-3xl"></i>
+      </a>
+    </div>
+    <p class="mt-4 text-sm text-gray-400">&copy; 2025 Skill Tree. All rights reserved.</p>
+  </footer>
 
-    function showWarningMessage(text) {
-      const existingMessages = document.querySelectorAll(".success-message, .warning-message");
-      existingMessages.forEach(msg => msg.remove());
-      const msg = document.createElement("div");
-      msg.className = "warning-message";
-      msg.innerHTML = `<i class="fa-solid fa-exclamation-triangle"></i> ${text}`;
-      document.body.appendChild(msg);
-      setTimeout(() => msg.remove(), 3000);
-    }
-
-    function toggleModal(id) {
-      const modal = document.getElementById(id);
-      const body = document.body;
-      modal.classList.toggle("hidden");
-      if (!modal.classList.contains("hidden")) {
-        body.classList.add("modal-open");
-        const firstInput = modal.querySelector("input");
-        if (firstInput) firstInput.focus();
-        modal.addEventListener("keydown", trapFocus);
-      } else {
-        body.classList.remove("modal-open");
-        modal.removeEventListener("keydown", trapFocus);
-      }
-    }
-
-    function trapFocus(event) {
-      const modal = document.querySelector(".fixed:not(.hidden)");
-      const focusable = modal.querySelectorAll('input, button, [tabindex]:not([tabindex="-1"])');
-      const first = focusable[0];
-      const last = focusable[focusable.length - 1];
-      if (event.key === "Tab") {
-        if (event.shiftKey && document.activeElement === first) {
-          event.preventDefault();
-          last.focus();
-        } else if (!event.shiftKey && document.activeElement === last) {
-          event.preventDefault();
-          first.focus();
-        }
-      }
-    }
-
-    function scrollToSection(id) {
-      document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
-    }
-
-    // Password Visibility Toggle
-    function setupPasswordVisibility() {
-      const toggles = [
-        { id: "togglePassword", inputId: "password" },
-        { id: "toggleRepeatPassword", inputId: "repeatPassword" },
-        { id: "toggleSigninPassword", inputId: "signinPassword" }
-      ];
-
-      toggles.forEach(toggle => {
-        const toggleElement = document.getElementById(toggle.id);
-        const inputElement = document.getElementById(toggle.inputId);
-        if (toggleElement && inputElement) {
-          toggleElement.addEventListener("click", () => {
-            const isPassword = inputElement.type === "password";
-            inputElement.type = isPassword ? "text" : "password";
-            toggleElement.classList.toggle("fa-eye");
-            toggleElement.classList.toggle("fa-eye-slash");
-            toggleElement.style.color = isPassword ? "#6b7280" : "#6b7280";
-          });
-        }
-      });
-    }
-
-    function validatePasswords(password, repeatPassword, matchFeedback) {
-      if (!password || !repeatPassword) {
-        matchFeedback.textContent = "Both password fields are required.";
-        matchFeedback.classList.remove("hidden");
-        return false;
-      }
-      if (password !== repeatPassword) {
-        matchFeedback.textContent = "❌ Passwords do not match!";
-        matchFeedback.classList.remove("hidden");
-        return false;
-      }
-      matchFeedback.classList.add("hidden");
-      return true;
-    }
-
-    // Backend API Calls
-    async function checkEmail(email) {
-  try {
-    console.log("Checking email:", email);
-    const url = `http://localhost:8080/api/users/check-email?email=${encodeURIComponent(email)}`;
-    const response = await fetch(url, {
-      method: 'GET',
-      headers: { 'Content-Type': 'application/json' }
-    });
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
-    }
-    const data = await response.json();
-    if (data.data) {
-      showWarningMessage("⚠ This email is already registered. Please use a different email.");
-      return true; // Email exists
-    }
-    return false; // Email does not exist
-  } catch (error) {
-    console.error("Error checking email:", error);
-    showWarningMessage("⚠ Unable to check email. Please try again later.");
-    return false;
-  }
-}
-
-    // Form Handling
-    async function handleSignUp(event) {
-      event.preventDefault();
-      const form = document.getElementById("signupForm");
-      const fullName = form.querySelector("input[placeholder='Full Name']").value.trim();
-      const dob = document.getElementById("dobPicker").value;
-      const email = document.getElementById("emailInput").value.trim().toLowerCase();
-      const username = document.getElementById("username").value.trim();
-      const password = document.getElementById("password").value;
-      const repeatPassword = document.getElementById("repeatPassword").value;
-      const matchFeedback = document.getElementById("passwordMatchFeedback");
-      const usernameFeedback = document.getElementById("usernameFeedback");
-      const signupButton = document.querySelector("#signupForm button[type='submit']");
-
-      if (!fullName || !dob || !email || !username || !password || !repeatPassword) {
-        alert("Please fill in all fields!");
-        return;
-      }
-      if (!validatePasswords(password, repeatPassword, matchFeedback)) return;
-
-      if (!/^[A-Za-z]{3,}$/.test(username)) {
-        usernameFeedback.textContent = "⚠️ Alert: Only letters (a-z) allowed—power up with at least 3!";
-        usernameFeedback.className = "text-sm text-red-600 font-semibold";
-        signupButton.disabled = true;
-        return;
-      }
-
-      const exists = await checkEmail(email);
-      console.log("Email exists:", exists);
-      if (exists) {
-        showWarningMessage("⚠ This email is already registered. Please use a different email.");
-        usernameFeedback.textContent = "";
-        usernameFeedback.className = "text-sm text-gray-600";
-        signupButton.disabled = true;
-        return;
-      }
-
-      const randomSuffix = `#${Math.floor(1000 + Math.random() * 9000)}`;
-      const finalUsername = `${username}${randomSuffix}`;
-      usernameFeedback.textContent = `🔥 Epic Choice! Your username is ${finalUsername}`;
-      usernameFeedback.className = "text-sm text-green-600 font-semibold";
-
-      try {
-        const response = await fetch('http://localhost:8080/api/users', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ fullName, username: finalUsername, email, password, dob })
-        });
-        const data = await response.json();
-        if (data.success) {
-          toggleModal("signupModal");
-          showSuccessMessage(`Sign-up successful! Welcome, ${username}!`);
-        } else {
-          showWarningMessage(data.message || "Registration failed");
-        }
-      } catch (error) {
-        console.error(error);
-        showWarningMessage("Registration failed. Try again.");
-      }
-    }
-
-    async function handleSignIn(event) {
-      event.preventDefault();
-      const username = document.getElementById("signinUsername").value.trim().toLowerCase();
-      const password = document.getElementById("signinPassword").value;
-      const feedback = document.getElementById("signinFeedback");
-
-      if (!username || !password) {
-        feedback.textContent = "Please enter both username or email and password.";
-        feedback.classList.remove("hidden");
-        return;
-      }
-
-      try {
-        const response = await fetch('http://localhost:8080/api/users/login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ username, password, email: username.includes('@') ? username : '' })
-        });
-        const data = await response.json();
-        if (data.success) {
-          toggleModal("signinModal");
-          const displayUsername = data.data.username;
-          showSuccessMessage(`Welcome back, ${displayUsername}!`);
-          feedback.classList.add("hidden");
-        } else {
-          feedback.textContent = `Invalid username, email, or password.`;
-          feedback.classList.remove("hidden");
-        }
-      } catch (error) {
-        feedback.textContent = "Error logging in.";
-        feedback.classList.remove("hidden");
-      }
-    }
-
-    // Animation and Interaction
-    document.addEventListener("DOMContentLoaded", () => {
-      lucide.createIcons();
-      setupPasswordVisibility();
-
-      // Wrap letters in spans for "Who We Are" section
-      document.querySelectorAll("#intro p").forEach(p => {
-        const words = p.textContent.trim().split(/\s+/);
-        p.innerHTML = words
-          .map(word => `<span class="word">${[...word].map(char => `<span class="letter">${char}</span>`).join('')}</span>`)
-          .join(' ');
-      });
-
-      // Date Picker
-      flatpickr("#dobPicker", {
-        dateFormat: "Y-m-d",
-        maxDate: "today",
-        disableMobile: true,
-        altInput: true,
-        altFormat: "F j, Y",
-        onChange: function(selectedDates, dateStr, instance) {
-          const formatted = instance.altInput.value.replace("D.O.B - ", "");
-          instance.altInput.value = "D.O.B - " + formatted;
-        }
-      });
-
-      // Password Strength
-      const password = document.getElementById("password");
-      const passwordStrength = document.getElementById("passwordStrength");
-      password.addEventListener("input", () => {
-        const val = password.value;
-        let strength = "Weak";
-        if (val.length >= 6 && /[A-Za-z]/.test(val) && /\d/.test(val)) strength = "Medium";
-        if (val.length >= 8 && /[A-Za-z]/.test(val) && /\d/.test(val) && /[\W]/.test(val)) strength = "Strong";
-        passwordStrength.textContent = `Strength: ${strength}`;
-      });
-
-      // Username Validation
-      const username = document.getElementById("username");
-      const feedback = document.getElementById("usernameFeedback");
-      const signupButton = document.querySelector("#signupForm button[type='submit']");
-      const validPattern = /^[A-Za-z]{3,}$/;
-
-      username.addEventListener("input", () => {
-        let debounceTimer;
-        clearTimeout(debounceTimer);
-        const value = username.value.trim();
-        if (value === "" || !validPattern.test(value)) {
-          feedback.textContent = "⚠️ Alert: Only letters (a-z) allowed—power up with at least 3!";
-          feedback.className = "text-sm text-red-600 font-semibold";
-          signupButton.disabled = true;
-          return;
-        }
-        debounceTimer = setTimeout(() => {
-          const randomSuffix = `#${Math.floor(1000 + Math.random() * 9000)}`;
-          const finalUsername = `${value}${randomSuffix}`;
-          feedback.textContent = `🔥 Epic Choice! Your username is ${finalUsername}`;
-          feedback.className = "text-sm text-green-600 font-semibold";
-          signupButton.disabled = false;
-        }, 500);
-      });
-
-      // Email Suggestions
-      const emailInput = document.getElementById("emailInput");
-      const emailSuggestions = document.getElementById("emailSuggestions");
-      const domains = ["gmail.com", "yahoo.com", "outlook.com", "protonmail.com"];
-      emailInput.addEventListener("input", () => {
-        const value = emailInput.value;
-        const atIndex = value.indexOf("@");
-        if (atIndex === -1) {
-          emailSuggestions.classList.add("hidden");
-          return;
-        }
-        const base = value.slice(0, atIndex);
-        const afterAt = value.slice(atIndex + 1).toLowerCase();
-        const filteredDomains = domains.filter(domain => domain.startsWith(afterAt));
-        if (filteredDomains.length === 0 || afterAt.length > domains[0].length) {
-          emailSuggestions.classList.add("hidden");
-          return;
-        }
-        emailSuggestions.innerHTML = filteredDomains
-          .map(domain => `<li class="px-3 py-1 hover:bg-gray-100 cursor-pointer">${base}@${domain}</li>`)
-          .join("");
-        emailSuggestions.classList.remove("hidden");
-        emailSuggestions.querySelectorAll("li").forEach(item => {
-          item.addEventListener("click", () => {
-            emailInput.value = item.textContent;
-            emailSuggestions.classList.add("hidden");
-          });
-        });
-      });
-
-      // Start Exploring Button
-      document.getElementById("startExploring").addEventListener("click", () => {
-        scrollToSection("intro");
-      });
-
-      // Particle Animation
-      const particles = [];
-      const particleCount = 55;
-
-      function createParticle() {
-        return {
-          x: Math.random() * window.innerWidth,
-          y: Math.random() * window.innerHeight,
-          vx: (Math.random() - 0.5) * 2,
-          vy: (Math.random() - 0.5) * 2,
-          opacity: Math.random() * 0.5 + 0.3,
-          life: Math.random() * 300 + 200,
-          color: `hsl(${Math.random() * 360}, 70%, 60%)`
-        };
-      }
-
-      for (let i = 0; i < particleCount; i++) particles.push(createParticle());
-
-      function updateParticles() {
-        const cursor = document.getElementById("cursorWhiteHole");
-        const cursorRect = cursor.getBoundingClientRect();
-        const cursorX = cursorRect.left + cursorRect.width / 2 + window.scrollX;
-        const cursorY = cursorRect.top + cursorRect.height / 2 + window.scrollY;
-
-        particles.forEach((p, i) => {
-          p.x += p.vx;
-          p.y += p.vy;
-          p.life--;
-
-          const dx = p.x - cursorX;
-          const dy = p.y - cursorY;
-          const distance = Math.sqrt(dx * dx + dy * dy);
-          if (distance < 70) {
-            const force = 0.15;
-            const angle = Math.atan2(dy, dx);
-            p.vx += Math.cos(angle) * force;
-            p.vy += Math.sin(angle) * force;
-          }
-
-          if (p.life <= 0 || p.x < 0 || p.x > window.innerWidth || p.y < 0 || p.y > window.innerHeight) {
-            particles[i] = createParticle();
-          }
-        });
-
-        const particleElements = document.querySelectorAll(".particle");
-        particles.forEach((p, i) => {
-          const el = particleElements[i];
-          el.style.left = `${p.x}px`;
-          el.style.top = `${p.y}px`;
-          el.style.background = `radial-gradient(circle, ${p.color} 0%, rgba(${parseInt(p.color.split(',')[0].split('(')[1])}, ${parseInt(p.color.split(',')[1])}, ${parseInt(p.color.split(',')[2])}, 0.3) 70%)`;
-          el.style.opacity = p.opacity;
-        });
-
-        const letters = document.querySelectorAll("#intro .letter");
-        letters.forEach(letter => {
-          const rect = letter.getBoundingClientRect();
-          const letterX = rect.left + rect.width / 2 + window.scrollX;
-          const letterY = rect.top + rect.height / 2 + window.scrollY;
-          const dx = letterX - cursorX;
-          const dy = letterY - cursorY;
-          const distance = Math.sqrt(dx * dx + dy * dy);
-          if (distance < 100) {
-            const repelStrength = (1 - distance / 100) * 30;
-            const angle = Math.atan2(dy, dx);
-            const repelX = Math.cos(angle) * repelStrength;
-            const repelY = Math.sin(angle) * repelStrength;
-            letter.style.transform = `translate(${repelX}px, ${repelY}px)`;
-          } else {
-            letter.style.transform = 'translate(0, 0)';
-          }
-        });
-
-        requestAnimationFrame(updateParticles);
-      }
-
-      for (let i = 0; i < particleCount; i++) {
-        const div = document.createElement("div");
-        div.className = "particle";
-        document.body.appendChild(div);
-      }
-
-      updateParticles();
-
-      // Cursor Logic
-      const cursorWhiteHole = document.getElementById("cursorWhiteHole");
-      let lastX = 0;
-      let lastY = 0;
-      let isFirstMove = true;
-
-      function updateCursorPosition(x, y) {
-        lastX = x;
-        lastY = y;
-        cursorWhiteHole.style.left = `${x}px`;
-        cursorWhiteHole.style.top = `${y}px`;
-        if (isFirstMove) {
-          cursorWhiteHole.style.display = 'block';
-          isFirstMove = false;
-        }
-      }
-
-      document.addEventListener("mousemove", (e) => {
-        requestAnimationFrame(() => updateCursorPosition(e.clientX, e.clientY));
-      });
-
-      // Touch support for mobile
-      document.addEventListener("touchmove", (e) => {
-        const touch = e.touches[0];
-        requestAnimationFrame(() => updateCursorPosition(touch.clientX, touch.clientY));
-      }, { passive: true });
-    });
-  </script>
-
-  <!-- Load External script.js -->
-  <script src="script.js" defer></script>
+  <!-- Scripts -->
+  <script src="assets/js/script.js" defer></script>
 </body>
-
 </html>

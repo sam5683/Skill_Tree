@@ -3,371 +3,231 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>🌱 Skill Tree Dashboard</title>
+  <title>Skill Tree Dashboard</title>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&family=Poppins:wght@400;600&family=Exo+2:wght@700&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
-    /* Base styles for the body and global layout */
     body {
       font-family: 'Poppins', sans-serif;
       background: linear-gradient(135deg, #0a141f, #142b41, #1e4060);
       color: #e0f7fa;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
       overflow-x: hidden;
-      position: relative;
     }
-
-    /* Glass effect for cards and header */
     .glass {
-      background: rgba(255, 255, 255, 0.1);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      backdrop-filter: blur(20px);
-      border-radius: 1.5rem;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      -webkit-backdrop-filter: blur(15px); /* Safari 9+ */
+      backdrop-filter: blur(15px);
+      border-radius: 1rem;
       transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
     .glass:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 5px 15px rgba(0, 255, 204, 0.3);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 255, 204, 0.2);
     }
-
-    /* Profile initials styling */
-    .initials {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 2.5rem;
-      height: 2.5rem;
-      background: linear-gradient(135deg, #4A2C2A, #3C1F1A);
-      color: #fff;
-      border-radius: 9999px;
-      font-weight: 600;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
-      transition: transform 0.3s ease;
-      cursor: pointer;
+    header { position: fixed; top: 0; left: 0; width: 100%; z-index: 100; }
+    .sidebar {
+      position: fixed; top: 4rem; left: 0; width: 18rem; height: calc(100vh - 4rem);
+      background: rgba(255, 255, 255, 0.05); border-right: 2px solid rgba(0, 255, 204, 0.3);
+      transform: translateX(-100%); transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      padding: 1.5rem; z-index: 50;
     }
-    .initials:hover {
-      transform: scale(1.1);
-    }
-
-    /* Particle animation for magical background */
-    .particle {
-      position: absolute;
-      background: rgba(0, 255, 204, 0.4);
-      border-radius: 50%;
-      animation: float 6s infinite;
-    }
-    @keyframes float {
-      0% { transform: translateY(0) scale(1); }
-      50% { transform: translateY(-30px) scale(1.3); }
-      100% { transform: translateY(0) scale(1); }
-    }
-
-    /* Tree branch and leaf styling */
-    .tree-branch {
-      stroke: url(#branch-gradient);
-      stroke-width: 2.5;
-      fill: none;
-      transition: stroke-width 0.3s ease;
-    }
-    .tree-leaf {
-      fill: url(#leaf-gradient);
-      filter: drop-shadow(0 0 6px #00cc99);
-      transition: transform 0.3s ease;
-    }
-    .tree-branch:hover, .tree-leaf:hover {
-      stroke-width: 3.5;
-      transform: scale(1.1);
-    }
-
-    /* Animations */
-    @keyframes grow {
-      from { stroke-dasharray: 0 1000; }
-      to { stroke-dasharray: 1000 0; }
-    }
-    @keyframes pulse {
-      0%, 100% { opacity: 0.7; }
-      50% { opacity: 1; }
-    }
-    .progress-ring {
-      transition: stroke-dasharray 0.3s ease;
-    }
-    .ai-guide {
-      transition: transform 0.3s ease, opacity 0.3s ease;
-    }
-    .ai-guide:hover {
-      transform: scale(1.2);
-      opacity: 0.9;
-    }
-
-    /* Dropdown styling */
-    #profileDropdown {
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.3s ease;
-    }
-    #profileDropdown.dropdown-visible {
-      opacity: 1;
-      pointer-events: auto;
+    .sidebar.open { transform: translateX(0); }
+    .main-content { display: flex; padding-top: 4rem; min-height: calc(100vh - 4rem); width: 100%; transition: padding-left 0.5s ease; gap: 0.5rem; }
+    .main-content.shifted { padding-left: 18rem; }
+    .knowledge-tree-section { flex: 2; display: flex; justify-content: center; padding: 1rem; opacity: 0; animation: fadeIn 1s ease-in forwards; }
+    .task-section-container { flex: 1; display: flex; flex-direction: column; gap: 1rem; padding: 1rem; align-items: center; opacity: 0; animation: fadeIn 1s ease-in forwards; animation-delay: 0.3s; }
+    .progress-ring { position: relative; width: 50px; height: 50px; }
+    .progress-ring canvas { position: absolute; top: 0; left: 0; }
+    .progress-ring span { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
+    #profileDropdown { opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+    #profileDropdown.dropdown-visible { opacity: 1; pointer-events: auto; }
+    .particle { position: absolute; background: rgba(0, 255, 204, 0.2); border-radius: 50%; animation: float 10s infinite ease-in-out; pointer-events: none; }
+    @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
+    @keyframes fadeIn { to { opacity: 1; } }
+    @media (max-width: 768px) {
+      .main-content { flex-direction: column; padding-left: 0; gap: 1rem; }
+      .main-content.shifted { padding-left: 0; }
+      .knowledge-tree-section, .task-section-container { width: 100%; padding: 1rem; }
+      .sidebar { width: 100%; height: auto; }
     }
   </style>
 </head>
-<body class="min-h-screen flex flex-col">
-  <!-- Header with navigation -->
-  <header class="w-full glass px-6 py-4 flex justify-between items-center shadow-lg sticky top-0 z-50">
-    <div class="text-3xl font-extrabold text-teal-400 font-exo">SkillTree 🌌</div>
-    <nav class="flex items-center gap-6 text-base">
-      <button class="hover:text-teal-300 transition-colors">Explore</button>
-      <button class="hover:text-teal-300 transition-colors">Daily Feed</button>
-      <button class="hover:text-teal-300 transition-colors">AI Assistant</button>
-      <button class="hover:text-teal-300 transition-colors">Friends</button>
-      <div class="md:flex hidden items-center gap-6">
-        <button class="hover:text-teal-300 transition-colors">Account</button>
-        <button class="hover:text-teal-300 transition-colors">Settings</button>
-      </div>
-      <input type="text" placeholder="Search skills..." class="bg-transparent border border-teal-300 rounded-lg px-3 py-1 text-sm text-teal-300 hover:text-white transition-colors focus:outline-none">
+<body>
+  <header class="h-16 bg-gray-900 bg-opacity-90 shadow-lg flex items-center justify-between px-6">
+    <div class="flex items-center space-x-2 cursor-pointer" id="toggleSidebar">
+      <span class="text-2xl font-bold text-teal-400 font-exo">SkillTree</span>
+      <i data-lucide="tree" class="w-6 h-6 text-teal-300"></i>
+    </div>
+    <input type="text" placeholder="Search skills..." class="px-4 py-2 rounded-full bg-gray-800 text-gray-200 w-64 focus:outline-none focus:ring-2 focus:ring-teal-300" id="searchInput">
+    <div class="flex items-center space-x-4">
+      <i data-lucide="bell" class="w-6 h-6 text-gray-300 hover:text-teal-300 cursor-pointer"></i>
+      <i data-lucide="message-circle" class="w-6 h-6 text-gray-300 hover:text-teal-300 cursor-pointer"></i>
       <div class="relative">
-        <button class="text-2xl hover:text-teal-300 transition-colors">🔔</button>
-        <div class="absolute right-0 mt-2 w-64 bg-gray-800 rounded-md shadow-lg p-3 text-sm opacity-0 group-hover:opacity-100 transition-all duration-300">
-          <div class="p-2 border-b border-gray-600">New skill unlocked!</div>
-          <div class="p-2">Your friend grew 3 new branches 🌿</div>
+        <div class="w-10 h-10 flex items-center justify-center bg-gradient-to-br from-teal-500 to-teal-700 text-white rounded-full cursor-pointer" id="profileToggle">T</div>
+        <div id="profileDropdown" class="absolute right-0 mt-2 w-48 bg-gray-800 rounded-lg shadow-lg">
+          <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700">Settings</a>
+          <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700" id="logoutLink">Logout</a>
         </div>
       </div>
-      <div class="relative">
-        <div class="initials" id="profileToggle">T</div>
-        <div id="profileDropdown" class="absolute right-0 mt-2 w-52 bg-gray-800 text-white text-sm rounded-xl shadow-lg hidden md:block">
-          <div class="p-3 border-b border-gray-700">Test#4337</div>
-          <a href="#" class="block p-3 hover:bg-gray-700">Profile</a>
-          <a href="#" class="block p-3 hover:bg-gray-700" id="logoutLink">Logout</a>
-        </div>
-      </div>
-    </nav>
+    </div>
   </header>
 
-  <!-- Main content area with improved spacing -->
-  <main class="flex-1 p-6 md:p-8 grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 max-w-7xl mx-auto">
-    <!-- Knowledge Tree section -->
-    <section class="md:col-span-2 glass p-6 md:p-8 rounded-xl shadow-lg flex flex-col items-center relative">
-      <h2 class="text-3xl md:text-4xl mb-6 font-bold text-teal-300 font-exo">🌿 Your Knowledge Tree</h2>
-      <div id="treeCanvas" class="w-full h-72 md:h-96 relative overflow-hidden mb-6">
-        <svg id="treeSvg" width="100%" height="100%">
-          <defs>
-            <linearGradient id="branch-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stop-color="#00ffcc" stop-opacity="1" />
-              <stop offset="100%" stop-color="#00cc99" stop-opacity="0.6" />
-            </linearGradient>
-            <linearGradient id="leaf-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stop-color="#00cc99" stop-opacity="1" />
-              <stop offset="100%" stop-color="#00ffcc" stop-opacity="0.7" />
-            </linearGradient>
-          </defs>
-        </svg>
-        <div class="absolute inset-0 bg-gradient-to-t from-transparent to-teal-900 opacity-20 rounded-xl"></div>
+  <aside class="sidebar">
+    <nav class="space-y-2">
+      <a href="#" class="flex items-center space-x-2 p-2 rounded-lg bg-teal-700 text-white" id="dashboardToggle">
+        <i data-lucide="home" class="w-5 h-5"></i>
+        <span class="text-sm">Dashboard</span>
+      </a>
+      <a href="#" class="flex items-center space-x-2 p-2 rounded-lg text-gray-300 hover:bg-gray-700">
+        <i data-lucide="compass" class="w-5 h-5"></i>
+        <span class="text-sm">Explore</span>
+      </a>
+      <a href="#" class="flex items-center space-x-2 p-2 rounded-lg text-gray-300 hover:bg-gray-700">
+        <i data-lucide="list" class="w-5 h-5"></i>
+        <span class="text-sm">Last Tasks</span>
+      </a>
+      <a href="#" class="flex items-center space-x-2 p-2 rounded-lg text-gray-300 hover:bg-gray-700" id="sidebarSettings">
+        <i data-lucide="settings" class="w-5 h-5"></i>
+        <span class="text-sm">Settings</span>
+      </a>
+    </nav>
+  </aside>
+
+  <div class="main-content" id="mainContent">
+    <section class="knowledge-tree-section">
+      <div class="glass p-6 rounded-xl shadow-lg flex flex-col items-center text-center w-full max-w-3xl">
+        <h2 class="text-3xl mb-4 font-bold text-teal-200 font-exo">Your Knowledge Tree</h2>
+        <div id="treeCanvas" class="w-full h-80 relative overflow-hidden mb-2">
+          <svg id="treeSvg" width="100%" height="100%" viewBox="0 0 120 120" preserveAspectRatio="xMidYMid meet">
+            <path d="M60,110 L60,60" stroke="#00cc99" stroke-width="3" fill="none"/>
+            <path d="M60,60 L45,45" stroke="#00cc99" stroke-width="2" fill="none"/>
+            <path d="M60,60 L75,45" stroke="#00cc99" stroke-width="2" fill="none"/>
+            <ellipse cx="45" cy="45" rx="4" ry="3" fill="#00ffcc"/>
+            <ellipse cx="75" cy="45" rx="4" ry="3" fill="#00ffcc"/>
+          </svg>
+        </div>
+        <div class="text-lg text-gray-300 font-semibold mb-2" id="welcomeText">Welcome back, Guest — Today’s goal: Master loops!</div>
+        <button class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-400 transition-colors text-sm" id="plantSkill">Plant New Skill</button>
       </div>
-      <div class="text-xl md:text-2xl text-gray-300 font-semibold" id="welcomeText">Welcome back, Guest 🌟 — Today’s goal: Master loops!</div>
-      <p class="text-base md:text-lg mt-3 text-gray-300">Grow your skills—click branches to explore!</p>
-      <button class="mt-4 px-6 py-3 bg-green-500 text-white rounded-lg hover:bg-green-400 transition-colors text-lg" id="plantSkill">🌱 Plant New Skill</button>
     </section>
 
-    <!-- Task cards section -->
-    <aside class="flex flex-col gap-6 md:gap-8">
-      <div class="glass p-4 md:p-6 rounded-xl flex items-center justify-between cursor-pointer" id="skillProgress">
-        <div>
-          <h3 class="text-teal-300 font-bold text-lg md:text-xl mb-2 font-exo">🌱 Skill Progress</h3>
+    <section class="task-section-container">
+      <div class="glass p-4 rounded-xl shadow-lg w-64 h-64">
+        <h3 class="text-lg font-bold text-teal-200 mb-2 text-center">Task</h3>
+        <canvas id="taskChart" class="w-full h-48"></canvas>
+      </div>
+      <div class="glass p-4 rounded-xl shadow-lg w-64 h-32">
+        <h3 class="text-lg font-bold text-teal-200 mb-2 text-center">Progress per Month</h3>
+        <div class="flex justify-around">
+          <div class="progress-ring"><canvas id="progressCanvas1" width="50" height="50"></canvas><span class="text-sm text-teal-200" id="progressText1">0%</span></div>
+          <div class="progress-ring"><canvas id="progressCanvas2" width="50" height="50"></canvas><span class="text-sm text-teal-200" id="progressText2">0%</span></div>
+          <div class="progress-ring"><canvas id="progressCanvas3" width="50" height="50"></canvas><span class="text-sm text-teal-200" id="progressText3">0%</span></div>
         </div>
-        <div class="w-16 h-16 relative">
-          <canvas id="progressCanvas" width="64" height="64" class="absolute"></canvas>
-          <span class="absolute inset-0 flex items-center justify-center text-sm text-teal-300 font-exo">30%</span>
+      </div>
+      <div class="glass p-4 rounded-xl shadow-lg w-64 h-32">
+        <h3 class="text-lg font-bold text-teal-200 mb-2 text-center">Achievements</h3>
+        <div class="flex justify-center gap-4">
+          <i data-lucide="award" class="w-6 h-6 text-teal-200"></i>
+          <i data-lucide="star" class="w-6 h-6 text-teal-200"></i>
+          <i data-lucide="trophy" class="w-6 h-6 text-teal-200"></i>
         </div>
+        <div class="mt-2 text-sm text-gray-200 text-center"><p>0 per month</p></div>
       </div>
-
-      <div class="glass p-4 md:p-6 rounded-xl">
-        <h3 class="text-teal-300 font-bold text-lg md:text-xl mb-2 font-exo">🧠 Memory Boost</h3>
-        <p class="text-sm md:text-base">Take a quiz to grow!</p>
-      </div>
-
-      <div class="glass p-4 md:p-6 rounded-xl">
-        <h3 class="text-teal-300 font-bold text-lg md:text-xl mb-2 font-exo">🔓 New Skill Unlocked!</h3>
-        <p class="text-sm md:text-base">Learn Arrays today.</p>
-      </div>
-    </aside>
-  </main>
-
-  <!-- AI Guide Orb (removed title) -->
-  <div class="fixed bottom-20 right-6 z-50 w-12 h-12 bg-cyan-300 rounded-full animate-pulse shadow-lg flex items-center justify-center text-black font-bold text-sm cursor-pointer ai-guide">
-    🤖
+    </section>
   </div>
 
-  <!-- Help Desk button -->
-  <button class="fixed bottom-4 right-4 bg-cyan-500 text-white px-4 py-2 rounded-full shadow-lg hover:scale-105 transition-all md:bottom-6 md:right-6 text-base">
-    💬 Help Desk
-  </button>
-
-  <!-- Particle effect script -->
   <script>
-    function createParticles(count) {
-      for (let i = 0; i < count; i++) {
-        const particle = document.createElement('div');
-        particle.className = 'particle';
-        particle.style.width = `${Math.random() * 4 + 1}px`;
-        particle.style.height = particle.style.width;
-        particle.style.left = `${Math.random() * 100}vw`;
-        particle.style.top = `${Math.random() * 100}vh`;
-        particle.style.animationDelay = `${Math.random() * 5}s`;
-        document.body.appendChild(particle);
+    const themeColors = { primary: '#00ffcc', dark: '#1e4060', text: '#e0f7fa' };
+    const config = { ringRadius: 18, ringWidth: 4 };
+
+    class ProgressRing {
+      constructor(canvas, percentage, textElement) {
+        this.canvas = canvas; this.percentage = percentage; this.textElement = textElement;
+        this.ctx = canvas.getContext('2d'); this.draw();
+      }
+      draw() {
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        const cx = this.canvas.width / 2, cy = this.canvas.height / 2;
+        const start = -0.5 * Math.PI, end = start + (this.percentage / 100) * 2 * Math.PI;
+        this.ctx.beginPath(); this.ctx.arc(cx, cy, config.ringRadius, 0, 2 * Math.PI);
+        this.ctx.lineWidth = config.ringWidth; this.ctx.strokeStyle = themeColors.dark; this.ctx.stroke();
+        this.ctx.beginPath(); this.ctx.arc(cx, cy, config.ringRadius, start, end);
+        this.ctx.strokeStyle = themeColors.primary; this.ctx.stroke();
+        this.textElement.textContent = `${this.percentage}%`;
       }
     }
-    createParticles(50);
-  </script>
 
-  <!-- Main interactivity and drawing script -->
-  <script>
-    function drawTree() {
-      console.log('Drawing tree...');
-      const svg = document.getElementById('treeSvg');
-      if (!svg) {
-        console.error('SVG element not found!');
-        return;
+    function createParticles() {
+      for (let i = 0; i < 20; i++) {
+        const p = document.createElement('div'); p.classList.add('particle');
+        p.style.width = p.style.height = `${Math.random() * 5 + 2}px`;
+        p.style.left = `${Math.random() * 100}vw`; p.style.top = `${Math.random() * 100}vh`;
+        p.style.animationDelay = `${Math.random() * 5}s`; document.body.appendChild(p);
       }
-      const rect = svg.getBoundingClientRect();
-      const width = rect.width;
-      const height = rect.height;
-      const paths = svg.querySelectorAll('path, ellipse');
-      paths.forEach(path => path.remove());
+    }
 
-      const trunkStartY = height / 2;
-      const trunk = document.createElementNS("http://www.w3.org/2000/svg", "path");
-      const trunkPath = `M${width / 2},${trunkStartY} C${width / 2 - 20},${trunkStartY + height / 6} ${width / 2 + 20},${trunkStartY + height / 6} ${width / 2},${trunkStartY + height / 4}`;
-      trunk.setAttribute("d", trunkPath);
-      trunk.classList.add("tree-branch");
-      trunk.style.strokeDasharray = 1000;
-      trunk.style.strokeDashoffset = 1000;
-      trunk.style.animation = "grow 2s forwards";
-      svg.appendChild(trunk);
+    function initProgressRings() {
+      new ProgressRing(document.getElementById('progressCanvas1'), 0, document.getElementById('progressText1'));
+      new ProgressRing(document.getElementById('progressCanvas2'), 0, document.getElementById('progressText2'));
+      new ProgressRing(document.getElementById('progressCanvas3'), 0, document.getElementById('progressText3'));
+    }
 
-      function addBranch(x, y, length, angle, depth) {
-        if (depth <= 0) return;
+    function initTaskChart() {
+      new Chart(document.getElementById('taskChart'), {
+        type: 'line', data: { labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'], datasets: [{ label: 'Tasks', data: [5, 10, 15, 20, 25], borderColor: themeColors.primary, fill: false }] },
+        options: { responsive: true, maintainAspectRatio: false, scales: { x: { ticks: { color: themeColors.text } }, y: { ticks: { color: themeColors.text } } }, plugins: { legend: { labels: { color: themeColors.text } } } }
+      });
+    }
 
-        const controlX = x + length * 0.5 * Math.cos(angle + Math.PI / 4);
-        const controlY = y + length * 0.5 * Math.sin(angle + Math.PI / 4);
-        const endX = x + length * Math.cos(angle);
-        const endY = y + length * Math.sin(angle);
-        const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-        const pathData = `M${x},${y} Q${controlX},${controlY} ${endX},${endY}`;
-        path.setAttribute("d", pathData);
-        path.classList.add("tree-branch");
-        path.style.strokeDasharray = 500;
-        path.style.strokeDashoffset = 500;
-        path.style.animation = `grow ${1 + depth * 0.5}s forwards ${1 * depth}s`;
-        svg.appendChild(path);
+    function initUserWelcome() {
+      const params = new URLSearchParams(window.location.search);
+      const username = params.get('username') || 'Guest';
+      document.getElementById('welcomeText').textContent = `Welcome back, ${username} — Today’s goal: Master loops!`;
+    }
 
-        if (depth === 1) {
-          for (let i = 0; i < 3; i++) {
-            const leaf = document.createElementNS("http://www.w3.org/2000/svg", "ellipse");
-            leaf.setAttribute("cx", endX + (Math.random() - 0.5) * 10);
-            leaf.setAttribute("cy", endY - (Math.random() * 10));
-            leaf.setAttribute("rx", 8);
-            leaf.setAttribute("ry", 5);
-            leaf.classList.add("tree-leaf");
-            leaf.style.animation = "pulse 2s infinite";
-            svg.appendChild(leaf);
-          }
+    function initSidebarToggle() {
+      document.getElementById('toggleSidebar').onclick = () => {
+        document.querySelector('.sidebar').classList.toggle('open');
+        document.getElementById('mainContent').classList.toggle('shifted');
+      };
+    }
+
+    function initProfileDropdown() {
+      const toggle = document.getElementById('profileToggle');
+      const dropdown = document.getElementById('profileDropdown');
+      const settings = document.getElementById('sidebarSettings');
+      toggle.onclick = settings.onclick = () => dropdown.classList.toggle('dropdown-visible');
+      document.addEventListener('click', e => {
+        if (!toggle.contains(e.target) && !dropdown.contains(e.target) && !settings.contains(e.target)) {
+          dropdown.classList.remove('dropdown-visible');
         }
+      });
+    }
 
-        if (depth > 1) {
-          addBranch(endX, endY, length * 0.75, angle + 0.3, depth - 1);
-          addBranch(endX, endY, length * 0.65, angle - 0.3, depth - 1);
-        }
-      }
-
-      addBranch(width / 2, trunkStartY + height / 4, 60, -Math.PI / 2, 5);
-      console.log('Tree drawing completed with width:', width, 'height:', height);
+    function initLogout() {
+      document.getElementById('logoutLink').onclick = e => {
+        e.preventDefault();
+        localStorage.clear();
+        window.location.href = '../index.html';
+      };
     }
 
     window.addEventListener('load', () => {
-      drawTree();
-
-      const svg = document.getElementById('treeSvg');
-      svg.addEventListener('mouseover', (e) => {
-        const branch = e.target.closest('.tree-branch');
-        const leaf = e.target.closest('.tree-leaf');
-        if (branch) branch.style.strokeWidth = '3.5';
-        if (leaf) leaf.style.transform = 'scale(1.1)';
-      });
-      svg.addEventListener('mouseout', (e) => {
-        const branch = e.target.closest('.tree-branch');
-        const leaf = e.target.closest('.tree-leaf');
-        if (branch) branch.style.strokeWidth = '2.5';
-        if (leaf) leaf.style.transform = 'scale(1)';
-      });
-
-      const progressCard = document.getElementById('skillProgress');
-      const canvas = document.getElementById('progressCanvas');
-      const ctx = canvas.getContext('2d');
-      let isGraphVisible = false;
-
-      function drawProgressRing(percentage) {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        const centerX = canvas.width / 2;
-        const centerY = canvas.height / 2;
-        const radius = 24;
-        const startAngle = -0.5 * Math.PI;
-        const endAngle = startAngle + (percentage / 100) * 2 * Math.PI;
-
-        ctx.beginPath();
-        ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
-        ctx.lineWidth = 6;
-        ctx.strokeStyle = '#1e4060';
-        ctx.stroke();
-
-        ctx.beginPath();
-        ctx.arc(centerX, centerY, radius, startAngle, endAngle);
-        ctx.lineWidth = 6;
-        ctx.strokeStyle = '#00ffcc';
-        ctx.stroke();
-      }
-
-      progressCard.addEventListener('click', () => {
-        isGraphVisible = !isGraphVisible;
-        if (isGraphVisible) {
-          drawProgressRing(30);
-        } else {
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
-        }
-      });
-
-      drawProgressRing(30);
-
-      const plantSkill = document.getElementById('plantSkill');
-      plantSkill.addEventListener('click', () => {
-        alert('Plant a new skill! (Modal coming soon)');
-      });
-
-      const welcomeText = document.getElementById('welcomeText');
-      const username = new URLSearchParams(window.location.search).get('username') || 'Guest';
-      welcomeText.textContent = `Welcome back, ${username} 🌟 — Today’s goal: Master loops!`;
-
-      // Profile dropdown toggle
-      const profileToggle = document.getElementById('profileToggle');
-      const profileDropdown = document.getElementById('profileDropdown');
-
-      profileToggle.addEventListener('click', () => {
-        profileDropdown.classList.toggle('dropdown-visible');
-      });
-
-      document.addEventListener('click', (e) => {
-        if (!profileToggle.contains(e.target) && !profileDropdown.contains(e.target)) {
-          profileDropdown.classList.remove('dropdown-visible');
-        }
-      });
-
-      // Logout functionality
-      const logoutLink = document.getElementById('logoutLink');
-      logoutLink.addEventListener('click', (e) => {
-        e.preventDefault();
-        window.api.send('load-main-page');
-      });
+      lucide.createIcons();
+      initProgressRings();
+      initTaskChart();
+      initUserWelcome();
+      initSidebarToggle();
+      initProfileDropdown();
+      initLogout();
+      createParticles();
     });
-
-    window.addEventListener('resize', drawTree);
   </script>
 </body>
 </html>

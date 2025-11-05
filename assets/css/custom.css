@@ -1,0 +1,354 @@
+/* Glow Dot Position Classes (moved from inline styles) */
+.glow-dot-1 { top: 5px; left: 5px; }
+.glow-dot-2 { top: 20px; left: 85px; }
+.glow-dot-3 { top: 10px; left: 70px; }
+.glow-dot-4 { top: 18px; left: 40px; }
+.glow-dot-5 { top: 10px; left: 90%; }
+
+/* Glassmorphism: Safari & Chrome support */
+.background-particles {
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+}
+
+/* Modal Blur (Safari & Chrome) – OPTIMIZED: Reduced intensity, exclude text */
+.modal-active .background-particles,
+.modal-active header,
+.modal-active section:not(.card-pop),  /* Skip cards to avoid text blur */
+.modal-active footer {
+  -webkit-filter: blur(4px) saturate(0.95);  /* REDUCED: 4px for performance/subtlety */
+  filter: blur(4px) saturate(0.95);
+  transition: filter 0.18s ease;
+}
+
+/* NEW: Protect text from modal blur */
+.modal-active .card-pop h1, 
+.modal-active .card-pop h2, 
+.modal-active .card-pop p,
+.modal-active .letter {
+  filter: none !important;
+  text-shadow: inherit;
+}
+
+/* ============================================================
+   GLOBAL ANIMATION + PERFORMANCE OPTIMIZED CSS
+   Smooth white-hole cursor + lighter particles
+   ============================================================ */
+
+/* Background + Particle Field */
+.background-particles {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  background: inherit;
+  pointer-events: none;
+}
+
+/* Particles
+   ✅ GPU-accelerated
+   ✅ Reduced blur for performance
+   ✅ Balanced glow for neon effect
+   OPTIMIZED: Smaller size, lighter shadows
+*/
+.particle {
+  position: fixed;
+  width: 4px;  /* REDUCED: From 6px for fewer pixels */
+  height: 4px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(0, 200, 255, 1) 0%,
+    rgba(0, 200, 255, 0.25) 70%
+  );
+  box-shadow: 0 0 6px rgba(0, 200, 255, 0.5);  /* REDUCED: From 10px for perf */
+  pointer-events: none;
+  z-index: 2;
+  animation: pulse 1.2s infinite ease-in-out;  /* SHORTER: From 1.6s */
+  will-change: transform, opacity;
+}
+
+/* Hide default cursor everywhere except modals */
+body:not(.modal-active) {
+  cursor: none !important;
+}
+
+/* Show normal cursor in modals */
+.modal-active {
+  cursor: default !important;
+}
+
+/* ============================================================
+   WHITE HOLE CURSOR (ASTRONOMICALLY INSPIRED)
+   OPTIMIZED: Added isolation, reduced shadow layers
+   ============================================================ */
+
+.cursor-white-hole {
+  position: fixed;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  pointer-events: none;
+  display: none;
+  z-index: 1000;
+  transform: translate(-50%, -50%);
+  contain: layout paint;  /* NEW: Isolates rendering for perf */
+
+  /* Create intense central point with accretion disk effect */
+  background: radial-gradient(
+    circle,
+    #fff 0%,                             /* Intense central point */
+    rgba(220, 240, 255, 0.95) 10%,       /* Hot blue-white core */
+    rgba(180, 220, 255, 0.8) 20%,        /* Accretion disk inner */
+    rgba(100, 180, 255, 0.4) 35%,        /* Accretion disk outer */
+    rgba(70, 130, 255, 0.2) 50%,         /* Gravitational lensing effect */
+    transparent 100%
+  );
+
+  /* Simulate gravitational lensing and light distortion – REDUCED layers */
+  box-shadow:
+    0 0 2px #fff,                        /* Central bright point */
+    0 0 4px rgba(220, 240, 255, 0.8);    /* Inner corona only (dropped outer for perf) */
+    
+  will-change: transform;
+}
+
+@keyframes swirlGlow {
+  0%, 100% {
+    box-shadow:
+      0 0 25px rgba(255, 255, 255, 0.9),
+      inset 0 0 25px rgba(0, 0, 0, 0.4);
+  }
+  50% {
+    box-shadow:
+      0 0 40px rgba(255, 255, 255, 1),
+      inset 0 0 35px rgba(0, 0, 0, 0.55);
+  }
+}
+
+/* ============================================================
+   LETTER REPEL (smoothed transitions)
+   ============================================================ */
+.letter {
+  display: inline-block;
+  transition: transform 0.18s cubic-bezier(.17,.67,.38,1.37);
+  will-change: transform;
+}
+
+.word {
+  white-space: nowrap;
+  display: inline-block;
+}
+
+/* ============================================================
+   CARDS — Refined hover effect
+   OPTIMIZED: Reduced shadow, added text glow, isolation
+   ============================================================ */
+.card-pop {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  position: relative;
+  isolation: isolate;  /* NEW: Prevents filter bleed from parents */
+}
+
+.card-pop:hover {
+  transform: translateY(-6px) scale(1.04);
+  box-shadow: 0 10px 20px rgba(0, 200, 255, 0.3);  /* REDUCED: Less spread/alpha for no "blur" */
+}
+
+/* NEW: Pseudo-glow on cards (lighter, no blur) */
+.card-pop:hover::before {
+  content: "";
+  position: absolute;
+  inset: -8px;  /* REDUCED: Tighter inset */
+  border-radius: inherit;
+  z-index: -1;
+  background: radial-gradient(circle, rgba(0, 200, 255, 0.25), transparent 70%);  /* LIGHTER alpha */
+  animation: lightPulse 1.2s infinite alternate;  /* SHORTER duration */
+}
+
+/* NEW: Subtle text glow inside cards (no container blur) */
+.card-pop:hover h1, .card-pop:hover h2, .card-pop:hover p {
+  text-shadow: 0 0 6px rgba(0, 200, 255, 0.5);  /* Glows text directly */
+}
+
+/* ============================================================
+   Glow Dots
+   ============================================================ */
+.glow-dot {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #00ffff, rgba(0, 255, 255, 0.15) 75%);
+  animation: blink 1.1s infinite alternate ease-in-out;
+}
+
+/* ============================================================
+   Animations
+   ============================================================ */
+@keyframes pulse {
+  0%, 100% { transform: scale(1); opacity: 0.75; }
+  50%      { transform: scale(1.25); opacity: 1;   }
+}
+
+@keyframes blink {
+  0%   { opacity: 0.45; transform: scale(1); }
+  100% { opacity: 1;    transform: scale(1.45); }
+}
+
+@keyframes lightPulse {
+  0%   { opacity: 0.5; }
+  100% { opacity: 1;   }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.animate-fade-in {
+  animation: fadeIn 1s ease-out forwards;
+}
+
+.animate-fade-in-slow {
+  animation: fadeIn 1.6s ease-out forwards;
+}
+
+/* ============================================================
+   Toasts
+   ============================================================ */
+
+.success-message,
+.warning-message {
+  position: fixed;
+  bottom: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 12px 22px;
+  border-radius: 6px;
+  color: #fff;
+  font-size: 0.95rem;
+  z-index: 2000;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.success-message {
+  background: #2e7d32;
+  box-shadow: 0 0 15px rgba(46, 125, 50, 0.4);
+}
+
+.warning-message {
+  background: #e53935;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 0 15px rgba(229, 57, 53, 0.4);
+}
+
+.warning-message i {
+  color: #ffeb3b;
+}
+
+/* ============================================================
+   Password Toggle
+   ============================================================ */
+
+.password-toggle {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #6b7280;
+  transition: color 0.2s ease;
+}
+
+.password-toggle:hover {
+  color: #3b82f6;
+}
+
+/* ============================================================
+   Modal Blur Interaction
+   ============================================================ */
+
+.modal-open {
+  overflow: hidden;
+}
+
+.modal-open .cursor-white-hole {
+  opacity: 0.25;
+  filter: blur(6px);
+  pointer-events: none;
+}
+
+.no-blur {
+  filter: none !important;
+}
+
+/* When a modal is active, blur background content (but not the modal itself) */
+.modal-active .background-particles,
+.modal-active header,
+.modal-active section:not(.card-pop),
+.modal-active footer {
+  filter: blur(4px) saturate(0.95);
+  transition: filter 0.18s ease;
+}
+
+/* Ensure modals use the normal/default cursor while open */
+#signupModal, #signinModal, #dashboardModal {
+  cursor: auto;
+}
+
+/* ============================================================
+   Footer Icons
+   ============================================================ */
+
+footer a i {
+  transition: all 0.25s ease;
+  filter: drop-shadow(0 0 6px rgba(0, 255, 204, 0));
+}
+
+footer a:hover i {
+  color: #00ffcc !important;
+  transform: scale(1.22);
+  filter: drop-shadow(0 0 12px rgba(0, 255, 204, 0.85));
+}
+
+/* ============================================================
+   Mobile Optimizations
+   ============================================================ */
+
+@media (max-width: 768px) {
+  .cursor-white-hole {
+    display: none !important;
+  }
+
+  .particle {
+    width: 3px;
+    height: 3px;
+    box-shadow: 0 0 5px rgba(0, 200, 255, 0.45);
+  }
+
+  .card-pop:hover {
+    transform: scale(1.02);
+  }
+
+  h1 { font-size: 2.3rem !important; }
+  #intro h2 { font-size: 1.75rem !important; }
+
+  header button {
+    padding: 0.3rem 0.75rem;
+    font-size: 0.75rem;
+  }
+}
+
+/* NEW: Reduced Motion for Perf/Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .particle, .cursor-white-hole, .card-pop, .letter, .glow-dot {
+    animation: none !important;
+    transition: none !important;
+  }
+  .modal-active [style*="blur"], .modal-active [filter*="blur"] {
+    filter: none !important;
+  }
+}

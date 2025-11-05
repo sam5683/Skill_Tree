@@ -1,137 +1,110 @@
-import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.153.0/build/three.module.js';
+const { app, BrowserWindow, ipcMain } = require('electron');
+const path = require('path');
+const isDev = process.env.NODE_ENV === 'development';
 
-// Initialize scene with a cosmic background
-const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x0a0f1f); // Deep space black
+let mainWindow = null;
 
-// Create camera with dynamic aspect ratio
-const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
-camera.position.set(0, 2, 8); // Increased Z to see the tree better
-camera.lookAt(0, 2, 0);
+function createWindow() {
+  mainWindow = new BrowserWindow({
+    width: 1200,
+    height: 800,
+    minWidth: 800,
+    minHeight: 600,
+    frame: true,
+    show: false,
+    icon: path.join(__dirname, 'assets/favicon.ico'),
+    webPreferences: {
+      preload: path.join(__dirname, 'preload.js'),
+      nodeIntegration: false,
+      contextIsolation: true,
+      enableRemoteModule: false,
+      webSecurity: true
+    }
+  });
 
-// Set up renderer with high-quality settings
-const renderer = new THREE.WebGLRenderer({
-  canvas: document.getElementById('treeCanvas'),
-  antialias: true,
-  alpha: true // Allow transparent background
-});
-renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.setPixelRatio(window.devicePixelRatio);
-renderer.shadowMap.enabled = true;
+  // Enforce Content Security Policy
+  mainWindow.webContents.session.webRequest.onHeadersReceived((details, callback) => {
+    callback({
+      responseHeaders: {
+        ...details.responseHeaders,
+        'Content-Security-Policy': [
+          "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-hashes' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https://www.svgrepo.com https://via.placeholder.com; connect-src 'self' http://localhost:8080; font-src 'self' data: https://cdnjs.cloudflare.com;"
+        ]
+      }
+    });
+  });
 
-// 🌳 Create a mystical stem with glowing texture
-const stemGeometry = new THREE.CylinderGeometry(0.25, 0.25, 4, 32);
-const stemMaterial = new THREE.MeshStandardMaterial({
-  color: 0x4a3c2e, // Earthy brown
-  emissive: 0x1a2a3f, // Subtle glow
-  emissiveIntensity: 0.3,
-  metalness: 0.4,
-  roughness: 0.5
-});
-const stem = new THREE.Mesh(stemGeometry, stemMaterial);
-stem.position.y = 2;
-stem.castShadow = true;
-stem.receiveShadow = true;
-scene.add(stem);
+  mainWindow.loadFile('index.html').then(() => {
+    mainWindow.show();
+    console.log('Loaded index.html successfully');
+  }).catch(err => {
+    console.error('Failed to load index.html:', err);
+  });
 
-// 🌿 Create two curved branches with a magical twist
-const branchGeometry = new THREE.CylinderGeometry(0.15, 0.15, 2, 24);
-const branchMaterial = new THREE.MeshStandardMaterial({
-  color: 0x3b2e1f, // Darker wood tone
-  emissive: 0x2d4060, // Mystic blue glow
-  emissiveIntensity: 0.4,
-  metalness: 0.3,
-  roughness: 0.6
-});
+  if (isDev) mainWindow.webContents.openDevTools({ mode: 'detach' });
 
-const branchLeft = new THREE.Mesh(branchGeometry, branchMaterial);
-branchLeft.position.set(-1.2, 3.5, 0);
-branchLeft.rotation.z = 0.6;
-branchLeft.castShadow = true;
-scene.add(branchLeft);
+  mainWindow.on('closed', () => {
+    mainWindow = null;
+  });
 
-const branchRight = new THREE.Mesh(branchGeometry, branchMaterial);
-branchRight.position.set(1.2, 3.5, 0);
-branchRight.rotation.z = -0.6;
-branchRight.castShadow = true;
-scene.add(branchRight);
+  mainWindow.on('unresponsive', () => {
+    console.warn('Window unresponsive, attempting reload...');
+    mainWindow.reload();
+  });
 
-// 🍃 Create two glowing nodes/leaves with Loki-series vibe
-const nodeGeometry = new THREE.DodecahedronGeometry(0.3, 2); // Cosmic shape
-const nodeMaterial = new THREE.MeshStandardMaterial({
-  color: 0x00ffcc, // Vibrant cyan
-  emissive: 0x00cc99, // Glowing teal
-  emissiveIntensity: 0.8,
-  transparent: true,
-  opacity: 0.9
-});
-
-const node1 = new THREE.Mesh(nodeGeometry, nodeMaterial);
-node1.position.set(-1.8, 4.5, 0);
-node1.castShadow = true;
-scene.add(node1);
-
-const node2 = new THREE.Mesh(nodeGeometry, nodeMaterial);
-node2.position.set(1.8, 4.5, 0);
-node2.castShadow = true;
-scene.add(node2);
-
-// 💡 Add cosmic lighting with dynamic effects
-const pointLight = new THREE.PointLight(0xffffff, 1.5, 20);
-pointLight.position.set(5, 5, 5);
-pointLight.castShadow = true;
-scene.add(pointLight);
-
-const ambientLight = new THREE.AmbientLight(0x202040, 1.2); // Dim purple ambient
-scene.add(ambientLight);
-
-const directionalLight = new THREE.DirectionalLight(0x00ffcc, 0.7);
-directionalLight.position.set(0, 10, 0);
-directionalLight.castShadow = true;
-scene.add(directionalLight);
-
-// 📸 Animation loop with blinking effect
-let blinkIntensity = 0;
-let isIncreasing = true;
-
-function animate() {
-  requestAnimationFrame(animate);
-
-  // Gentle rotation for natural movement
-  stem.rotation.y += 0.0015;
-  branchLeft.rotation.y += 0.002;
-  branchRight.rotation.y += 0.002;
-  node1.rotation.y += 0.004;
-  node2.rotation.y += 0.004;
-
-  // Camera orbit for a centered view
-  const time = Date.now() * 0.0003;
-  camera.position.x = Math.sin(time) * 6;
-  camera.position.z = Math.cos(time) * 8; // Adjusted for better centering
-  camera.lookAt(0, 2, 0);
-
-  // Blinking effect inspired by Loki series
-  if (isIncreasing) {
-    blinkIntensity += 0.01;
-    if (blinkIntensity >= 1) isIncreasing = false;
-  } else {
-    blinkIntensity -= 0.01;
-    if (blinkIntensity <= 0.3) isIncreasing = true;
-  }
-  nodeMaterial.emissiveIntensity = blinkIntensity;
-  nodeMaterial.opacity = 0.7 + blinkIntensity * 0.2;
-
-  renderer.render(scene, camera);
+  return mainWindow;
 }
 
-// Handle window resize for responsiveness
-window.addEventListener('resize', () => {
-  const canvas = document.getElementById('treeCanvas');
-  camera.aspect = window.innerWidth / window.innerHeight;
-  camera.updateProjectionMatrix();
-  renderer.setSize(window.innerWidth, window.innerHeight);
-  canvas.height = window.innerHeight - (window.innerWidth <= 768 ? 48 : 64); // Adjust for header
+app.whenReady().then(() => {
+  createWindow();
+
+  app.on('activate', () => {
+    if (BrowserWindow.getAllWindows().length === 0) createWindow();
+  });
+
+  // Redirect to tree/index.html after sign-up/sign-in
+  ipcMain.on('redirect-to-tree', (event) => {
+    if (mainWindow) {
+      const treePath = path.join(__dirname, 'tree/index.html');
+      mainWindow.loadFile(treePath).then(() => {
+        console.log('Successfully redirected to tree/index.html');
+      }).catch(err => {
+        console.error('Failed to load tree/index.html:', err);
+        event.sender.send('redirect-error', 'Failed to load the tree page. Please try again.');
+      });
+    } else {
+      console.error('Main window is not available, creating new window');
+      mainWindow = createWindow();
+      const treePath = path.join(__dirname, 'tree/index.html');
+      mainWindow.loadFile(treePath).then(() => {
+        console.log('Fallback window loaded tree/index.html');
+      }).catch(err => {
+        console.error('Failed to load fallback window:', err);
+        event.sender.send('redirect-error', 'Failed to load the tree page. Please try again.');
+      });
+    }
+  });
+
+  // Redirect back to index.html (login/main page)
+  ipcMain.on('load-main-page', () => {
+    if (mainWindow) {
+      const indexPath = path.join(__dirname, 'index.html');
+      mainWindow.loadFile(indexPath).then(() => {
+        console.log('Successfully redirected to index.html');
+      }).catch(err => {
+        console.error('Failed to load index.html:', err);
+      });
+    }
+  });
+
+  app.on('window-all-closed', () => {
+    if (process.platform !== 'darwin') app.quit();
+  });
 });
 
-// Start animation
-animate();n
+process.on('uncaughtException', (error) => {
+  console.error('Uncaught Exception:', error);
+});
+
+const isSingleInstance = app.requestSingleInstanceLock();
+if (!isSingleInstance) app.quit();

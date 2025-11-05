@@ -12,7 +12,7 @@ function createWindow() {
     minHeight: 600,
     frame: true,
     show: false,
-    icon: path.join(__dirname, 'icon.png'),
+    icon: path.join(__dirname, 'assets/favicon.ico'),
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       nodeIntegration: false,
@@ -24,73 +24,30 @@ function createWindow() {
 
   mainWindow.loadFile('index.html').then(() => {
     mainWindow.show();
-  }).catch(err => {
-    console.error('Failed to load window:', err);
+    if (isDev) mainWindow.webContents.openDevTools({ mode: 'detach' });
   });
 
-  if (isDev) mainWindow.webContents.openDevTools({ mode: 'detach' });
-
-  mainWindow.on('closed', () => {
-    mainWindow = null;
-  });
-
-  mainWindow.on('unresponsive', () => {
-    console.warn('Window unresponsive, attempting reload...');
-    mainWindow.reload();
-  });
-
+  mainWindow.on('closed', () => mainWindow = null);
   return mainWindow;
 }
 
-app.whenReady().then(() => {
-  createWindow();
+app.whenReady().then(createWindow);
 
-  app.on('activate', () => {
-    if (BrowserWindow.getAllWindows().length === 0) createWindow();
-  });
+app.on('activate', () => {
+  if (BrowserWindow.getAllWindows().length === 0) createWindow();
+});
 
-  // ✅ Redirect to tree/index.html
-  ipcMain.on('redirect-to-tree', (event) => {
-    if (mainWindow) {
-      const treePath = path.join(__dirname, 'tree/index.html');
-      mainWindow.loadFile(treePath).then(() => {
-        console.log('Successfully redirected to tree/index.html');
-      }).catch(err => {
-        console.error('Failed to load tree/index.html:', err);
-        event.sender.send('redirect-error', 'Failed to load the tree page. Please try again.');
-      });
-    } else {
-      console.error('Main window is not available, creating new window');
-      mainWindow = createWindow();
-      const treePath = path.join(__dirname, 'tree/index.html');
-      mainWindow.loadFile(treePath).then(() => {
-        console.log('Fallback window loaded tree/index.html');
-      }).catch(err => {
-        console.error('Failed to load fallback window:', err);
-        event.sender.send('redirect-error', 'Failed to load the tree page. Please try again.');
-      });
-    }
-  });
-
-  // ✅ New: Redirect back to index.html (login/main page)
-  ipcMain.on('load-main-page', () => {
-    if (mainWindow) {
-      const indexPath = path.join(__dirname, 'index.html');
-      mainWindow.loadFile(indexPath).then(() => {
-        console.log('Successfully redirected to index.html');
-      }).catch(err => {
-        console.error('Failed to load index.html:', err);
-      });
-    }
-  });
-
-  app.on('window-all-closed', () => {
-    if (process.platform !== 'darwin') app.quit();
+ipcMain.on('redirect-to-tree', (event, url) => {
+  if (!mainWindow) mainWindow = createWindow();
+  const fullPath = path.join(__dirname, url.split('?')[0]);
+  mainWindow.loadFile(fullPath).catch(err => {
+    console.error('Load failed:', err);
+    event.sender.send('redirect-error', 'Page not found');
   });
 });
 
-process.on('uncaughtException', (error) => {
-  console.error('Uncaught Exception:', error);
+app.on('window-all-closed', () => {
+  if (process.platform !== 'darwin') app.quit();
 });
 
 const isSingleInstance = app.requestSingleInstanceLock();
