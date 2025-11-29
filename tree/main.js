@@ -34,11 +34,11 @@ function createWindow() {
     });
   });
 
-  mainWindow.loadFile('index.html').then(() => {
+  mainWindow.loadFile('dashboard.html').then(() => {
     mainWindow.show();
-    console.log('Loaded index.html successfully');
+    console.log('Loaded dashboard.html successfully');
   }).catch(err => {
-    console.error('Failed to load index.html:', err);
+    console.error('Failed to load dashboard.html:', err);
   });
 
   if (isDev) mainWindow.webContents.openDevTools({ mode: 'detach' });
@@ -62,22 +62,22 @@ app.whenReady().then(() => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow();
   });
 
-  // Redirect to tree/index.html after sign-up/sign-in
+  // Redirect to dashboard.html after sign-up/sign-in
   ipcMain.on('redirect-to-tree', (event) => {
     if (mainWindow) {
-      const treePath = path.join(__dirname, 'tree/index.html');
+      const treePath = path.join(__dirname, 'dashboard.html');
       mainWindow.loadFile(treePath).then(() => {
-        console.log('Successfully redirected to tree/index.html');
+        console.log('Successfully redirected to dashboard.html');
       }).catch(err => {
-        console.error('Failed to load tree/index.html:', err);
+        console.error('Failed to load dashboard.html:', err);
         event.sender.send('redirect-error', 'Failed to load the tree page. Please try again.');
       });
     } else {
       console.error('Main window is not available, creating new window');
       mainWindow = createWindow();
-      const treePath = path.join(__dirname, 'tree/index.html');
+      const treePath = path.join(__dirname, 'dashboard.html');
       mainWindow.loadFile(treePath).then(() => {
-        console.log('Fallback window loaded tree/index.html');
+        console.log('Fallback window loaded dashboard.html');
       }).catch(err => {
         console.error('Failed to load fallback window:', err);
         event.sender.send('redirect-error', 'Failed to load the tree page. Please try again.');
@@ -88,11 +88,11 @@ app.whenReady().then(() => {
   // Redirect back to index.html (login/main page)
   ipcMain.on('load-main-page', () => {
     if (mainWindow) {
-      const indexPath = path.join(__dirname, 'index.html');
+      const indexPath = path.join(__dirname, '..', 'index.html');
       mainWindow.loadFile(indexPath).then(() => {
-        console.log('Successfully redirected to index.html');
+        console.log('Successfully redirected to main index.html');
       }).catch(err => {
-        console.error('Failed to load index.html:', err);
+        console.error('Failed to load main index.html:', err);
       });
     }
   });

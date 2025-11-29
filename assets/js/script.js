@@ -327,7 +327,7 @@ function showDashboard(user) {
 function redirectToTree() {
   const user = JSON.parse(localStorage.getItem('user'));
   if (!user) return showWarningMessage("No user!");
-  const url = `tree/index.html?username=${encodeURIComponent(user.username)}`;
+  const url = `tree/dashboard.html?username=${encodeURIComponent(user.username)}`;
   if (window.api && window.api.send) {
     window.api.send('redirect-to-tree', url);
   } else {
