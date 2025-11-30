@@ -276,6 +276,7 @@ async function handleSignUp(e) {
     showWarningMessage("Server error: " + error.message);
   }
 }
+
 // Sign In
 async function handleSignIn(e) {
   e.preventDefault();
@@ -342,6 +343,11 @@ document.addEventListener("DOMContentLoaded", () => {
   setupPasswordVisibility();
   setupPasswordValidation();
 
+  // Load Optimized Particles (Replaces old DOM version)
+  const particlesScript = document.createElement('script');
+  particlesScript.src = 'assets/js/particles.js';
+  document.head.appendChild(particlesScript);
+
   // DOB Picker
   flatpickr("#dobPicker", { dateFormat: "Y-m-d", maxDate: "today", altInput: true, altFormat: "F j, Y" });
 
@@ -400,90 +406,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   passwordInput.addEventListener("input", checkPasswordMatch);
   repeatPasswordInput.addEventListener("input", checkPasswordMatch);
-    // Particles
-  const particles = [];
-  const isMobile = window.innerWidth <= 768;
-  const count = isMobile ? 30 : 55;
-  for (let i = 0; i < count; i++) {
-    const el = document.createElement("div");
-    el.className = "particle";
-    document.body.appendChild(el);
-    // include z/vz for 3D-like motion so animation code never reads undefined
-    particles.push({
-      el,
-      x: Math.random() * window.innerWidth,
-      y: Math.random() * window.innerHeight,
-      z: Math.random() * 200 - 100,
-      vx: (Math.random() - 0.5) * 2,
-      vy: (Math.random() - 0.5) * 2,
-      vz: (Math.random() - 0.5) * 0.5,
-      life: Math.random() * 300 + 200
-    });
-  }
-  // Unified mouse position used for both particles and letters
-  let lastMouse = { x: -9999, y: -9999 };
-  // Physics constants for unified repulsion system
-  const particleShieldRadius = 180; // Particle repulsion radius
-  const letterShieldRadius = 120; // Letter repulsion radius
-  const particleRepelForce = 18; // Max force applied to particles
-  const letterRepelForce = 6; // UPDATED: Reduced further from 9 to 6 for even subtler letter repulsion (less aggressive, smoother performance)
-  const letterSpringForce = 0.08; // Spring force pulling letters back to origin
-  const letterDamping = 0.86; // Letter velocity damping (less bouncy)
-  const particleDamping = 0.95; // Particle velocity damping
-  // Simpler particle loop (uses left/top) adapted from original reference
-  // Initialize element positions/styles for existing particles
-  particles.forEach(p => {
-    if (p.el) {
-      p.el.style.left = `${p.x}px`;
-      p.el.style.top = `${p.y}px`;
-      p.el.style.opacity = (p.life / 500).toString();
-    }
-  });
-  function updateParticles() {
-    const cursor = document.getElementById('cursorWhiteHole');
-    let cursorX = lastMouse.x;
-    let cursorY = lastMouse.y;
-    if (cursor) {
-      const rect = cursor.getBoundingClientRect();
-      cursorX = rect.left + rect.width / 2 + window.scrollX;
-      cursorY = rect.top + rect.height / 2 + window.scrollY;
-    }
-    // update particle physics and DOM
-    particles.forEach((p, i) => {
-      p.x += p.vx;
-      p.y += p.vy;
-      p.life -= 1;
-      // repel from cursor when close
-      const dx = p.x - cursorX;
-      const dy = p.y - cursorY;
-      const dist = Math.sqrt(dx * dx + dy * dy);
-      if (dist < 120) {
-        const force = (1 - dist / 120) * 0.6; // subtle force
-        const ang = Math.atan2(dy, dx);
-        p.vx += Math.cos(ang) * force;
-        p.vy += Math.sin(ang) * force;
-      }
-      // bounds check / recycle
-      if (p.life <= 0 || p.x < -50 || p.x > window.innerWidth + 50 || p.y < -50 || p.y > window.innerHeight + 50) {
-        // reset particle
-        p.x = Math.random() * window.innerWidth;
-        p.y = Math.random() * window.innerHeight;
-        p.vx = (Math.random() - 0.5) * 2;
-        p.vy = (Math.random() - 0.5) * 2;
-        p.life = Math.random() * 300 + 200;
-        p.opacity = Math.random() * 0.5 + 0.3;
-      }
-      // update DOM element
-      if (p.el) {
-        p.el.style.left = `${p.x}px`;
-        p.el.style.top = `${p.y}px`;
-        p.el.style.opacity = (p.opacity || 0.6).toString();
-      }
-    });
-    // No more letter animation here - it's handled by the unified physics system below
-    requestAnimationFrame(updateParticles);
-  }
-  updateParticles();
+
   // Enhanced Automatic Username Generator
   const reservedUsernames = ["0000", "cool", "fancy", "elite"];
   function generateUsername(base) {
@@ -516,6 +439,7 @@ document.addEventListener("DOMContentLoaded", () => {
       usernameInput.value = finalUsername.split("#")[0];
     }
   });
+
   // --- Global Letter Repel (only headings and paragraphs) ---
   function wrapAllIntroLetters() {
     // Only wrap text in headings and paragraphs, not entire cards
@@ -532,98 +456,41 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
   wrapAllIntroLetters();
-  // Setup physics system for letters
+
+  // Setup Optimized Letter Physics (Uses throttled helper from particles.js)
   requestAnimationFrame(() => {
-    // Initialize letter physics objects
+    // Update origins on resize/scroll
+    function updateLetterOrigins() {
+      window._letters?.forEach(letter => {
+        const rect = letter.el.getBoundingClientRect();
+        letter.ox = rect.left + rect.width / 2 + window.scrollX;
+        letter.oy = rect.top + rect.height / 2 + window.scrollY;
+      });
+    }
+    window.addEventListener('resize', updateLetterOrigins);
+    window.addEventListener('scroll', updateLetterOrigins);
+
+    // Init Letters
     const letterNodes = Array.from(document.querySelectorAll('#intro .letter'));
     window._letters = letterNodes.map(el => {
       const rect = el.getBoundingClientRect();
       return {
         el,
-        ox: rect.left + rect.width / 2, // Origin X (in viewport coords)
-        oy: rect.top + rect.height / 2, // Origin Y
-        x: 0, // Current offset from origin
+        ox: rect.left + rect.width / 2 + window.scrollX,
+        oy: rect.top + rect.height / 2 + window.scrollY,
+        x: 0,
         y: 0,
-        vx: 0, // Velocity
+        vx: 0,
         vy: 0
       };
     });
-    // Update letter origins on window resize or scroll
-    function updateLetterOrigins() {
-      window._letters.forEach(letter => {
-        const rect = letter.el.getBoundingClientRect();
-        letter.ox = rect.left + rect.width / 2;
-        letter.oy = rect.top + rect.height / 2;
-      });
+
+    // Start Animation (Throttled in particles.js helper)
+    if (window.animateLetters) {
+      window.animateLetters(window._letters);
     }
-    window.addEventListener('resize', updateLetterOrigins);
-    window.addEventListener('scroll', updateLetterOrigins);
-    // Initialize and track cursor
-    const cursor = document.getElementById('cursorWhiteHole');
-    if (cursor) {
-      cursor.style.opacity = '1';
-      cursor.style.transition = 'opacity 0.2s ease';
-     
-      document.addEventListener('mousemove', e => {
-        lastMouse.x = e.clientX;
-        lastMouse.y = e.clientY;
-       
-        if (!document.body.classList.contains('modal-active')) {
-          cursor.style.left = `${e.clientX}px`;
-          cursor.style.top = `${e.clientY}px`;
-          cursor.style.display = 'block';
-        }
-      });
-      // Hide cursor when leaving window
-      document.addEventListener('mouseleave', () => {
-        cursor.style.opacity = '0';
-      });
-      // Show cursor when entering window
-      document.addEventListener('mouseenter', () => {
-        if (!document.body.classList.contains('modal-active')) {
-          cursor.style.opacity = '1';
-        }
-      });
-    }
-    // Unified physics-based letter animation
-    function animateLetters() {
-      window._letters.forEach(letter => {
-        // Get letter's world position (origin + current offset)
-        const worldX = letter.ox + letter.x;
-        const worldY = letter.oy + letter.y;
-        // Calculate repulsion from cursor
-        const dx = worldX - lastMouse.x;
-        const dy = worldY - lastMouse.y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        // Apply repulsion force when near cursor
-        if (dist < letterShieldRadius) {
-          const repelStrength = (1 - dist / letterShieldRadius) * letterRepelForce;
-          const angle = Math.atan2(dy, dx);
-          letter.vx += Math.cos(angle) * repelStrength;
-          letter.vy += Math.sin(angle) * repelStrength;
-        }
-        // Spring force pulling back to origin
-        const dxOrigin = -letter.x;
-        const dyOrigin = -letter.y;
-        const distOrigin = Math.sqrt(dxOrigin * dxOrigin + dyOrigin * dyOrigin);
-        if (distOrigin > 0) {
-          const springStrength = letterSpringForce * distOrigin;
-          const angleOrigin = Math.atan2(dyOrigin, dxOrigin);
-          letter.vx += Math.cos(angleOrigin) * springStrength;
-          letter.vy += Math.sin(angleOrigin) * springStrength;
-        }
-        // Update physics
-        letter.vx *= letterDamping;
-        letter.vy *= letterDamping;
-        letter.x += letter.vx;
-        letter.y += letter.vy;
-        // Apply transform
-        letter.el.style.transform = `translate(${letter.x}px, ${letter.y}px)`;
-      });
-      requestAnimationFrame(animateLetters);
-    }
-    animateLetters();
   });
+
   // Events
   document.getElementById("signinButton").onclick = () => toggleModal("signinModal");
   document.getElementById("signupButton").onclick = () => toggleModal("signupModal");
@@ -648,22 +515,22 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // FIXED Persistence: Subtle banner if stored user (bottom-right, 1-day timeout)
-const storedUser = localStorage.getItem('user');
-if (storedUser) {
-  const user = JSON.parse(storedUser);
-  const now = Date.now();
-  const lastLogin = new Date(user.lastLogin).getTime();
-  const oneDay = 24 * 60 * 60 * 1000;  // 1 day in ms
-  if (now - lastLogin < oneDay) {  // Show only if recent
-    const banner = document.createElement('div');
-    banner.className = 'fixed bottom-4 right-4 bg-blue-600 text-white px-4 py-2 rounded-lg z-50 shadow-lg text-sm opacity-0 transition-opacity duration-300';  // UPDATED: Bottom-right, fade
-    banner.innerHTML = `Welcome back, ${user.username}! <button class="ml-2 px-2 py-1 bg-white text-blue-600 rounded text-xs" onclick="showDashboard(${JSON.stringify(user)});this.parentElement.style.opacity=0;setTimeout(()=>this.parentElement.remove(),300);">Continue</button> <button class="ml-1 px-2 py-1 bg-transparent border border-white text-white rounded text-xs" onclick="localStorage.removeItem('user');this.parentElement.style.opacity=0;setTimeout(()=>this.parentElement.remove(),300);">Logout</button>`;
-    document.body.appendChild(banner);
-    setTimeout(() => banner.style.opacity = '1', 100);  // Fade in after 100ms
-    setTimeout(() => banner.remove(), 10000);  // Auto-hide
-  } else {
-    localStorage.removeItem('user');  // Clear old sessions
+  const storedUser = localStorage.getItem('user');
+  if (storedUser) {
+    const user = JSON.parse(storedUser);
+    const now = Date.now();
+    const lastLogin = new Date(user.lastLogin).getTime();
+    const oneDay = 24 * 60 * 60 * 1000;  // 1 day in ms
+    if (now - lastLogin < oneDay) {  // Show only if recent
+      const banner = document.createElement('div');
+      banner.className = 'fixed bottom-4 right-4 bg-blue-600 text-white px-4 py-2 rounded-lg z-50 shadow-lg text-sm opacity-0 transition-opacity duration-300';  // UPDATED: Bottom-right, fade
+      banner.innerHTML = `Welcome back, ${user.username}! <button class="ml-2 px-2 py-1 bg-white text-blue-600 rounded text-xs" onclick="showDashboard(${JSON.stringify(user)});this.parentElement.style.opacity=0;setTimeout(()=>this.parentElement.remove(),300);">Continue</button> <button class="ml-1 px-2 py-1 bg-transparent border border-white text-white rounded text-xs" onclick="localStorage.removeItem('user');this.parentElement.style.opacity=0;setTimeout(()=>this.parentElement.remove(),300);">Logout</button>`;
+      document.body.appendChild(banner);
+      setTimeout(() => banner.style.opacity = '1', 100);  // Fade in after 100ms
+      setTimeout(() => banner.remove(), 10000);  // Auto-hide
+    } else {
+      localStorage.removeItem('user');  // Clear old sessions
+    }
   }
-}
   window.redirectToTree = redirectToTree;
 });
