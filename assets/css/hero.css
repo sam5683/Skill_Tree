@@ -1,0 +1,69 @@
+/* ==========================================================================
+   hero.css
+   Hero / Landing section styling
+   ========================================================================== */
+
+.hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 40px 20px;
+  position: relative;
+  z-index: 10;
+}
+
+.hero-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Title (SkillTree Gradient) */
+.hero-title {
+  font-size: clamp(2.6rem, 6vw, 5.2rem);
+  font-weight: 800;
+  letter-spacing: -0.5px;
+
+  background: linear-gradient(
+    90deg,
+    var(--accent-green),
+    #2dd4bf,
+    #a855f7
+  );
+
+  -webkit-background-clip: text;
+  color: transparent;
+
+  margin-bottom: 20px;
+}
+
+/* Subtitle */
+.hero-sub {
+  max-width: 760px;
+  font-size: clamp(1rem, 1.6vw, 1.25rem);
+  color: rgba(255,255,255,0.78);
+  margin-bottom: 24px;
+  line-height: 1.55;
+}
+
+/* CTA Button (reuses primary button but ensures spacing) */
+#start-btn {
+  margin-top: 10px;
+}
+
+/* RESPONSIVE */
+@media (max-width: 480px) {
+  .hero {
+    padding: 50px 14px;
+  }
+
+  .hero-title {
+    font-size: clamp(2.3rem, 7vw, 4rem);
+  }
+
+  .hero-sub {
+    font-size: 1rem;
+  }
+}

@@ -1,0 +1,50 @@
+/* ==========================================================================
+   cursor.css
+   Custom White-Hole Cursor + Behaviour
+   ========================================================================== */
+
+/* Desktop-only custom cursor */
+#cursorWhiteHole {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  mix-blend-mode: screen;
+  z-index: 9999;
+
+  background: radial-gradient(
+    circle,
+    rgba(255,255,255,1) 0%,
+    rgba(255,255,255,0.75) 25%,
+    rgba(200,225,255,0.34) 50%,
+    rgba(120,160,255,0.15) 70%,
+    transparent 100%
+  );
+
+  box-shadow:
+    0 0 6px rgba(255,255,255,0.9),
+    0 0 18px rgba(150,190,255,0.35);
+
+  transition: opacity .18s ease, transform .12s ease;
+}
+
+/* Hide cursor on touch devices (iOS/Android) */
+@media (pointer: coarse) {
+  #cursorWhiteHole {
+    display: none !important;
+  }
+}
+
+/* Hide custom cursor + show system cursor during Auth modals */
+body.auth-open #cursorWhiteHole {
+  opacity: 0 !important;
+}
+
+/* Hide system cursor normally so custom cursor appears */
+body:not(.auth-open) {
+  cursor: none !important;
+}

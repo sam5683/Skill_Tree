@@ -1,0 +1,115 @@
+/* ========================================================================
+   navbar.css
+   - Navbar bar, brand logo, buttons
+   - Styled to match premium SkillTree aesthetic
+   ======================================================================== */
+
+/* ===========================
+   NAVBAR WRAPPER
+   =========================== */
+#navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 14px 28px;
+  z-index: 50;
+
+  background: rgba(2, 6, 23, 0.32);
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+
+  /* Smooth blur if supported */
+}
+#navbar.supports-backdrop {
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+}
+#navbar.no-backdrop {
+  background: rgba(2, 6, 23, 0.55);
+}
+
+/* ===========================
+   BRAND LOGO + TEXT
+   =========================== */
+.brand {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+}
+
+.brand svg {
+  width: 22px;
+  height: 22px;
+}
+
+.brand .brand-text {
+  background: linear-gradient(90deg, var(--accent-green), #22d3ee);
+  -webkit-background-clip: text;
+  color: transparent;
+  font-weight: 700;
+}
+
+/* ===========================
+   NAV BUTTONS
+   =========================== */
+
+/* Ghost Button (Sign In) */
+.btn-ghost {
+  padding: 8px 14px;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(255,255,255,0.12);
+  background: transparent;
+  color: #fff;
+  transition: 0.22s ease;
+  font-weight: 500;
+}
+
+.btn-ghost:hover {
+  background: rgba(255,255,255,0.1);
+}
+
+/* Primary Button (Sign Up) */
+.btn-primary {
+  padding: 8px 16px;
+  border-radius: var(--radius-md);
+
+  background: linear-gradient(90deg, var(--accent-green), var(--accent-blue));
+  color: #062023;
+
+  font-weight: 700;
+  box-shadow: 0 6px 24px rgba(59,130,246,0.18);
+
+  transition: 0.18s ease;
+}
+
+.btn-primary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 32px rgba(59,130,246,0.22);
+}
+
+/* ===========================
+   RESPONSIVE
+   =========================== */
+@media (max-width: 480px) {
+  #navbar {
+    padding: 12px 18px;
+  }
+
+  .btn-ghost,
+  .btn-primary {
+    padding: 6px 10px;
+    font-size: 0.9rem;
+  }
+
+  .brand svg {
+    width: 18px;
+    height: 18px;
+  }
+}

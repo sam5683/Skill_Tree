@@ -1,0 +1,64 @@
+/* ==========================================================================
+   about.css
+   About Section / Feature Cards
+   ========================================================================== */
+
+#about {
+  padding: 80px 20px;
+  position: relative;
+  z-index: 12;
+}
+
+/* Bigger grid (you asked for 15–20% larger) */
+.cards {
+  max-width: 1200px;
+  margin: auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 32px;
+}
+
+/* Modern floating card */
+.repulsion-card {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.06);
+  padding: 28px;
+  border-radius: 18px;
+  backdrop-filter: blur(6px);
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+
+/* Card Hover Motion */
+.repulsion-card:hover {
+  transform: translateY(-8px);
+  box-shadow:
+    0 20px 50px rgba(0,0,0,0.45),
+    0 0 18px rgba(80,200,255,0.18);
+}
+
+/* Card Heading */
+.repulsion-card h3 {
+  font-size: 1.35rem;
+  margin-bottom: 10px;
+  font-weight: 700;
+  color: #e8faff;
+}
+
+/* Card text */
+.card-text {
+  font-size: 1rem;
+  opacity: 0.8;
+  line-height: 1.55;
+}
+
+/* RESPONSIVE */
+@media (max-width: 480px) {
+  .cards {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .repulsion-card {
+    padding: 24px;
+  }
+}

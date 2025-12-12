@@ -1,0 +1,58 @@
+/* ==========================================================================
+   footer.css
+   Footer + Social Icons
+   ========================================================================== */
+
+footer {
+  text-align: center;
+  padding: 32px 18px;
+  opacity: 0.55;
+  position: relative;
+  z-index: 12;
+}
+
+/* Footer container */
+.footer-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+/* Social icons container */
+.footer-socials {
+  display: flex;
+  gap: 18px;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Icon size (professional standard: 28px–32px) */
+.social-btn img {
+  width: 32px;
+  height: 32px;
+  opacity: 0.75;
+  transition: all 0.22s ease;
+  filter: drop-shadow(0 0 0 transparent);
+}
+
+/* Glow on hover */
+.social-btn:hover img {
+  opacity: 1;
+  transform: scale(1.14) translateY(-2px);
+  filter: drop-shadow(0 0 6px rgba(120,200,255,0.55));
+}
+
+/* Footer copyright text */
+.footer-copy {
+  font-size: 0.95rem;
+  opacity: 0.85;
+}
+
+/* Mobile adjustments */
+@media (max-width: 480px) {
+  .social-btn img {
+    width: 28px;
+    height: 28px;
+  }
+}

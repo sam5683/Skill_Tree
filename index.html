@@ -1,225 +1,143 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Skill Tree - Build and grow your knowledge tree with AI-powered learning." />
-  <meta name="keywords" content="skill tree, learning, AI, education" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="mobile-web-app-capable" content="yes" />
-  <!-- Consolidated theme-color (media-specific theme-color meta tags are not supported by some browsers) -->
-  <meta name="theme-color" content="#000000" />
-  <link rel="icon" href="https://via.placeholder.com/32" type="image/x-icon">
-  <title>Skill Tree</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- Preload Critical Assets -->
-  <link rel="preload" href="assets/css/custom.css" as="style">
-  <link rel="preload" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" as="style">
+  <title>SkillTree — Visualize & Grow Your Knowledge</title>
+  <meta name="description" content="Build a personal AI-powered knowledge tree that grows as you learn.">
 
-  <!-- Libraries -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <!-- CSP with CDN allowed -->
+  <meta http-equiv="Content-Security-Policy"
+        content="
+          default-src 'self' data: blob: https://cdn.jsdelivr.net;
+          img-src 'self' data: https://cdn.jsdelivr.net https://www.gstatic.com https://www.google.com;
+          style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net;
+          script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net;
+          connect-src 'self' http://localhost:8080;
+        ">
+
+  <!-- Tailwind Build -->
+  <link rel="stylesheet" href="dist/output.css">
+
+  <!-- External CSS Files (Option A1) -->
+  <link rel="stylesheet" href="assets/css/base.css" />
+  <link rel="stylesheet" href="assets/css/navbar.css" />
+  <link rel="stylesheet" href="assets/css/hero.css" />
+  <link rel="stylesheet" href="assets/css/about.css" />
+  <link rel="stylesheet" href="assets/css/footer.css" />
+  <link rel="stylesheet" href="assets/css/cursor.css" />
+  <link rel="stylesheet" href="assets/css/auth-modal.css" />
+  <link rel="stylesheet" href="assets/css/flatpickr.css" />
+  <link rel="stylesheet" href="assets/css/utilities.css" />
+
+  <!-- Flatpickr CDN -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-  
-  <!-- Custom CSS -->
-  <link rel="stylesheet" href="assets/css/custom.css" />
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
 </head>
-<body class="bg-black text-white font-sans overflow-x-hidden">
 
-  <!-- Background Particles -->
-  <div class="background-particles"></div>
+<body>
 
-  <!-- Cursor White Hole -->
-  <div class="cursor-white-hole" id="cursorWhiteHole"></div>
+  <!-- Particles -->
+  <canvas id="particle-canvas"></canvas>
 
-  <!-- Header -->
-  <header class="fixed top-0 left-0 right-0 z-50 flex justify-between items-center px-6 py-3 bg-black/70 backdrop-blur-md border-b border-white/10">
-    <div class="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-green-400 bg-clip-text text-transparent">Skill Tree</div>
-    <div class="flex items-center gap-3">
-      <button id="signinButton" class="flex items-center gap-2 px-3 h-9 text-sm font-medium border border-white rounded-lg hover:bg-white hover:text-black transition-all">
-        <i data-lucide="log-in" class="w-4 h-4"></i> Sign In
-      </button>
-      <button id="signupButton" class="flex items-center gap-2 px-3 h-9 text-sm font-bold text-black bg-green-400 hover:bg-green-300 rounded-lg transition-all">
-        <i data-lucide="user-plus" class="w-4 h-4"></i> Sign Up
-      </button>
+  <!-- Cursor -->
+  <div id="cursorWhiteHole"></div>
+
+  <!-- NAVBAR -->
+  <nav id="navbar">
+    <div class="brand">
+      <svg viewBox="0 0 24 24" fill="none">
+        <path d="M12 2c1.5 0 2.8.9 3.4 2.1C16.6 4 18 5 18 6.9c0 1.9-1.2 3.2-2.6 4.3C15.8 12 17 13.6 17 15.6 17 18 15 20 12 20s-5-2-5-4.4c0-2 1.2-3.6 1.6-4.4C8.2 10.1 7 8.8 7 6.9 7 5 8.4 4 8.6 4.1 9.2 2.9 10.5 2 12 2z"
+              fill="url(#g1)"/>
+        <defs>
+          <linearGradient id="g1" x1="0" x2="1" y1="0" y2="1">
+            <stop offset="0" stop-color="#4ade80"/>
+            <stop offset="1" stop-color="#60a5fa"/>
+          </linearGradient>
+        </defs>
+      </svg>
+      <div class="brand-text">SkillTree</div>
     </div>
-  </header>
 
-  <!-- Welcome Section -->
-  <section class="h-screen flex flex-col justify-center items-center text-center px-4 bg-gradient-to-b from-black via-gray-900 to-black pt-16">
-    <h1 class="text-5xl md:text-6xl font-extrabold mb-4 bg-gradient-to-r from-green-400 via-blue-500 to-purple-600 bg-clip-text text-transparent animate-fade-in">
-      Welcome to Skill Tree
-    </h1>
-    <p class="text-lg md:text-xl max-w-xl mb-8 text-gray-300 animate-fade-in-slow">
-      Let's embark on a journey of knowledge and create a world of unforgettable memories.
-    </p>
-    <button id="startExploring" class="mt-4 px-6 py-3 bg-gradient-to-r from-green-400 to-blue-500 text-black font-semibold rounded-xl hover:scale-105 transition-all shadow-lg">
-      Start Exploring
-    </button>
-  </section>
-
-  <!-- Who We Are -->
-  <section id="intro" class="min-h-screen px-6 py-16 text-gray-100">
-    <h2 class="text-4xl font-bold text-center mb-12 text-amber-400 animate-fade-in">Who We Are</h2>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto text-lg leading-relaxed">
-      <div class="relative no-blur">
-      <div class="glow-dot glow-dot-1"></div>
-        <div class="bg-white/5 backdrop-blur-md p-6 rounded-xl shadow-xl border border-white/10 card-pop relative">
-          <div class="card-blink"></div>
-          <h3 class="text-xl font-semibold text-green-300 mb-2 flex items-center gap-2">
-            <i data-lucide="leaf" class="w-5 h-5"></i> Our Mission
-          </h3>
-          <p>We’re building a platform that helps learners visualize their knowledge like a growing tree — where each branch is a topic and every leaf is a lesson learned. It's a space to evolve.</p>
-        </div>
-      </div>
-      <div class="relative no-blur">
-      <div class="glow-dot glow-dot-2"></div>
-        <div class="bg-white/5 backdrop-blur-md p-6 rounded-xl shadow-xl border border-white/10 card-pop relative">
-          <div class="card-blink"></div>
-          <h3 class="text-xl font-semibold text-purple-300 mb-2 flex items-center gap-2">
-            <i data-lucide="book-open" class="w-5 h-5"></i> How It Works
-          </h3>
-          <p>Choose a subject. Grow your tree. From science to coding, store what you learn forever. Let AI adapt to your memory, track your growth, and guide you to your best self.</p>
-        </div>
-      </div>
-      <div class="relative no-blur">
-      <div class="glow-dot glow-dot-3"></div>
-        <div class="bg-white/5 backdrop-blur-md p-6 rounded-xl shadow-xl border border-white/10 card-pop relative">
-          <div class="card-blink"></div>
-          <h3 class="text-xl font-semibold text-yellow-300 mb-2 flex items-center gap-2">
-            <i data-lucide="brain" class="w-5 h-5"></i> Powered by Psychology & AI
-          </h3>
-          <p>Using psychology-backed techniques like spaced repetition, mnemonics, and behavior analysis, we help you retain what matters. AI learns your style and evolves with you.</p>
-        </div>
-      </div>
-      <div class="relative no-blur">
-      <div class="glow-dot glow-dot-4"></div>
-        <div class="bg-white/5 backdrop-blur-md p-6 rounded-xl shadow-xl border border-white/10 card-pop relative">
-          <div class="card-blink"></div>
-          <h3 class="text-xl font-semibold text-pink-300 mb-2 flex items-center gap-2">
-            <i data-lucide="users" class="w-5 h-5"></i> Study. Connect. Grow.
-          </h3>
-          <p>Study solo or with friends. Watch your learning evolve into a majestic tree. Earn certificates, unlock achievements, bloom your blue lily when you master a skill, and inspire others.</p>
-        </div>
-      </div>
-      <div class="relative no-blur col-span-1 md:col-span-2">
-      <div class="glow-dot glow-dot-5"></div>
-        <div class="bg-white/5 backdrop-blur-md p-6 rounded-xl shadow-xl border border-white/10 card-pop relative">
-          <div class="card-blink"></div>
-          <h3 class="text-xl font-semibold text-cyan-300 mb-2 flex items-center gap-2">
-            <i data-lucide="lightbulb" class="w-5 h-5"></i> Why Skill Tree Exists
-          </h3>
-          <p>Too often we forget what we’ve learned. Skill Tree is here to change that. This is your memory palace, your personal knowledge garden. Whether you’re mastering math or psychology, Skill Tree helps you remember it all — and makes it fun.</p>
-        </div>
-      </div>
+    <div class="nav-actions">
+      <button class="btn-ghost" id="signinButton">Sign In</button>
+      <button class="btn-primary" id="signupButton">Sign Up</button>
     </div>
-  </section>
+  </nav>
 
-  <!-- Sign-up Modal -->
-  <div id="signupModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 hidden modal-open" role="dialog" aria-modal="true">
-    <div class="bg-white text-black rounded-xl w-full max-w-md p-6 space-y-4 relative shadow-2xl">
-      <button id="closeSignup" class="absolute top-4 right-4 text-gray-600 hover:text-red-500 text-xl">×</button>
-      <h2 class="text-2xl font-bold mb-4 text-center">Sign Up</h2>
-      <form id="signupForm" class="space-y-4">
-        <input type="text" placeholder="Full Name" class="w-full p-3 border rounded-md" autocomplete="name" required />
-        <input id="dobPicker" type="text" placeholder="Date of Birth" class="w-full p-3 border rounded-md" readonly required />
-        <div class="relative">
-          <input id="emailInput" type="email" placeholder="Email Address" class="w-full p-3 border rounded-md" autocomplete="off" required />
-          <ul id="emailSuggestions" class="absolute z-10 bg-white border border-gray-200 rounded-md mt-1 hidden w-full max-h-40 overflow-auto text-sm"></ul>
+  <!-- HERO -->
+  <main>
+    <section class="hero">
+      <div class="hero-inner">
+        <h1 class="hero-title">Welcome to Skill Tree</h1>
+        <p class="hero-sub">
+          Build a personal learning map that expands as your knowledge grows — powered by psychology-backed learning science.
+        </p>
+        <button id="start-btn" class="btn-primary">Start Exploring 🚀</button>
+      </div>
+    </section>
+
+    <!-- ABOUT -->
+    <section id="about">
+      <div class="cards">
+
+        <div class="repulsion-card">
+          <h3>🌱 Our Mission</h3>
+          <p>We visualize knowledge like a growing tree.</p>
         </div>
-        <input id="username" type="text" placeholder="Username" class="w-full p-3 border rounded-md" autocomplete="username" required />
-        <div id="usernameFeedback" class="text-sm text-gray-600"></div>
-        <div class="space-y-2">
-          <div class="relative">
-            <input id="password" type="password" placeholder="Create Password" class="w-full p-3 border rounded-md pr-10" autocomplete="new-password" required />
-            <i id="togglePassword" class="fa-solid fa-eye password-toggle"></i>
+
+        <div class="repulsion-card">
+          <h3>📘 How It Works</h3>
+          <p>Pick a subject and grow your tree.</p>
+        </div>
+
+        <div class="repulsion-card">
+          <h3>🧠 Psychology & AI</h3>
+          <p>Better memory through spaced repetition.</p>
+        </div>
+
+        <div class="repulsion-card">
+          <h3>🌐 Community & Growth</h3>
+          <p>Learn with friends.</p>
+        </div>
+
+      </div>
+
+      <!-- FOOTER -->
+      <footer>
+        <div class="footer-container">
+          <div class="footer-copy">
+            &copy; <span id="year"></span> SkillTree. All rights reserved.
           </div>
-          <div class="grid grid-cols-2 gap-2 text-sm password-requirements">
-            <div id="letterCheckContainer" class="flex items-center gap-2">
-              <i id="letterCheck" class="fas fa-times text-red-500"></i>
-              <span>3 Letters</span>
-            </div>
-            <div id="numberCheckContainer" class="flex items-center gap-2">
-              <i id="numberCheck" class="fas fa-times text-red-500"></i>
-              <span>2 Numbers</span>
-            </div>
-            <div id="specialCheckContainer" class="flex items-center gap-2">
-              <i id="specialCheck" class="fas fa-times text-red-500"></i>
-              <span>1 Special Character</span>
-            </div>
-            <div id="lengthCheckContainer" class="flex items-center gap-2">
-              <i id="lengthCheck" class="fas fa-times text-red-500"></i>
-              <span>8+ Characters</span>
-            </div>
+
+          <div class="footer-socials">
+            <a href="https://github.com/sam5683" class="social-btn" target="_blank"><img src="assets/images/github.svg" /></a>
+            <a href="https://www.linkedin.com/in/sameer-kaushal-809496247" class="social-btn" target="_blank"><img src="assets/images/linkedin.svg" /></a>
+            <a href="https://www.fiverr.com/sami5683" class="social-btn" target="_blank"><img src="assets/images/fiber.svg" /></a>
+            <a href="#" class="social-btn" target="_blank"><img src="assets/images/portfolio.svg" /></a>
           </div>
         </div>
-        <div class="relative">
-          <input id="repeatPassword" type="password" placeholder="Repeat Password" class="w-full p-3 border rounded-md pr-10" autocomplete="new-password" required />
-          <i id="toggleRepeatPassword" class="fa-solid fa-eye password-toggle"></i>
-        </div>
-        <div id="passwordMatchFeedback" class="text-sm text-red-500 font-medium hidden"></div>
-        <button type="submit" class="w-full bg-green-500 text-white font-semibold py-2 rounded-md hover:bg-green-400 transition-all" disabled>Create Account</button>
-      </form>
-    </div>
-  </div>
+      </footer>
 
-  <!-- Sign-in Modal -->
-  <div id="signinModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 hidden modal-open" role="dialog" aria-modal="true">
-    <div class="bg-white text-black rounded-xl w-full max-w-md p-6 space-y-4 relative shadow-2xl">
-      <button id="closeSignin" class="absolute top-4 right-4 text-gray-600 hover:text-red-500 text-xl">×</button>
-      <h2 class="text-2xl font-bold mb-4 text-center">Sign In</h2>
-      <form id="signinForm" class="space-y-4">
-        <input id="signinUsername" type="text" placeholder="Email or Username" class="w-full p-3 border rounded-md" required />
-        <div class="relative">
-          <input id="signinPassword" type="password" placeholder="Password" class="w-full p-3 border rounded-md pr-10" required />
-          <i id="toggleSigninPassword" class="fa-solid fa-eye password-toggle"></i>
-        </div>
-        <div id="signinFeedback" class="text-sm text-red-500 hidden"></div>
-        <button type="submit" class="w-full bg-green-500 text-white font-semibold py-2 rounded-md hover:bg-green-400 transition-all">Login</button>
-        <button type="button" class="w-full text-center text-gray-500 text-sm mt-2 opacity-50 cursor-not-allowed" disabled>Forgot Password? (Soon)</button>
-        <button type="button" onclick="alert('Google Login Coming Soon!')" class="w-full bg-white text-black px-4 py-2 rounded shadow mt-2 hover:bg-gray-100 transition-all flex items-center justify-center gap-2">
-          <img src="https://www.svgrepo.com/show/475656/google-color.svg" class="w-5 h-5" alt="Google">
-          Sign in with Google (Soon)
-        </button>
-      </form>
-    </div>
-  </div>
+    </section>
+  </main>
 
-  <!-- Dashboard Modal -->
-  <div id="dashboardModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 hidden modal-open" role="dialog" aria-modal="true">
-    <div class="bg-white text-black rounded-xl w-full max-w-md p-6 space-y-4 relative shadow-2xl">
-      <button id="closeDashboard" class="absolute top-4 right-4 text-gray-600 hover:text-red-500 text-xl">×</button>
-      <h2 class="text-2xl font-bold text-center">Welcome Back!</h2>
-      <p id="welcomeMessage" class="text-lg font-semibold text-center"></p>
-      <p id="lastLoginDate" class="text-sm text-gray-600 text-center"></p>
-      <button onclick="redirectToTree()" class="w-full bg-gradient-to-r from-green-400 to-blue-500 text-black font-bold py-3 rounded-xl hover:scale-105 transition-all">
-        Enter Your Skill Tree
-      </button>
-    </div>
-  </div>
+  <!-- AUTH MODAL CONTAINERS -->
+  <div id="signinModal" class="hidden" aria-hidden="true"></div>
+  <div id="signupModal" class="hidden" aria-hidden="true"></div>
 
-  <!-- Footer -->
-  <footer class="py-6 text-center bg-gray-900 border-t border-gray-800">
-    <div class="flex justify-center space-x-8">
-      <a href="https://github.com" target="_blank" rel="noopener noreferrer" aria-label="GitHub" class="text-white hover:text-green-400 transition-colors">
-        <i class="fab fa-github text-3xl"></i>
-      </a>
-      <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" class="text-white hover:text-green-400 transition-colors">
-        <i class="fab fa-linkedin text-3xl"></i>
-      </a>
-      <a href="https://fiverr.com" target="_blank" rel="noopener noreferrer" aria-label="Fiverr" class="text-white hover:text-green-400 transition-colors">
-        <i class="fab fa-f text-3xl"></i>
-      </a>
-      <a href="https://yourwebsite.com" target="_blank" rel="noopener noreferrer" aria-label="Website" class="text-white hover:text-green-400 transition-colors">
-        <i class="fas fa-globe text-3xl"></i>
-      </a>
-    </div>
-    <p class="mt-4 text-sm text-gray-400">&copy; 2025 Skill Tree. All rights reserved.</p>
-  </footer>
+  <!-- JS Files -->
+  <script src="assets/js/script.js"></script>
+  <script src="assets/js/auth.js"></script>
 
-  <!-- Scripts -->
-  <script src="assets/js/script.js" defer></script>
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+    document.getElementById("start-btn").addEventListener("click", () =>
+      document.getElementById("about").scrollIntoView({ behavior: "smooth" })
+    );
+  </script>
+
 </body>
 </html>

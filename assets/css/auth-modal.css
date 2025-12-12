@@ -1,0 +1,266 @@
+/* ==========================================================================
+   auth-modal.css — FINAL STABLE VERSION (100% FIXED)
+   ========================================================================== */
+
+/* BACKDROP --------------------------------------------------------------- */
+
+#signinModal,
+#signupModal {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* MODAL CARD ------------------------------------------------------------- */
+
+.auth-card {
+  width: 100%;
+  max-width: 620px;
+  background: rgba(12, 14, 20, 0.78);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 16px;
+  padding: 28px;
+  max-height: calc(100vh - 80px);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  position: relative;
+  animation: slideUp 0.28s ease;
+}
+
+/* TITLE --------------------------------------------------------------- */
+
+.auth-title {
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+/* CLOSE BUTTON -------------------------------------------------------- */
+
+.auth-close {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  background: none;
+  border: none;
+  font-size: 25px;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.75);
+  transition: 0.2s;
+}
+
+.auth-close:hover {
+  color: white;
+}
+
+/* INPUT GROUP --------------------------------------------------------- */
+
+.auth-group {
+  margin-bottom: 18px;
+  display: flex;
+  flex-direction: column;
+}
+
+.auth-group label {
+  font-size: 0.95rem;
+  opacity: 0.90;
+  margin-bottom: 6px;
+}
+
+.auth-group input {
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.05);
+  color: white;
+  width: 100%;
+  transition: border 0.15s ease, background 0.15s ease;
+}
+
+.auth-group input:focus {
+  outline: none;
+  border-color: rgba(96, 165, 250, 0.9);
+  background: rgba(255, 255, 255, 0.09);
+}
+
+/* DISABLE NATIVE EDGE EYE ICON --------------------------------------- */
+
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+  display: none !important;
+}
+
+input[type="password"]::-webkit-credentials-auto-fill-button {
+  visibility: hidden !important;
+  display: none !important;
+}
+
+/* PASSWORD GROUP (WRAPPER REQUIRED) ---------------------------------- */
+
+.password-group {
+  position: relative;
+}
+
+.password-group input {
+  padding-right: 46px !important;
+}
+
+/* CUSTOM EYE BUTTON --------------------------------------------------- */
+
+.eye-btn {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 20 !important;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  color: rgba(255, 255, 255, 0.8);
+  pointer-events: auto;
+}
+
+/* SECOND (CONFIRM) PASSWORD EYE BUTTON ------------------------------- */
+
+#regPwEye2 {
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/* USERNAME SUGGESTION -------------------------------------------------- */
+
+.username-suggestion {
+  margin-top: 4px;
+  font-size: 0.94rem;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.username-suggestion b {
+  font-weight: 700;
+}
+
+/* PASSWORD STRENGTH DOTS ----------------------------------------------- */
+
+.pw-dots {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+  padding-left: 2px;
+  z-index: 1;
+}
+
+.pw-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.20);
+  transition: background 0.2s, box-shadow 0.2s;
+}
+
+.pw-dot.on {
+  background: linear-gradient(90deg, #4ade80, #3b82f6);
+  box-shadow: 0 0 10px rgba(59, 130, 246, 0.6);
+}
+
+/* ERROR MESSAGES ------------------------------------------------------- */
+
+.field-error {
+  color: #f87171;
+  font-size: 0.88rem;
+  min-height: 18px;
+  margin-top: 6px;
+}
+
+/* SUBMIT BUTTON -------------------------------------------------------- */
+
+.auth-submit {
+  width: 100%;
+  padding: 14px 0;
+  border-radius: 12px;
+  background: linear-gradient(90deg, #4ade80, #3b82f6);
+  color: #031b22;
+  border: none;
+  font-size: 1.06rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.2s ease;
+}
+
+.auth-submit:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 28px rgba(59, 130, 246, 0.25);
+}
+
+/* DIVIDER -------------------------------------------------------------- */
+
+.auth-divider {
+  text-align: center;
+  opacity: 0.65;
+  margin: 16px 0;
+}
+
+.auth-divider span {
+  padding: 0 10px;
+}
+
+/* GOOGLE BUTTON -------------------------------------------------------- */
+
+.google-btn {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  background: white;
+  color: #031b22;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.google-btn img {
+  width: 18px;
+  height: 18px;
+}
+
+/* ANIMATION ------------------------------------------------------------ */
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* RESPONSIVE ----------------------------------------------------------- */
+
+@media (max-width: 640px) {
+  .auth-card {
+    max-width: 520px;
+    padding: 20px;
+  }
+
+  .eye-btn {
+    top: 50%;
+  }
+}

@@ -1,0 +1,103 @@
+/* ==========================================================================
+   utilities.css
+   Global Utility Classes for SkillTree
+   Clean, minimal, safe to extend anytime
+   ========================================================================== */
+
+/* ------------------------------
+   SPACING
+------------------------------ */
+.mt-6 { margin-top: 6px !important; }
+.mt-10 { margin-top: 10px !important; }
+.mt-14 { margin-top: 14px !important; }
+.mt-20 { margin-top: 20px !important; }
+
+.mb-6 { margin-bottom: 6px !important; }
+.mb-10 { margin-bottom: 10px !important; }
+.mb-14 { margin-bottom: 14px !important; }
+.mb-20 { margin-bottom: 20px !important; }
+
+/* Padding */
+.p-6 { padding: 6px !important; }
+.p-10 { padding: 10px !important; }
+.p-14 { padding: 14px !important; }
+.p-20 { padding: 20px !important; }
+
+/* Gap */
+.gap-6 { gap: 6px !important; }
+.gap-10 { gap: 10px !important; }
+.gap-14 { gap: 14px !important; }
+.gap-20 { gap: 20px !important; }
+
+/* ------------------------------
+   FLEX & LAYOUT
+------------------------------ */
+.flex { display: flex !important; }
+.flex-col { flex-direction: column !important; }
+.flex-center { display: flex !important; justify-content: center !important; align-items: center !important; }
+.flex-between { display: flex !important; justify-content: space-between !important; }
+
+.w-full { width: 100% !important; }
+.h-full { height: 100% !important; }
+
+.rounded { border-radius: 10px !important; }
+.rounded-lg { border-radius: 14px !important; }
+.rounded-xl { border-radius: 18px !important; }
+
+/* ------------------------------
+   TEXT & COLORS
+------------------------------ */
+.text-center { text-align: center !important; }
+.text-muted { color: rgba(255,255,255,0.7) !important; }
+.text-soft { color: rgba(255,255,255,0.5) !important; }
+.text-bright { color: rgba(255,255,255,0.95) !important; }
+
+/* Gradients (matches your theme) */
+.bg-gradient-green-blue {
+  background: linear-gradient(90deg, #4ade80, #3b82f6) !important;
+}
+
+/* ------------------------------
+   ANIMATIONS
+------------------------------ */
+.fade-in {
+  animation: fadeIn 0.25s ease-out forwards;
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.slide-up {
+  animation: slideUp 0.3s ease forwards;
+}
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(22px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ------------------------------
+   INPUT HELPERS
+------------------------------ */
+.input-error {
+  border-color: rgba(255, 0, 0, 0.5) !important;
+}
+
+.input-focus {
+  border-color: #4ade80 !important;
+  box-shadow: 0 0 0 2px rgba(74, 222, 128, 0.25) !important;
+}
+
+/* ------------------------------
+   HIDDEN / VISIBILITY
+------------------------------ */
+.hidden { display: none !important; }
+.visible { display: block !important; }
+
+/* ------------------------------
+   SCROLL FIXES FOR iOS & SAFARI
+------------------------------ */
+.scroll-smooth {
+  -webkit-overflow-scrolling: touch !important;
+  scroll-behavior: smooth !important;
+}
