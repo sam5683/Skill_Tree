@@ -13,7 +13,7 @@
   // Lightweight selectors
   const $ = (s, ctx = document) => ctx.querySelector(s);
   const $$ = (s, ctx = document) => Array.from(ctx.querySelectorAll(s));
-
+  const API_BASE = "http://127.0.0.1:8000/api/v1";
   const signinModal = $("#signinModal");
   const signupModal = $("#signupModal");
   const cursorEl = $("#cursorWhiteHole");
@@ -261,7 +261,7 @@
       }
 
       try {
-        const res = await fetch("/api/users/login", {
+        const res = await fetch(`${API_BASE}/login`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ email: email.value, password: pw.value })
@@ -271,8 +271,10 @@
           pwErr.textContent = "Invalid credentials";
           return;
         }
-
+        const data = await res.json();
+        localStorage.setItem("access_token", data.access_token);
         window.location.href = "dashboard.html";
+
       } catch (err) {
         pwErr.textContent = "Network error";
       }
@@ -469,15 +471,14 @@
       }
 
       const payload = {
-        fullName: fullName.value.trim(),
         username: uname,
         email: email.value.trim(),
-        dateOfBirth: $("#dob").value,
+        dob: $("#dob").value,
         password: pw.value
       };
 
       try {
-        const res = await fetch("/api/users/register", {
+        const res = await fetch(`${API_BASE}/register`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload)
@@ -487,8 +488,10 @@
           const d = await res.json().catch(() => ({}));
           return alert(d.message || "Signup failed");
         }
-
+        const data = await res.json();
+        localStorage.setItem("access_token", data.access_token);
         window.location.href = "dashboard.html";
+
       } catch (err) {
         alert("Network error");
       }

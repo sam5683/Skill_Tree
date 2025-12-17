@@ -9,13 +9,16 @@
 
   <!-- CSP with CDN allowed -->
   <meta http-equiv="Content-Security-Policy"
-        content="
-          default-src 'self' data: blob: https://cdn.jsdelivr.net;
-          img-src 'self' data: https://cdn.jsdelivr.net https://www.gstatic.com https://www.google.com;
-          style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net;
-          script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net;
-          connect-src 'self' http://localhost:8080;
-        ">
+      content="
+        default-src 'self';
+        connect-src 'self'
+          http://127.0.0.1:8000
+          http://localhost:8000
+          http://localhost:8080;
+        img-src 'self' data:;
+        style-src 'self' 'unsafe-inline';
+        script-src 'self';
+      ">
 
   <!-- Tailwind Build -->
   <link rel="stylesheet" href="dist/output.css">
