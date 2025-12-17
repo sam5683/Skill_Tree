@@ -1,21 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>SkillTree — Dashboard</title>
 
-  <link rel="stylesheet" href="../dist/output.css">
-  <!--auth -->
+  <link rel="stylesheet" href="../dist/output.css" />
+
+  <!-- Auth guard (KEEP) -->
   <script src="assets/js/auth-guard.js"></script>
-
-
-  <!-- Three.js -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r152/three.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r152/examples/js/controls/OrbitControls.js"></script>
 </head>
 
-<body class="dashboard-body dark">
+<body class="dashboard-body dark h-screen overflow-hidden">
 
   <!-- HEADER -->
   <header class="dashboard-header glass flex items-center justify-between px-6 py-3">
@@ -25,18 +21,16 @@
     </div>
 
     <div class="flex items-center gap-4">
-      <input id="globalSearch" class="glass search-input" placeholder="Search skills...">
-
-      <!-- Theme Toggle Button -->
-      <button id="themeToggle" class="text-xl opacity-70 hover:opacity-100 transition-opacity" title="Toggle Theme">
-        🌙
-      </button>
+      <input
+        class="glass search-input"
+        placeholder="Search notes..."
+        disabled
+      />
 
       <div class="relative">
-        <button id="profileBtn" class="profile-button">S</button>
-        <div id="profileMenu" class="profile-menu hidden">
-          <button data-action="edit-profile">Edit Profile</button>
-          <button data-action="settings">Settings</button>
+        <button class="profile-button">S</button>
+        <div class="profile-menu hidden">
+          <button>Settings</button>
           <button data-action="logout">Logout</button>
         </div>
       </div>
@@ -44,155 +38,72 @@
   </header>
 
   <!-- MAIN LAYOUT -->
-  <main id="stage">
+  <main class="h-[calc(100vh-64px)] grid grid-cols-[240px_320px_1fr]">
 
-    <!-- LEFT AREA: Tree Canvas -->
-    <section class="tree-area glass relative">
+    <!-- LEFT: Skills (STATIC PLACEHOLDER) -->
+    <aside class="glass p-4 border-r border-white/10 overflow-y-auto">
+      <h2 class="text-xs uppercase opacity-60 mb-3">Skills</h2>
 
-      <!-- Loading State -->
-      <div id="treeLoader" class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 z-10 rounded-xl">
-        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-accent"></div>
+      <ul class="space-y-2 text-sm">
+        <li class="px-2 py-1 rounded bg-white/10">Python</li>
+        <li class="px-2 py-1 rounded hover:bg-white/10 cursor-pointer">DSA</li>
+        <li class="px-2 py-1 rounded hover:bg-white/10 cursor-pointer">Backend</li>
+        <li class="px-2 py-1 rounded hover:bg-white/10 cursor-pointer">System Design</li>
+      </ul>
+
+      <!--
+        FUTURE:
+        - Skill tree canvas
+        - Node selection
+      -->
+    </aside>
+
+    <!-- MIDDLE: Notes List -->
+    <section class="glass p-4 border-r border-white/10 flex flex-col">
+      <div class="flex items-center justify-between mb-3">
+        <h2 class="text-xs uppercase opacity-60">Notes</h2>
+        <button class="btn-primary text-xs px-2 py-1">+ Add Note</button>
       </div>
 
-      <!-- Three.js Canvas Injected Here -->
-      <div id="treeCanvasContainer" class="tree-canvas"></div>
+      <div class="flex-1 overflow-y-auto space-y-2">
+        <!-- Static placeholder notes -->
+        <div class="p-2 rounded bg-white/10 cursor-pointer">
+          <div class="font-medium text-sm">JWT Basics</div>
+          <div class="text-xs opacity-60">2 days ago</div>
+        </div>
 
-      <!-- Character Panel -->
-      <div id="charPanel" class="char-panel glass">
-        <img src="assets/images/character.png"
-             class="char-img"
-             alt="User Character Avatar"
-             onerror="this.src='https://via.placeholder.com/100'">
-        <div class="char-name">Learner</div>
-        <div class="char-level">Level 2 — Loops</div>
-        <button id="openCharBtn" class="btn-primary">View</button>
+        <div class="p-2 rounded hover:bg-white/10 cursor-pointer">
+          <div class="font-medium text-sm">Python Decorators</div>
+          <div class="text-xs opacity-60">Yesterday</div>
+        </div>
+
+        <div class="p-2 rounded hover:bg-white/10 cursor-pointer">
+          <div class="font-medium text-sm">FastAPI Lifecycle</div>
+          <div class="text-xs opacity-60">Today</div>
+        </div>
       </div>
-
     </section>
 
-    <!-- RIGHT SIDEBAR -->
-    <aside class="right-sidebar">
+    <!-- RIGHT: Note Detail -->
+    <section class="glass p-6 overflow-y-auto">
+      <h2 class="text-lg font-semibold mb-1">JWT Basics</h2>
+      <div class="text-xs opacity-60 mb-4">Last updated: just now</div>
 
-      <!-- Profile -->
-      <div class="glass p-4 rounded-xl">
-        <div class="text-sm opacity-70">Welcome back,</div>
-        <div class="font-semibold text-lg">Sameer • Level 2</div>
+      <div class="text-sm leading-relaxed space-y-3">
+        <p>
+          This is a placeholder for the selected note’s content.
+        </p>
 
-        <div class="progress-bar mt-3">
-          <div id="progressFill"></div>
-        </div>
+        <p class="opacity-60 italic">
+          SRS preview, AI summaries, and exports will appear here later.
+        </p>
       </div>
+    </section>
 
-      <!-- Notes (with extra spacing) -->
-      <div id="notesPanel" class="glass p-4 rounded-xl mt-4">
-        <div class="flex justify-between items-center">
-          <div class="font-semibold">Notes</div>
-          <div class="text-xs opacity-60">Attach to a node</div>
-        </div>
-
-        <select id="nodeSelector" class="input w-full mt-3" aria-label="Choose node"></select>
-
-        <textarea id="noteEditor" class="notes-box mt-3" placeholder="Write your notes..."></textarea>
-
-        <div class="note-buttons">
-          <button id="saveNote" class="btn-primary">Save</button>
-          <button id="clearNote" class="btn-secondary">Clear</button>
-          <button id="openBookView" class="btn-primary">Book View</button>
-        </div>
-
-        <div id="bookContainer" class="book-container hidden"></div>
-      </div>
-
-      <!-- Quick Actions (with extra spacing) -->
-      <div class="glass p-4 rounded-xl mt-4">
-        <div class="font-semibold mb-2">Quick Actions</div>
-        <button class="btn-primary w-full mb-2" id="plantSkillBtn">Plant New Skill</button>
-        <button class="btn-secondary w-full mb-2" id="openAIQuick">Ask AI to Summarize</button>
-        <button class="btn-secondary w-full" id="exportPdf">Export Notes</button>
-      </div>
-
-    </aside>
   </main>
 
-  <!-- CHAT ASSISTANT -->
-  <div id="aiChat" class="ai-chat hidden">
-    <div class="chat-header">
-      <div class="chat-title">SkillTree AI Assistant</div>
-      <button id="minimizeAi" class="minimize-btn">_</button>
-    </div>
+  <!-- Logout script (KEEP) -->
+  <script src="assets/js/logout.js"></script>
 
-    <div id="chatBody" class="chat-body"></div>
-
-    <div class="chat-input-area">
-      <input id="chatInput" class="chat-input" placeholder="Ask the assistant...">
-      <button id="sendChat" class="btn-primary">Send</button>
-    </div>
-  </div>
-
-  <!-- CHARACTER MODAL -->
-  <div id="charModal" class="modal hidden"></div>
-
-  <!-- SKILL EDITOR MODAL -->
-  <div id="skillEditor" class="modal hidden"></div>
-
-  <!-- Scripts (Optimized Order) -->
-  <script src="assets/js/ui.js"></script>
-
-  <script>
-    // DOM Ready for Notes and Chat
-    document.addEventListener('DOMContentLoaded', function() {
-      // Load notes.js and chat.js here if needed, but since src, they are deferred implicitly
-    });
-  </script>
-
-  <script src="assets/js/notes.js"></script>
-  <script src="assets/js/chat.js"></script>
-
-  <!-- Three.js Scripts Last (Heavy) -->
-  <script src="assets/js/three-2d.js"></script>
-  <script src="assets/js/three-3d.js"></script>
-  
-  <!-- Inline Script for Theme Toggle and Resize Handling -->
-  <script>
-    // Theme Toggle
-    const themeToggle = document.getElementById('themeToggle');
-    const body = document.body;
-    themeToggle.addEventListener('click', () => {
-      body.classList.toggle('light');
-      body.classList.toggle('dark');
-      // Update icon (simple emoji switch)
-      themeToggle.textContent = body.classList.contains('dark') ? '🌙' : '☀️';
-      // Persist in localStorage
-      localStorage.setItem('theme', body.classList.contains('dark') ? 'dark' : 'light');
-    });
-
-    // Load saved theme
-    const savedTheme = localStorage.getItem('theme') || 'dark';
-    if (savedTheme === 'light') {
-      body.classList.remove('dark');
-      body.classList.add('light');
-      themeToggle.textContent = '☀️';
-    }
-
-    // Three.js Resize Handling (Global)
-    window.addEventListener('resize', function() {
-      const container = document.getElementById('treeCanvasContainer');
-      if (container && window.THREE && window.scene && window.camera && window.renderer) {
-        const width = container.clientWidth;
-        const height = container.clientHeight;
-        window.camera.aspect = width / height;
-        window.camera.updateProjectionMatrix();
-        window.renderer.setSize(width, height);
-      }
-    });
-
-    // Hide Loader After Tree Load (Assume three-3d.js exposes a ready event or call this)
-    // For now, hide after a delay or on init; adjust in three-3d.js to call: document.getElementById('treeLoader').classList.add('hidden');
-    setTimeout(() => {
-      const loader = document.getElementById('treeLoader');
-      if (loader) loader.classList.add('hidden');
-    }, 2000); // Placeholder; replace with actual init signal
-  </script>
-<script src="assets/js/logout.js"></script>
 </body>
 </html>
