@@ -1,12 +1,14 @@
+// assets/js/logout.js
 (() => {
   const logoutBtn = document.querySelector('[data-action="logout"]');
   if (!logoutBtn) return;
 
   logoutBtn.addEventListener("click", () => {
-    // 1. Remove token
+    // Clear auth
     localStorage.removeItem("access_token");
+    localStorage.removeItem("token_type");
 
-    // 2. Redirect to login page
+    // Hard redirect (prevents back navigation)
     window.location.replace("index.html");
   });
 })();

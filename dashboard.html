@@ -50,12 +50,6 @@
         <li class="px-2 py-1 rounded hover:bg-white/10 cursor-pointer">Backend</li>
         <li class="px-2 py-1 rounded hover:bg-white/10 cursor-pointer">System Design</li>
       </ul>
-
-      <!--
-        FUTURE:
-        - Skill tree canvas
-        - Node selection
-      -->
     </aside>
 
     <!-- MIDDLE: Notes List -->
@@ -65,45 +59,73 @@
         <button class="btn-primary text-xs px-2 py-1">+ Add Note</button>
       </div>
 
-      <div class="flex-1 overflow-y-auto space-y-2">
-        <!-- Static placeholder notes -->
-        <div class="p-2 rounded bg-white/10 cursor-pointer">
-          <div class="font-medium text-sm">JWT Basics</div>
-          <div class="text-xs opacity-60">2 days ago</div>
-        </div>
-
-        <div class="p-2 rounded hover:bg-white/10 cursor-pointer">
-          <div class="font-medium text-sm">Python Decorators</div>
-          <div class="text-xs opacity-60">Yesterday</div>
-        </div>
-
-        <div class="p-2 rounded hover:bg-white/10 cursor-pointer">
-          <div class="font-medium text-sm">FastAPI Lifecycle</div>
-          <div class="text-xs opacity-60">Today</div>
-        </div>
+      <!-- THIS IS THE IMPORTANT PART -->
+      <div
+        id="notesList"
+        class="flex-1 overflow-y-auto space-y-2"
+      >
+        <!-- Notes from backend will render here -->
       </div>
     </section>
 
     <!-- RIGHT: Note Detail -->
     <section class="glass p-6 overflow-y-auto">
-      <h2 class="text-lg font-semibold mb-1">JWT Basics</h2>
-      <div class="text-xs opacity-60 mb-4">Last updated: just now</div>
+      <h2
+        id="noteTitle"
+        class="text-lg font-semibold mb-1"
+      >
+        Select a note
+      </h2>
 
-      <div class="text-sm leading-relaxed space-y-3">
-        <p>
-          This is a placeholder for the selected note’s content.
-        </p>
+      <div class="text-xs opacity-60 mb-4">
+        Note details
+      </div>
 
-        <p class="opacity-60 italic">
-          SRS preview, AI summaries, and exports will appear here later.
-        </p>
+      <div
+        id="noteContent"
+        class="text-sm leading-relaxed opacity-70"
+      >
+        Click a note from the list to view its content.
       </div>
     </section>
 
   </main>
+  <!-- Create Note Modal -->
+<div
+  id="createNoteModal"
+  class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50"
+>
+  <div class="glass w-[420px] p-4 rounded-lg">
+    <h3 class="text-sm font-semibold mb-3">Create Note</h3>
+
+    <input
+      id="newNoteTitle"
+      class="w-full mb-2 px-2 py-1 text-sm bg-white/10 rounded"
+      placeholder="Note title"
+    />
+
+    <textarea
+      id="newNoteContent"
+      class="w-full h-32 px-2 py-1 text-sm bg-white/10 rounded resize-none"
+      placeholder="Write your note..."
+    ></textarea>
+
+    <div class="flex justify-end gap-2 mt-3">
+      <button id="cancelCreateNote" class="text-xs opacity-60">
+        Cancel
+      </button>
+      <button id="saveCreateNote" class="btn-primary text-xs px-3 py-1">
+        Save
+      </button>
+    </div>
+  </div>
+</div>
 
   <!-- Logout script (KEEP) -->
   <script src="assets/js/logout.js"></script>
+
+  <!-- Notes logic -->
+  <script src="assets/js/dashboard-notes.js"></script>
 
 </body>
 </html>

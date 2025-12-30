@@ -247,39 +247,49 @@
     }
 
     $("#loginBtn").addEventListener("click", async () => {
-      emailErr.textContent = "";
-      pwErr.textContent = "";
+  emailErr.textContent = "";
+  pwErr.textContent = "";
 
-      if (!/^\S+@\S+\.\S+$/.test(email.value)) {
-        emailErr.textContent = "Enter a valid email";
-        return;
-      }
-
-      if (pw.value.length < 8) {
-        pwErr.textContent = "Password too short";
-        return;
-      }
-
-      try {
-        const res = await fetch(`${API_BASE}/login`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email: email.value, password: pw.value })
-        });
-
-        if (!res.ok) {
-          pwErr.textContent = "Invalid credentials";
-          return;
-        }
-        const data = await res.json();
-        localStorage.setItem("access_token", data.access_token);
-        window.location.href = "dashboard.html";
-
-      } catch (err) {
-        pwErr.textContent = "Network error";
-      }
-    });
+  if (!/^\S+@\S+\.\S+$/.test(email.value)) {
+    emailErr.textContent = "Enter a valid email";
+    return;
   }
+
+  if (pw.value.length < 8) {
+    pwErr.textContent = "Password too short";
+    return;
+  }
+
+  try {
+    const res = await fetch(`${API_BASE}/auth/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: new URLSearchParams({
+        username: email.value, // OAuth2 expects "username"
+        password: pw.value,
+      }),
+    });
+
+    if (!res.ok) {
+      pwErr.textContent = "Invalid credentials";
+      return;
+    }
+
+    const data = await res.json();
+
+    // ✅ store token exactly once
+    localStorage.setItem("access_token", data.access_token);
+    localStorage.setItem("token_type", data.token_type);
+
+    window.location.href = "dashboard.html";
+
+  } catch (err) {
+    pwErr.textContent = "Network error";
+  }
+});
+}
 
   /* ------------------------------
      Signup setup - core improvements
@@ -501,3 +511,4 @@
   // Initialize nothing until modal opens (we only bind when modals are mounted)
   // Exports: none
 })();
+
