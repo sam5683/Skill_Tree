@@ -2,6 +2,9 @@
 
 const API_BASE = "http://127.0.0.1:8000/api/v1";
 
+let selectedNoteId = null;
+
+
 /* -------------------- TOKEN UTILS -------------------- */
 function getToken() {
   return localStorage.getItem("access_token");
@@ -58,23 +61,31 @@ function renderNotesList(notes) {
   }
 
   notes.forEach((note) => {
-    const item = document.createElement("div");
-    item.className =
-      "p-2 rounded bg-white/10 hover:bg-white/20 cursor-pointer";
+  const item = document.createElement("div");
 
-    item.innerHTML = `
-      <div class="font-medium text-sm">${note.title}</div>
-      <div class="text-xs opacity-60">
-        ${new Date(note.created_at).toLocaleDateString()}
-      </div>
-    `;
+  const isSelected = note.id === selectedNoteId;
 
-    item.addEventListener("click", () => {
-      fetchNoteDetail(note.id);
-    });
+  item.className = `
+    p-2 rounded cursor-pointer
+    ${isSelected ? "bg-white/30" : "bg-white/10 hover:bg-white/20"}
+  `;
 
-    container.appendChild(item);
+  item.innerHTML = `
+    <div class="font-medium text-sm">${note.title}</div>
+    <div class="text-xs opacity-60">
+      ${new Date(note.created_at).toLocaleDateString()}
+    </div>
+  `;
+
+  item.addEventListener("click", () => {
+    selectedNoteId = note.id;        // 👈 STATE UPDATE
+    fetchNoteDetail(note.id);
+    renderNotesList(notes);          // 👈 RE-RENDER
   });
+
+  container.appendChild(item);
+  });
+
 }
 
 /* -------------------- FETCH NOTE DETAIL -------------------- */
@@ -106,14 +117,171 @@ function renderNoteDetail(note) {
   const titleEl = document.getElementById("noteTitle");
   const contentEl = document.getElementById("noteContent");
 
-  if (!titleEl || !contentEl) {
-    console.error("❌ Note detail DOM missing");
-    return;
-  }
+  if (!titleEl || !contentEl) return;
 
   titleEl.textContent = note.title;
-  contentEl.textContent = note.content;
+
+  const updatedAtText = note.updated_at
+    ? new Date(note.updated_at).toLocaleString()
+    : "Never";
+
+  contentEl.innerHTML = `
+    <div class="mb-4">
+      <div class="text-xs opacity-60 mb-1">Summary</div>
+
+      <div class="text-sm bg-white/5 p-2 rounded">
+        ${note.summary ?? "No summary yet"}
+      </div>
+
+      <div class="text-[10px] opacity-50 mt-1">
+        Last summary update: ${updatedAtText}
+      </div>
+    </div>
+
+    <div>
+      <div class="text-xs opacity-60 mb-1">Content</div>
+      <div class="text-sm leading-relaxed">
+        ${note.content}
+      </div>
+    </div>
+  `;
 }
+
+
+/* -------------------- EDIT NOTE -------------------- */
+
+function setupEditNote() {
+  const editBtn = document.getElementById("editNoteBtn");
+  const deleteBtn = document.getElementById("deleteNoteBtn");
+
+  const editor = document.getElementById("noteEditor");
+  const contentView = document.getElementById("noteContent");
+  const actions = document.getElementById("noteEditorActions");
+
+  const saveBtn = document.getElementById("saveEditBtn");
+  const cancelBtn = document.getElementById("cancelEditBtn");
+
+  if (!editBtn) return;
+
+  editBtn.onclick = () => {
+    editor.value = contentView.textContent;
+    editor.classList.remove("hidden");
+    actions.classList.remove("hidden");
+    contentView.classList.add("hidden");
+  };
+
+  cancelBtn.onclick = () => {
+    editor.classList.add("hidden");
+    actions.classList.add("hidden");
+    contentView.classList.remove("hidden");
+  };
+
+  saveBtn.onclick = async () => {
+    if (!selectedNoteId) return;
+
+    const token = requireToken();
+    if (!token) return;
+
+    const title = document.getElementById("noteTitle").textContent;
+    const content = editor.value.trim();
+
+    const res = await fetch(`${API_BASE}/notes/${selectedNoteId}`, {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ title, content }),
+    });
+
+    if (!res.ok) {
+      alert("Update failed");
+      return;
+    }
+
+    editor.classList.add("hidden");
+    actions.classList.add("hidden");
+    contentView.classList.remove("hidden");
+
+    fetchNoteDetail(selectedNoteId);
+    fetchNotes();
+  };
+}
+
+
+function setupDeleteNote() {
+  const deleteBtn = document.getElementById("deleteNoteBtn");
+
+  deleteBtn.onclick = async () => {
+    if (!selectedNoteId) return;
+
+    if (!confirm("Delete this note permanently?")) return;
+
+    const token = requireToken();
+    if (!token) return;
+
+    const res = await fetch(`${API_BASE}/notes/${selectedNoteId}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!res.ok) {
+      alert("Delete failed");
+      return;
+    }
+
+    selectedNoteId = null;
+    document.getElementById("noteTitle").textContent = "Select a note";
+    document.getElementById("noteContent").textContent =
+      "Click a note from the list to view its content.";
+
+    fetchNotes();
+  };
+}
+
+/* -------------------- REGENERATE SUMMARY -------------------- */
+function setupRegenerateSummary() {
+  const btn = document.getElementById("regenSummaryBtn");
+  if (!btn) return;
+
+  btn.onclick = async () => {
+    console.log("[UI] Regenerate Summary clicked. Note ID:", selectedNoteId);
+
+    if (!selectedNoteId) {
+      alert("Select a note first");
+      return;
+    }
+
+    const token = requireToken();
+    if (!token) return;
+
+    try {
+      const res = await fetch(
+        `${API_BASE}/notes/${selectedNoteId}/regenerate-summary`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status}`);
+      }
+
+      const note = await res.json();
+      console.log("[API] Regenerated summary:", note.summary);
+
+      renderNoteDetail(note);
+    } catch (err) {
+      console.error("Summary regeneration failed", err);
+    }
+  };
+}
+
 
 /* -------------------- CREATE NOTE -------------------- */
 function setupCreateNote() {
@@ -168,6 +336,7 @@ function setupCreateNote() {
       modal.classList.add("hidden");
       modal.classList.remove("flex");
 
+      selectedNoteId = note.id;
       await fetchNotes();
       fetchNoteDetail(note.id);
     } catch (err) {
@@ -181,4 +350,8 @@ document.addEventListener("DOMContentLoaded", () => {
   requireToken();        // enforce auth FIRST
   fetchNotes();          // then load data
   setupCreateNote();     // wire UI
+  setupEditNote();
+  setupDeleteNote();
+  setupRegenerateSummary();
+
 });

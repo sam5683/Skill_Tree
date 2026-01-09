@@ -21,11 +21,7 @@
     </div>
 
     <div class="flex items-center gap-4">
-      <input
-        class="glass search-input"
-        placeholder="Search notes..."
-        disabled
-      />
+      <input class="glass search-input" placeholder="Search notes..." disabled />
 
       <div class="relative">
         <button class="profile-button">S</button>
@@ -37,13 +33,12 @@
     </div>
   </header>
 
-  <!-- MAIN LAYOUT -->
+  <!-- MAIN -->
   <main class="h-[calc(100vh-64px)] grid grid-cols-[240px_320px_1fr]">
 
-    <!-- LEFT: Skills (STATIC PLACEHOLDER) -->
+    <!-- LEFT -->
     <aside class="glass p-4 border-r border-white/10 overflow-y-auto">
       <h2 class="text-xs uppercase opacity-60 mb-3">Skills</h2>
-
       <ul class="space-y-2 text-sm">
         <li class="px-2 py-1 rounded bg-white/10">Python</li>
         <li class="px-2 py-1 rounded hover:bg-white/10 cursor-pointer">DSA</li>
@@ -52,34 +47,43 @@
       </ul>
     </aside>
 
-    <!-- MIDDLE: Notes List -->
+    <!-- MIDDLE -->
     <section class="glass p-4 border-r border-white/10 flex flex-col">
       <div class="flex items-center justify-between mb-3">
         <h2 class="text-xs uppercase opacity-60">Notes</h2>
         <button class="btn-primary text-xs px-2 py-1">+ Add Note</button>
       </div>
 
-      <!-- THIS IS THE IMPORTANT PART -->
-      <div
-        id="notesList"
-        class="flex-1 overflow-y-auto space-y-2"
-      >
-        <!-- Notes from backend will render here -->
-      </div>
+      <div id="notesList" class="flex-1 overflow-y-auto space-y-2"></div>
     </section>
 
-    <!-- RIGHT: Note Detail -->
+    <!-- RIGHT -->
     <section class="glass p-6 overflow-y-auto">
-      <h2
-        id="noteTitle"
-        class="text-lg font-semibold mb-1"
-      >
-        Select a note
-      </h2>
 
-      <div class="text-xs opacity-60 mb-4">
-        Note details
+      <div class="flex justify-between items-center mb-2">
+        <h2 id="noteTitle" class="text-lg font-semibold">
+          Select a note
+        </h2>
+
+        <div class="flex gap-2">
+          <button id="editNoteBtn" class="text-xs opacity-60 hover:opacity-100">
+            Edit
+          </button>
+          <button type="button" id="regenSummaryBtn" class="text-xs opacity-60 hover:opacity-100">
+            Regenerate Summary
+          </button>
+          <button id="deleteNoteBtn" class="text-xs text-red-400 hover:text-red-500">
+            Delete
+          </button>
+        </div>
       </div>
+
+      <div class="text-xs opacity-60 mb-4">Note details</div>
+
+      <textarea
+        id="noteEditor"
+        class="hidden w-full h-48 p-2 text-sm bg-white/10 rounded resize-none"
+      ></textarea>
 
       <div
         id="noteContent"
@@ -87,44 +91,41 @@
       >
         Click a note from the list to view its content.
       </div>
+
+      <div id="noteEditorActions" class="hidden mt-3 flex gap-2">
+        <button id="saveEditBtn" class="btn-primary text-xs px-3 py-1">
+          Save
+        </button>
+        <button id="cancelEditBtn" class="text-xs opacity-60">
+          Cancel
+        </button>
+      </div>
+
     </section>
-
   </main>
-  <!-- Create Note Modal -->
-<div
-  id="createNoteModal"
-  class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50"
->
-  <div class="glass w-[420px] p-4 rounded-lg">
-    <h3 class="text-sm font-semibold mb-3">Create Note</h3>
 
-    <input
-      id="newNoteTitle"
-      class="w-full mb-2 px-2 py-1 text-sm bg-white/10 rounded"
-      placeholder="Note title"
-    />
+  <!-- CREATE NOTE MODAL -->
+  <div id="createNoteModal"
+       class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
+    <div class="glass w-[420px] p-4 rounded-lg">
+      <h3 class="text-sm font-semibold mb-3">Create Note</h3>
 
-    <textarea
-      id="newNoteContent"
-      class="w-full h-32 px-2 py-1 text-sm bg-white/10 rounded resize-none"
-      placeholder="Write your note..."
-    ></textarea>
+      <input id="newNoteTitle"
+             class="w-full mb-2 px-2 py-1 text-sm bg-white/10 rounded"
+             placeholder="Note title" />
 
-    <div class="flex justify-end gap-2 mt-3">
-      <button id="cancelCreateNote" class="text-xs opacity-60">
-        Cancel
-      </button>
-      <button id="saveCreateNote" class="btn-primary text-xs px-3 py-1">
-        Save
-      </button>
+      <textarea id="newNoteContent"
+                class="w-full h-32 px-2 py-1 text-sm bg-white/10 rounded resize-none"
+                placeholder="Write your note..."></textarea>
+
+      <div class="flex justify-end gap-2 mt-3">
+        <button id="cancelCreateNote" class="text-xs opacity-60">Cancel</button>
+        <button id="saveCreateNote" class="btn-primary text-xs px-3 py-1">Save</button>
+      </div>
     </div>
   </div>
-</div>
 
-  <!-- Logout script (KEEP) -->
   <script src="assets/js/logout.js"></script>
-
-  <!-- Notes logic -->
   <script src="assets/js/dashboard-notes.js"></script>
 
 </body>
