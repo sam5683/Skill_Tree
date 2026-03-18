@@ -4,7 +4,6 @@ const API_BASE = "http://127.0.0.1:8000/api/v1";
 
 let selectedNoteId = null;
 
-
 /* -------------------- TOKEN UTILS -------------------- */
 function getToken() {
   return localStorage.getItem("access_token");
@@ -47,46 +46,42 @@ async function fetchNotes() {
 /* -------------------- RENDER NOTES LIST -------------------- */
 function renderNotesList(notes) {
   const container = document.getElementById("notesList");
-  if (!container) {
-    console.error("❌ notesList container not found");
-    return;
-  }
+  if (!container) return;
 
   container.innerHTML = "";
 
   if (!notes || notes.length === 0) {
-    container.innerHTML =
-      `<div class="text-sm opacity-60">No notes yet</div>`;
+    container.innerHTML = `<div class="text-sm opacity-60">No notes yet</div>`;
     return;
   }
 
   notes.forEach((note) => {
-  const item = document.createElement("div");
+    const item = document.createElement("div");
 
-  const isSelected = note.id === selectedNoteId;
+    const isSelected = note.id === selectedNoteId;
 
-  item.className = `
-    p-2 rounded cursor-pointer
-    ${isSelected ? "bg-white/30" : "bg-white/10 hover:bg-white/20"}
-  `;
+    item.className = `
+      p-2 rounded cursor-pointer
+      ${isSelected ? "bg-white/30" : "bg-white/10 hover:bg-white/20"}
+    `;
 
-  item.innerHTML = `
-    <div class="font-medium text-sm">${note.title}</div>
-    <div class="text-xs opacity-60">
-      ${new Date(note.created_at).toLocaleDateString()}
-    </div>
-  `;
+    item.innerHTML = `
+      <div class="font-medium text-sm">${note.title}</div>
+      <div class="text-xs opacity-60">
+        ${new Date(note.created_at).toLocaleDateString()}
+      </div>
+    `;
 
-  item.addEventListener("click", () => {
-    selectedNoteId = note.id;        // 👈 STATE UPDATE
-    fetchNoteDetail(note.id);
-    renderNotesList(notes);          // 👈 RE-RENDER
+    item.addEventListener("click", () => {
+      selectedNoteId = note.id;
+      fetchNoteDetail(note.id);
+      renderNotesList(notes);
+    });
+
+    container.appendChild(item);
   });
-
-  container.appendChild(item);
-  });
-
 }
+
 
 /* -------------------- FETCH NOTE DETAIL -------------------- */
 async function fetchNoteDetail(noteId) {
@@ -111,7 +106,6 @@ async function fetchNoteDetail(noteId) {
     console.error("❌ Failed to fetch note detail:", err);
   }
 }
-
 /* -------------------- RENDER NOTE DETAIL -------------------- */
 function renderNoteDetail(note) {
   const titleEl = document.getElementById("noteTitle");
@@ -125,7 +119,30 @@ function renderNoteDetail(note) {
     ? new Date(note.updated_at).toLocaleString()
     : "Never";
 
+  // ✅ FIXED: tags now have data-tag
+  const tagsHTML =
+    note.tags && note.tags.length
+      ? `
+      <div class="mb-4">
+        <div class="text-xs opacity-60 mb-1">Tags</div>
+        <div class="flex flex-wrap gap-2">
+          ${note.tags
+            .map(
+              (tag) =>
+                `<span 
+                  class="text-xs px-2 py-1 bg-white/10 rounded cursor-pointer hover:bg-white/20"
+                  data-tag="${tag}"
+                >${tag}</span>`
+            )
+            .join("")}
+        </div>
+      </div>
+    `
+      : "";
+
   contentEl.innerHTML = `
+    ${tagsHTML}
+
     <div class="mb-4">
       <div class="text-xs opacity-60 mb-1">Summary</div>
 
@@ -145,15 +162,35 @@ function renderNoteDetail(note) {
       </div>
     </div>
   `;
+
+  // ✅ IMPORTANT: attach AFTER render
+  document.querySelectorAll("[data-tag]").forEach((el) => {
+    el.addEventListener("click", async () => {
+      const tag = el.getAttribute("data-tag");
+
+      const token = requireToken();
+      if (!token) return;
+
+      try {
+        const res = await fetch(`${API_BASE}/notes?tag=${tag}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!res.ok) throw new Error();
+
+        const notes = await res.json();
+        renderNotesList(notes);
+      } catch (err) {
+        console.error("Tag filter failed", err);
+      }
+    });
+  });
 }
-
-
 /* -------------------- EDIT NOTE -------------------- */
-
 function setupEditNote() {
   const editBtn = document.getElementById("editNoteBtn");
-  const deleteBtn = document.getElementById("deleteNoteBtn");
-
   const editor = document.getElementById("noteEditor");
   const contentView = document.getElementById("noteContent");
   const actions = document.getElementById("noteEditorActions");
@@ -208,7 +245,7 @@ function setupEditNote() {
   };
 }
 
-
+/* -------------------- DELETE NOTE -------------------- */
 function setupDeleteNote() {
   const deleteBtn = document.getElementById("deleteNoteBtn");
 
@@ -233,6 +270,7 @@ function setupDeleteNote() {
     }
 
     selectedNoteId = null;
+
     document.getElementById("noteTitle").textContent = "Select a note";
     document.getElementById("noteContent").textContent =
       "Click a note from the list to view its content.";
@@ -247,8 +285,6 @@ function setupRegenerateSummary() {
   if (!btn) return;
 
   btn.onclick = async () => {
-    console.log("[UI] Regenerate Summary clicked. Note ID:", selectedNoteId);
-
     if (!selectedNoteId) {
       alert("Select a note first");
       return;
@@ -268,13 +304,9 @@ function setupRegenerateSummary() {
         }
       );
 
-      if (!res.ok) {
-        throw new Error(`HTTP ${res.status}`);
-      }
+      if (!res.ok) throw new Error();
 
       const note = await res.json();
-      console.log("[API] Regenerated summary:", note.summary);
-
       renderNoteDetail(note);
     } catch (err) {
       console.error("Summary regeneration failed", err);
@@ -283,21 +315,59 @@ function setupRegenerateSummary() {
 }
 
 
+/*---------------------Search notes---------------------*/
+function setupSearch() {
+  const input = document.querySelector(".search-input");
+
+  if (!input) return;
+
+  input.addEventListener("input", async () => {
+    const query = input.value.trim();
+
+    const token = requireToken();
+    if (!token) return;
+
+    try {
+      let url = `${API_BASE}/notes`;
+
+      if (query) {
+        url += `?search=${encodeURIComponent(query)}`;
+      }
+
+      const res = await fetch(url, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!res.ok) throw new Error();
+
+      const notes = await res.json();
+      renderNotesList(notes);
+    } catch (err) {
+      console.error("Search failed", err);
+    }
+  });
+}
 /* -------------------- CREATE NOTE -------------------- */
 function setupCreateNote() {
   const openBtn = document.querySelector(".btn-primary");
   const modal = document.getElementById("createNoteModal");
+
   const saveBtn = document.getElementById("saveCreateNote");
   const cancelBtn = document.getElementById("cancelCreateNote");
 
   const titleInput = document.getElementById("newNoteTitle");
   const contentInput = document.getElementById("newNoteContent");
+  const tagsInput = document.getElementById("newNoteTags");   // FIXED
 
   if (!openBtn || !modal) return;
 
   openBtn.addEventListener("click", () => {
     titleInput.value = "";
     contentInput.value = "";
+    tagsInput.value = "";
+
     modal.classList.remove("hidden");
     modal.classList.add("flex");
   });
@@ -313,6 +383,11 @@ function setupCreateNote() {
 
     const title = titleInput.value.trim();
     const content = contentInput.value.trim();
+    const tagsRaw = tagsInput.value.trim();
+
+    const tags = tagsRaw
+      ? tagsRaw.split(",").map((t) => t.trim()).filter((t) => t.length > 0)
+      : [];
 
     if (!title || !content) {
       alert("Title and content required");
@@ -326,7 +401,7 @@ function setupCreateNote() {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ title, content }),
+        body: JSON.stringify({ title, content, tags }),
       });
 
       if (!res.ok) throw new Error("Create failed");
@@ -337,6 +412,7 @@ function setupCreateNote() {
       modal.classList.remove("flex");
 
       selectedNoteId = note.id;
+
       await fetchNotes();
       fetchNoteDetail(note.id);
     } catch (err) {
@@ -345,13 +421,13 @@ function setupCreateNote() {
   });
 }
 
-/* -------------------- INIT (THIS WAS YOUR BUG) -------------------- */
+/* -------------------- INIT -------------------- */
 document.addEventListener("DOMContentLoaded", () => {
-  requireToken();        // enforce auth FIRST
-  fetchNotes();          // then load data
-  setupCreateNote();     // wire UI
+  requireToken();
+  fetchNotes();
+  setupCreateNote();
   setupEditNote();
+  setupSearch();
   setupDeleteNote();
   setupRegenerateSummary();
-
 });
