@@ -5,131 +5,165 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>SkillTree — Dashboard</title>
 
-  <link rel="stylesheet" href="../dist/output.css" />
+  <!-- Tailwind -->
+  <link rel="stylesheet" href="dist/output.css" />
 
-  <!-- Auth guard (KEEP) -->
+  <!-- App CSS Structure -->
+  <link rel="stylesheet" href="assets/css/base.css" />
+  <link rel="stylesheet" href="assets/css/layout.css" />
+  <link rel="stylesheet" href="assets/css/components.css" />
+  <link rel="stylesheet" href="assets/css/theme.css" />
+  <link rel="stylesheet" href="assets/css/utilities.css" />
+
+  <!-- Auth -->
   <script src="assets/js/auth-guard.js"></script>
 </head>
 
-<body class="dashboard-body dark h-screen overflow-hidden">
+<body class="dashboard-body">
 
   <!-- HEADER -->
-  <header class="dashboard-header glass flex items-center justify-between px-6 py-3">
-    <div class="flex items-center gap-3">
-      <div class="text-2xl font-bold brand-title">SkillTree</div>
-      <div class="text-sm opacity-60">Grow your learning</div>
-    </div>
+ <header class="dashboard-header flex items-center justify-between px-6">
 
-    <div class="flex items-center gap-4">
-      <input class="glass search-input" placeholder="Search notes..." />
+  <!-- Logo -->
+  <div class="text-xl font-semibold">
+    SkillTree
+  </div>
 
-      <div class="relative">
-        <button class="profile-button">S</button>
-        <div class="profile-menu hidden">
-          <button>Settings</button>
-          <button data-action="logout">Logout</button>
-        </div>
-      </div>
-    </div>
-  </header>
+  <!-- Right Controls -->
+  <div class="flex items-center gap-3">
+
+    <input
+      id="searchInput"
+      class="search-input px-3 py-1 rounded w-56 text-sm"
+      placeholder="Search notes..."
+    />
+
+    <button
+      id="logoutBtn"
+      class="text-xs px-3 py-1 rounded bg-red-500 hover:bg-red-600 text-white"
+    >
+      Logout
+    </button>
+
+  </div>
+
+</header>
 
   <!-- MAIN -->
-  <main class="h-[calc(100vh-64px)] grid grid-cols-[240px_320px_1fr]">
+  <main class="app-layout">
 
-    <!-- LEFT -->
-    <aside class="glass p-4 border-r border-white/10 overflow-y-auto">
-      <h2 class="text-xs uppercase opacity-60 mb-3">Skills</h2>
-      <ul class="space-y-2 text-sm">
-        <li class="px-2 py-1 rounded bg-white/10">Python</li>
-        <li class="px-2 py-1 rounded hover:bg-white/10 cursor-pointer">DSA</li>
-        <li class="px-2 py-1 rounded hover:bg-white/10 cursor-pointer">Backend</li>
-        <li class="px-2 py-1 rounded hover:bg-white/10 cursor-pointer">System Design</li>
+    <!-- SIDEBAR -->
+    <aside class="sidebar p-4 overflow-y-auto">
+      <div class="panel-header">Skills</div>
+
+      <ul id="skillsList" class="space-y-2 text-sm">
+        <li class="sidebar-item active">Python</li>
+        <li class="sidebar-item">DSA</li>
+        <li class="sidebar-item">Backend</li>
+        <li class="sidebar-item">System Design</li>
       </ul>
     </aside>
 
-    <!-- MIDDLE -->
-    <section class="glass p-4 border-r border-white/10 flex flex-col">
+    <!-- NOTES LIST -->
+    <section class="notes-panel p-4 flex flex-col">
+
       <div class="flex items-center justify-between mb-3">
-        <h2 class="text-xs uppercase opacity-60">Notes</h2>
-        <button class="btn-primary text-xs px-2 py-1">+ Add Note</button>
+        <div class="panel-header">Notes</div>
+
+        <button id="addNoteBtn" class="btn-primary">
+          + Add Note
+        </button>
       </div>
 
-      <div id="notesList" class="flex-1 overflow-y-auto space-y-2"></div>
+      <!-- Notes Container -->
+      <div id="notesList" class="flex-1 overflow-y-auto space-y-2">
+        <div class="empty-state">No notes yet</div>
+      </div>
+
     </section>
 
-    <!-- RIGHT -->
-    <section class="glass p-6 overflow-y-auto">
+    <!-- NOTE CONTENT PANEL -->
+    <section class="content-panel p-6 flex flex-col overflow-y-auto">
 
-      <div class="flex justify-between items-center mb-2">
+      <!-- Title + Actions -->
+      <div class="flex justify-between items-center mb-3">
         <h2 id="noteTitle" class="text-lg font-semibold">
           Select a note
         </h2>
 
-        <div class="flex gap-2">
-          <button id="editNoteBtn" class="text-xs opacity-60 hover:opacity-100">
-            Edit
-          </button>
-          <button type="button" id="regenSummaryBtn" class="text-xs opacity-60 hover:opacity-100">
-            Regenerate Summary
-          </button>
-          <button id="deleteNoteBtn" class="text-xs text-red-400 hover:text-red-500">
-            Delete
-          </button>
+        <div class="flex gap-4 text-xs opacity-70">
+          <button id="editNoteBtn">Edit</button>
+          <button id="regenSummaryBtn">Summary</button>
+          <button id="deleteNoteBtn" class="text-red-400">Delete</button>
         </div>
       </div>
 
-      <div class="text-xs opacity-60 mb-4">Note details</div>
+      <!-- Tags -->
+      <div id="noteTags" class="flex gap-2 mb-3"></div>
 
-      <textarea
-        id="noteEditor"
-        class="hidden w-full h-48 p-2 text-sm bg-white/10 rounded resize-none"
-      ></textarea>
+      <!-- Active Filter -->
+      <div id="activeFilterBar" class="hidden mb-3 text-xs bg-white/5 p-2 rounded">
+        Filter:
+        <span id="activeFilterText" class="font-semibold"></span>
+        <button id="clearFilterBtn" class="ml-2 text-red-400">Clear</button>
+      </div>
 
-      <div
-        id="noteContent"
-        class="text-sm leading-relaxed opacity-70"
-      >
+      <!-- Note Content -->
+      <div id="noteContent" class="text-sm opacity-80 mb-4">
         Click a note from the list to view its content.
       </div>
 
-      <div id="noteEditorActions" class="hidden mt-3 flex gap-2">
-        <button id="saveEditBtn" class="btn-primary text-xs px-3 py-1">
-          Save
-        </button>
-        <button id="cancelEditBtn" class="text-xs opacity-60">
-          Cancel
-        </button>
+      <!-- Editor -->
+      <textarea
+        id="noteEditor"
+        class="hidden w-full h-48 p-2 text-sm bg-white/10 rounded resize-none mb-2"
+      ></textarea>
+
+      <div id="noteEditorActions" class="hidden flex gap-2">
+        <button id="saveEditBtn" class="btn-primary">Save</button>
+        <button id="cancelEditBtn" class="opacity-60 text-xs">Cancel</button>
       </div>
 
     </section>
+
   </main>
 
   <!-- CREATE NOTE MODAL -->
-  <div id="createNoteModal"
-       class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
+  <div
+    id="createNoteModal"
+    class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50"
+  >
     <div class="glass w-[420px] p-4 rounded-lg">
+
       <h3 class="text-sm font-semibold mb-3">Create Note</h3>
 
-      <input id="newNoteTitle"
-             class="w-full mb-2 px-2 py-1 text-sm bg-white/10 rounded"
-             placeholder="Note title" />
+      <input
+        id="newNoteTitle"
+        class="w-full mb-2 px-2 py-1 text-sm bg-white/10 rounded"
+        placeholder="Note title"
+      />
 
-      <textarea id="newNoteContent"
-                class="w-full h-32 px-2 py-1 text-sm bg-white/10 rounded resize-none"
-                placeholder="Write your note..."></textarea>
+      <textarea
+        id="newNoteContent"
+        class="w-full h-32 px-2 py-1 text-sm bg-white/10 rounded resize-none"
+        placeholder="Write your note..."
+      ></textarea>
 
-      <!-- TAGS INPUT (NEW) -->
-      <input id="newNoteTags"
-             class="w-full mt-2 px-2 py-1 text-sm bg-white/10 rounded"
-             placeholder="Tags (comma separated) e.g. python, backend, api" />
+      <input
+        id="newNoteTags"
+        class="w-full mt-2 px-2 py-1 text-sm bg-white/10 rounded"
+        placeholder="Tags (comma separated)"
+      />
 
       <div class="flex justify-end gap-2 mt-3">
         <button id="cancelCreateNote" class="text-xs opacity-60">Cancel</button>
-        <button id="saveCreateNote" class="btn-primary text-xs px-3 py-1">Save</button>
+        <button id="saveCreateNote" class="btn-primary">Save</button>
       </div>
+
     </div>
   </div>
 
+  <!-- Scripts -->
   <script src="assets/js/logout.js"></script>
   <script src="assets/js/dashboard-notes.js"></script>
 

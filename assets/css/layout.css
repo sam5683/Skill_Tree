@@ -1,0 +1,50 @@
+.dashboard-body {
+  background: #0b1220;
+  color: #e5e7eb;
+  font-family: ui-sans-serif, system-ui;
+}
+
+/* Header */
+.dashboard-header {
+  height: 64px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  background: #0f172a;
+}
+
+/* Layout grid */
+.app-layout {
+  height: calc(100vh - 64px);
+  display: grid;
+  grid-template-columns: 240px 320px 1fr;
+}
+
+/* Panels */
+.sidebar {
+  background: #0b1220;
+  border-right: 1px solid rgba(255,255,255,0.06);
+}
+
+.notes-panel {
+  background: #0f172a;
+  border-right: 1px solid rgba(255,255,255,0.06);
+}
+
+.content-panel {
+  background: #111827;
+}
+
+/* Panel titles */
+.panel-header {
+  font-size: 11px;
+  text-transform: uppercase;
+  opacity: 0.6;
+  margin-bottom: 10px;
+}
+
+/* Empty state */
+.empty-state {
+  opacity: 0.5;
+  font-size: 13px;
+  text-align: center;
+  margin-top: 40px;
+}

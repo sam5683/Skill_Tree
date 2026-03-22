@@ -4,6 +4,12 @@ const API_BASE = "http://127.0.0.1:8000/api/v1";
 
 let selectedNoteId = null;
 
+let filterState = {
+  search: "",
+  tag: ""
+};
+
+
 /* -------------------- TOKEN UTILS -------------------- */
 function getToken() {
   return localStorage.getItem("access_token");
@@ -20,26 +26,64 @@ function requireToken() {
 }
 
 /* -------------------- FETCH NOTES LIST -------------------- */
+
 async function fetchNotes() {
   const token = requireToken();
   if (!token) return;
 
   try {
-    const res = await fetch(`${API_BASE}/notes`, {
-      method: "GET",
+    let url = `${API_BASE}/notes`;
+
+    const params = new URLSearchParams();
+
+    if (filterState.search) {
+      params.append("search", filterState.search);
+    }
+
+    if (filterState.tag) {
+      params.append("tag", filterState.tag);
+    }
+
+    const queryString = params.toString();
+
+    if (queryString) {
+      url += `?${queryString}`;
+    }
+
+    const res = await fetch(url, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
 
-    if (!res.ok) {
-      throw new Error(`HTTP ${res.status}`);
-    }
+    if (!res.ok) throw new Error();
 
     const notes = await res.json();
+
+    // ✅ render list
     renderNotesList(notes);
+
+    // update filter UI
+    updateFilterUI();
+
+    // ✅ FIX: reset selected note if it's not in filtered results
+    const stillExists = notes.find(n => n.id === selectedNoteId);
+
+    if (!stillExists) {
+      selectedNoteId = null;
+
+      const titleEl = document.getElementById("noteTitle");
+      const contentEl = document.getElementById("noteContent");
+
+      if (titleEl && contentEl) {
+        titleEl.textContent = "Select a note";
+        contentEl.textContent =
+          "Click a note from the list to view its content.";
+      }
+    }
+
   } catch (err) {
-    console.error("❌ Failed to fetch notes:", err);
+    console.error("Fetch failed", err);
   }
 }
 
@@ -82,30 +126,6 @@ function renderNotesList(notes) {
   });
 }
 
-
-/* -------------------- FETCH NOTE DETAIL -------------------- */
-async function fetchNoteDetail(noteId) {
-  const token = requireToken();
-  if (!token) return;
-
-  try {
-    const res = await fetch(`${API_BASE}/notes/${noteId}`, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    if (!res.ok) {
-      throw new Error(`HTTP ${res.status}`);
-    }
-
-    const note = await res.json();
-    renderNoteDetail(note);
-  } catch (err) {
-    console.error("❌ Failed to fetch note detail:", err);
-  }
-}
 /* -------------------- RENDER NOTE DETAIL -------------------- */
 function renderNoteDetail(note) {
   const titleEl = document.getElementById("noteTitle");
@@ -119,7 +139,7 @@ function renderNoteDetail(note) {
     ? new Date(note.updated_at).toLocaleString()
     : "Never";
 
-  // ✅ FIXED: tags now have data-tag
+  // Tags UI
   const tagsHTML =
     note.tags && note.tags.length
       ? `
@@ -163,30 +183,62 @@ function renderNoteDetail(note) {
     </div>
   `;
 
-  // ✅ IMPORTANT: attach AFTER render
+  // ✅ FIXED: state-based tag filtering (NO direct fetch)
   document.querySelectorAll("[data-tag]").forEach((el) => {
-    el.addEventListener("click", async () => {
+    el.addEventListener("click", () => {
       const tag = el.getAttribute("data-tag");
 
-      const token = requireToken();
-      if (!token) return;
-
-      try {
-        const res = await fetch(`${API_BASE}/notes?tag=${tag}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        if (!res.ok) throw new Error();
-
-        const notes = await res.json();
-        renderNotesList(notes);
-      } catch (err) {
-        console.error("Tag filter failed", err);
-      }
+      filterState.tag = tag;   // update state
+      filterState.search = "";
+      fetchNotes();            // single API call point
     });
   });
+}
+
+/* -------------------- FETCH NOTE DETAIL -------------------- */
+async function fetchNoteDetail(noteId) {
+  const token = requireToken();
+  if (!token) return;
+
+  try {
+    const res = await fetch(`${API_BASE}/notes/${noteId}`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!res.ok) {
+      throw new Error(`HTTP ${res.status}`);
+    }
+
+    const note = await res.json();
+    renderNoteDetail(note);
+  } catch (err) {
+    console.error("❌ Failed to fetch note detail:", err);
+  }
+}
+
+/* -------------------- UPDATE FILTER UI -------------------- */
+
+function updateFilterUI() {
+  const bar = document.getElementById("activeFilterBar");
+  const text = document.getElementById("activeFilterText");
+
+  if (!bar || !text) return;
+
+  if (filterState.tag) {
+    bar.classList.remove("hidden");
+    text.textContent = `Tag: ${filterState.tag}`;
+  } 
+  else if (filterState.search) {
+    bar.classList.remove("hidden");
+    text.textContent = `Search: ${filterState.search}`;
+  } 
+  else {
+    bar.classList.add("hidden");
+    text.textContent = "";
+  }
 }
 /* -------------------- EDIT NOTE -------------------- */
 function setupEditNote() {
@@ -318,35 +370,34 @@ function setupRegenerateSummary() {
 /*---------------------Search notes---------------------*/
 function setupSearch() {
   const input = document.querySelector(".search-input");
-
   if (!input) return;
 
-  input.addEventListener("input", async () => {
-    const query = input.value.trim();
+  let debounceTimer;
 
-    const token = requireToken();
-    if (!token) return;
+  input.addEventListener("input", () => {
+    clearTimeout(debounceTimer);
 
-    try {
-      let url = `${API_BASE}/notes`;
+    debounceTimer = setTimeout(() => {
+      const value = input.value.trim().toLowerCase();
 
-      if (query) {
-        url += `?search=${encodeURIComponent(query)}`;
+      // 🔥 check token BEFORE anything
+      const token = requireToken();
+      if (!token) return;
+
+      // reset
+      filterState.search = "";
+      filterState.tag = "";
+
+      if (value.length === 0) {
+        // nothing
+      } else if (!value.includes(" ")) {
+        filterState.tag = value;
+      } else {
+        filterState.search = value;
       }
 
-      const res = await fetch(url, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (!res.ok) throw new Error();
-
-      const notes = await res.json();
-      renderNotesList(notes);
-    } catch (err) {
-      console.error("Search failed", err);
-    }
+      fetchNotes();
+    }, 300); // 🔥 debounce (critical)
   });
 }
 /* -------------------- CREATE NOTE -------------------- */
@@ -430,4 +481,16 @@ document.addEventListener("DOMContentLoaded", () => {
   setupSearch();
   setupDeleteNote();
   setupRegenerateSummary();
+
+
+document.getElementById("clearFilterBtn")?.addEventListener("click", () => {
+  filterState.tag = "";
+  filterState.search = "";
+
+  const input = document.querySelector(".search-input");
+  if (input) input.value = "";
+
+  fetchNotes();
+});
+
 });

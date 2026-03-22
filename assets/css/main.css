@@ -1,0 +1,105 @@
+/* ===== Dashboard Base ===== */
+.dashboard-body {
+  background: #0f172a;
+  color: #e5e7eb;
+  font-family: ui-sans-serif, system-ui;
+}
+
+.dashboard-header {
+  height: 64px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+/* ===== Glass Panels ===== */
+.glass {
+  background: rgba(255,255,255,0.04);
+  backdrop-filter: blur(10px);
+}
+
+/* ===== Inputs ===== */
+.search-input {
+  background: rgba(255,255,255,0.06);
+  outline: none;
+  color: white;
+}
+
+.search-input::placeholder {
+  color: rgba(255,255,255,0.5);
+}
+
+/* ===== Buttons ===== */
+.btn-primary {
+  background: #3b82f6;
+  color: white;
+  border-radius: 6px;
+  transition: 0.2s;
+}
+
+.btn-primary:hover {
+  background: #2563eb;
+}
+
+.profile-button {
+  background: rgba(255,255,255,0.1);
+  padding: 6px 10px;
+  border-radius: 8px;
+}
+
+/* ===== Profile Dropdown ===== */
+.profile-menu {
+  position: absolute;
+  right: 0;
+  top: 36px;
+  background: rgba(30,41,59,0.95);
+  border-radius: 8px;
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 120px;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+.profile-menu button {
+  padding: 6px 8px;
+  text-align: left;
+  font-size: 12px;
+}
+
+.profile-menu button:hover {
+  background: rgba(255,255,255,0.08);
+}
+
+/* ===== Notes List ===== */
+.note-item {
+  padding: 8px;
+  border-radius: 6px;
+  background: rgba(255,255,255,0.03);
+  cursor: pointer;
+}
+
+.note-item:hover {
+  background: rgba(255,255,255,0.08);
+}
+
+.note-item.active {
+  background: rgba(59,130,246,0.3);
+}
+
+/* ===== Tags ===== */
+.tag {
+  background: rgba(59,130,246,0.2);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+}
+
+/* ===== Scrollbar ===== */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.15);
+  border-radius: 10px;
+}

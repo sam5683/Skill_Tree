@@ -1,0 +1,81 @@
+/* ===== Buttons ===== */
+.btn-primary {
+  background: #3b82f6;
+  color: white;
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 12px;
+}
+
+.btn-primary:hover {
+  background: #2563eb;
+}
+
+/* ===== Search ===== */
+.search-input {
+  background: rgba(255,255,255,0.06);
+  outline: none;
+  color: white;
+}
+
+.search-input::placeholder {
+  color: rgba(255,255,255,0.5);
+}
+
+/* ===== Profile Menu ===== */
+.profile-button {
+  background: rgba(255,255,255,0.1);
+  padding: 6px 10px;
+  border-radius: 8px;
+}
+
+.profile-menu {
+  position: absolute;
+  right: 0;
+  top: 36px;
+  background: #1f2937;
+  border-radius: 8px;
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 120px;
+}
+
+/* ===== Notes ===== */
+.note-item {
+  padding: 10px;
+  border-radius: 6px;
+  background: rgba(255,255,255,0.03);
+  cursor: pointer;
+}
+
+.note-item:hover {
+  background: rgba(255,255,255,0.08);
+}
+
+.note-item.active {
+  background: rgba(59,130,246,0.3);
+}
+
+/* ===== Tags ===== */
+.tag {
+  background: rgba(59,130,246,0.2);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+}
+
+.sidebar-item {
+  padding: 6px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.sidebar-item:hover {
+  background: rgba(255,255,255,0.08);
+}
+
+.sidebar-item.active {
+  background: rgba(59,130,246,0.3);
+}
