@@ -31,18 +31,22 @@ function renderNoteDetail(note) {
     tagsContainer.appendChild(span);
   });
 
-  // CONTENT VIEW MODE
+  // CONTENT
   const contentDiv = document.getElementById("noteContent");
-  contentDiv.innerHTML = "";
   contentDiv.textContent = note.content;
 
   // SUMMARY
   document.getElementById("noteSummary").textContent = note.summary || "";
 
-  document.getElementById("summaryUpdated").textContent =
-    note.updated_at
-      ? "Last summary update: " + new Date(note.updated_at).toLocaleString()
-      : "";
+  // SUMMARY TIME
+  const dateDiv = document.getElementById("summaryUpdated");
+  if (note.updated_at) {
+    dateDiv.textContent =
+      "Last summary update: " +
+      new Date(note.updated_at).toLocaleString();
+  } else {
+    dateDiv.textContent = "";
+  }
 
   // EDIT BUTTON
   document.getElementById("editNoteBtn").onclick = () => {

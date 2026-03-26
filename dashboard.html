@@ -70,7 +70,7 @@
     </section>
 
     <!-- NOTE CONTENT PANEL -->
-    <section class="content-panel flex flex-col">
+    <section class="content-panel">
 
       <!-- Title + Actions -->
       <div class="flex justify-between items-center mb-4">
@@ -86,47 +86,26 @@
         </div>
       </div>
 
-      <!-- CONTENT BOX -->
-      <div class="note-content-box flex-1">
+      <!-- TAGS -->
+      <div class="note-block">
+        <div class="note-label">Tags</div>
+        <div id="noteTags" class="flex gap-2 flex-wrap"></div>
+      </div>
 
-        <!-- VIEW MODE -->
-        <div id="noteViewMode" class="note-scroll">
+      <div class="section-divider"></div>
 
-          <!-- Tags -->
-          <div class="note-block">
-            <div class="note-label">Tags</div>
-            <div id="noteTags" class="flex gap-2 flex-wrap"></div>
-          </div>
+      <!-- CONTENT SCROLL AREA -->
+      <div class="note-content-box">
+        <div id="noteContent" class="note-content note-scroll"></div>
+      </div>
 
-          <div class="section-divider"></div>
+      <div class="section-divider"></div>
 
-          <!-- Content -->
-          <div class="note-block">
-            <div class="note-label">Content</div>
-            <div id="noteContent" class="note-content"></div>
-          </div>
-
-          <div class="section-divider"></div>
-
-          <!-- Summary -->
-          <div class="note-block">
-            <div class="note-label">Summary</div>
-            <div id="noteSummary" class="note-summary"></div>
-            <div id="summaryUpdated" class="summary-date"></div>
-          </div>
-
-        </div>
-
-        <!-- EDIT MODE -->
-        <div id="noteEditMode" class="hidden flex flex-col h-full">
-          <textarea id="noteEditor" class="note-editor"></textarea>
-
-          <div class="flex gap-3 mt-3">
-            <button id="saveEditBtn" class="btn-primary">Save</button>
-            <button id="cancelEditBtn" class="opacity-60 text-xs">Cancel</button>
-          </div>
-        </div>
-
+      <!-- SUMMARY -->
+      <div class="note-block">
+        <div class="note-label">Summary</div>
+        <div id="noteSummary" class="note-summary"></div>
+        <div id="summaryUpdated" class="summary-date"></div>
       </div>
 
     </section>
