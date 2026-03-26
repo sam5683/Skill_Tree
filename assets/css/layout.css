@@ -22,15 +22,23 @@
 .sidebar {
   background: #0b1220;
   border-right: 1px solid rgba(255,255,255,0.06);
+  padding: 16px;
+  overflow-y: auto;
 }
 
 .notes-panel {
   background: #0f172a;
   border-right: 1px solid rgba(255,255,255,0.06);
+  padding: 16px;
+  overflow-y: auto;
 }
 
 .content-panel {
   background: #111827;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 /* Panel titles */

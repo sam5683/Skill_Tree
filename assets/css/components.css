@@ -1,81 +1,128 @@
-/* ===== Buttons ===== */
+/* ================= BUTTONS ================= */
 .btn-primary {
   background: #3b82f6;
   color: white;
   border-radius: 6px;
-  padding: 4px 10px;
+  padding: 6px 14px;
   font-size: 12px;
+  transition: 0.15s;
 }
-
 .btn-primary:hover {
   background: #2563eb;
 }
 
-/* ===== Search ===== */
+/* ================= SEARCH ================= */
 .search-input {
   background: rgba(255,255,255,0.06);
   outline: none;
   color: white;
+  border-radius: 6px;
 }
-
 .search-input::placeholder {
   color: rgba(255,255,255,0.5);
 }
 
-/* ===== Profile Menu ===== */
-.profile-button {
-  background: rgba(255,255,255,0.1);
-  padding: 6px 10px;
-  border-radius: 8px;
+/* ================= DIVIDER ================= */
+.section-divider {
+  height: 1px;
+  background: rgba(255,255,255,0.08);
+  margin: 18px 0;
 }
 
-.profile-menu {
-  position: absolute;
-  right: 0;
-  top: 36px;
-  background: #1f2937;
-  border-radius: 8px;
-  padding: 6px;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  width: 120px;
-}
-
-/* ===== Notes ===== */
+/* ================= NOTE LIST ================= */
 .note-item {
-  padding: 10px;
-  border-radius: 6px;
-  background: rgba(255,255,255,0.03);
+  padding: 12px;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.04);
   cursor: pointer;
+  transition: 0.15s;
 }
-
 .note-item:hover {
   background: rgba(255,255,255,0.08);
 }
-
 .note-item.active {
-  background: rgba(59,130,246,0.3);
+  background: rgba(59,130,246,0.35);
 }
 
-/* ===== Tags ===== */
+/* ================= TAGS ================= */
 .tag {
   background: rgba(59,130,246,0.2);
-  padding: 2px 6px;
-  border-radius: 4px;
-  font-size: 10px;
+  padding: 4px 10px;
+  border-radius: 5px;
+  font-size: 11px;
 }
 
+/* ================= SIDEBAR ================= */
 .sidebar-item {
   padding: 6px 8px;
   border-radius: 6px;
   cursor: pointer;
 }
-
 .sidebar-item:hover {
   background: rgba(255,255,255,0.08);
 }
-
 .sidebar-item.active {
-  background: rgba(59,130,246,0.3);
+  background: rgba(59,130,246,0.35);
+}
+
+/* ================= NOTE CONTENT ================= */
+.note-block {
+  margin-bottom: 22px;
+}
+
+.note-label {
+  font-size: 12px;
+  opacity: 0.6;
+  margin-bottom: 6px;
+  letter-spacing: 0.5px;
+}
+
+.note-content {
+  white-space: pre-wrap;
+  line-height: 1.8;
+  font-size: 14px;
+}
+
+.note-summary {
+  background: rgba(255,255,255,0.06);
+  padding: 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.summary-date {
+  font-size: 11px;
+  opacity: 0.5;
+  margin-top: 6px;
+}
+
+/* ================= CONTENT BOX (SCROLL AREA) ================= */
+.note-content-box {
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Scroll area */
+.note-scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 10px;
+}
+
+/* ================= EDITOR ================= */
+.note-editor {
+  width: 100%;
+  min-height: 250px;
+  max-height: 70vh;
+  padding: 16px;
+  font-size: 14px;
+  line-height: 1.8;
+  background: rgba(255,255,255,0.05);
+  border-radius: 8px;
+  resize: vertical;
+  outline: none;
+  white-space: pre-wrap;
 }

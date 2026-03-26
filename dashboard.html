@@ -5,56 +5,46 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>SkillTree — Dashboard</title>
 
-  <!-- Tailwind -->
   <link rel="stylesheet" href="dist/output.css" />
-
-  <!-- App CSS Structure -->
   <link rel="stylesheet" href="assets/css/base.css" />
   <link rel="stylesheet" href="assets/css/layout.css" />
   <link rel="stylesheet" href="assets/css/components.css" />
   <link rel="stylesheet" href="assets/css/theme.css" />
   <link rel="stylesheet" href="assets/css/utilities.css" />
 
-  <!-- Auth -->
   <script src="assets/js/auth-guard.js"></script>
 </head>
 
 <body class="dashboard-body">
 
   <!-- HEADER -->
- <header class="dashboard-header flex items-center justify-between px-6">
+  <header class="dashboard-header flex items-center justify-between px-6">
+    <div class="text-xl font-semibold">
+      SkillTree
+    </div>
 
-  <!-- Logo -->
-  <div class="text-xl font-semibold">
-    SkillTree
-  </div>
+    <div class="flex items-center gap-3">
+      <input
+        id="searchInput"
+        class="search-input px-3 py-1 rounded w-56 text-sm"
+        placeholder="Search notes..."
+      />
 
-  <!-- Right Controls -->
-  <div class="flex items-center gap-3">
-
-    <input
-      id="searchInput"
-      class="search-input px-3 py-1 rounded w-56 text-sm"
-      placeholder="Search notes..."
-    />
-
-    <button
-      id="logoutBtn"
-      class="text-xs px-3 py-1 rounded bg-red-500 hover:bg-red-600 text-white"
-    >
-      Logout
-    </button>
-
-  </div>
-
-</header>
+      <button
+        id="logoutBtn"
+        class="text-xs px-3 py-1 rounded bg-red-500 hover:bg-red-600 text-white"
+      >
+        Logout
+      </button>
+    </div>
+  </header>
 
   <!-- MAIN -->
   <main class="app-layout">
 
     <!-- SIDEBAR -->
-    <aside class="sidebar p-4 overflow-y-auto">
-      <div class="panel-header">Skills</div>
+    <aside class="sidebar overflow-y-auto">
+      <div class="panel-header mb-2">Skills</div>
 
       <ul id="skillsList" class="space-y-2 text-sm">
         <li class="sidebar-item active">Python</li>
@@ -65,8 +55,7 @@
     </aside>
 
     <!-- NOTES LIST -->
-    <section class="notes-panel p-4 flex flex-col">
-
+    <section class="notes-panel flex flex-col">
       <div class="flex items-center justify-between mb-3">
         <div class="panel-header">Notes</div>
 
@@ -75,18 +64,16 @@
         </button>
       </div>
 
-      <!-- Notes Container -->
       <div id="notesList" class="flex-1 overflow-y-auto space-y-2">
         <div class="empty-state">No notes yet</div>
       </div>
-
     </section>
 
     <!-- NOTE CONTENT PANEL -->
-    <section class="content-panel p-6 flex flex-col overflow-y-auto">
+    <section class="content-panel flex flex-col">
 
       <!-- Title + Actions -->
-      <div class="flex justify-between items-center mb-3">
+      <div class="flex justify-between items-center mb-4">
         <h2 id="noteTitle" class="text-lg font-semibold">
           Select a note
         </h2>
@@ -94,34 +81,52 @@
         <div class="flex gap-4 text-xs opacity-70">
           <button id="editNoteBtn">Edit</button>
           <button id="regenSummaryBtn">Summary</button>
+          <button id="generateFlashcardsBtn">Flashcards</button>
           <button id="deleteNoteBtn" class="text-red-400">Delete</button>
         </div>
       </div>
 
-      <!-- Tags -->
-      <div id="noteTags" class="flex gap-2 mb-3"></div>
+      <!-- CONTENT BOX -->
+      <div class="note-content-box flex-1">
 
-      <!-- Active Filter -->
-      <div id="activeFilterBar" class="hidden mb-3 text-xs bg-white/5 p-2 rounded">
-        Filter:
-        <span id="activeFilterText" class="font-semibold"></span>
-        <button id="clearFilterBtn" class="ml-2 text-red-400">Clear</button>
-      </div>
+        <!-- VIEW MODE -->
+        <div id="noteViewMode" class="note-scroll">
 
-      <!-- Note Content -->
-      <div id="noteContent" class="text-sm opacity-80 mb-4">
-        Click a note from the list to view its content.
-      </div>
+          <!-- Tags -->
+          <div class="note-block">
+            <div class="note-label">Tags</div>
+            <div id="noteTags" class="flex gap-2 flex-wrap"></div>
+          </div>
 
-      <!-- Editor -->
-      <textarea
-        id="noteEditor"
-        class="hidden w-full h-48 p-2 text-sm bg-white/10 rounded resize-none mb-2"
-      ></textarea>
+          <div class="section-divider"></div>
 
-      <div id="noteEditorActions" class="hidden flex gap-2">
-        <button id="saveEditBtn" class="btn-primary">Save</button>
-        <button id="cancelEditBtn" class="opacity-60 text-xs">Cancel</button>
+          <!-- Content -->
+          <div class="note-block">
+            <div class="note-label">Content</div>
+            <div id="noteContent" class="note-content"></div>
+          </div>
+
+          <div class="section-divider"></div>
+
+          <!-- Summary -->
+          <div class="note-block">
+            <div class="note-label">Summary</div>
+            <div id="noteSummary" class="note-summary"></div>
+            <div id="summaryUpdated" class="summary-date"></div>
+          </div>
+
+        </div>
+
+        <!-- EDIT MODE -->
+        <div id="noteEditMode" class="hidden flex flex-col h-full">
+          <textarea id="noteEditor" class="note-editor"></textarea>
+
+          <div class="flex gap-3 mt-3">
+            <button id="saveEditBtn" class="btn-primary">Save</button>
+            <button id="cancelEditBtn" class="opacity-60 text-xs">Cancel</button>
+          </div>
+        </div>
+
       </div>
 
     </section>
@@ -134,7 +139,6 @@
     class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50"
   >
     <div class="glass w-[420px] p-4 rounded-lg">
-
       <h3 class="text-sm font-semibold mb-3">Create Note</h3>
 
       <input
@@ -159,13 +163,18 @@
         <button id="cancelCreateNote" class="text-xs opacity-60">Cancel</button>
         <button id="saveCreateNote" class="btn-primary">Save</button>
       </div>
-
     </div>
   </div>
 
   <!-- Scripts -->
   <script src="assets/js/logout.js"></script>
-  <script src="assets/js/dashboard-notes.js"></script>
+  <script src="assets/js/dashboard/api.js"></script>
+  <script src="assets/js/dashboard/notes-list.js"></script>
+  <script src="assets/js/dashboard/note-detail.js"></script>
+  <script src="assets/js/dashboard/note-editor.js"></script>
+  <script src="assets/js/dashboard/note-actions.js"></script>
+  <script src="assets/js/dashboard/filters.js"></script>
+  <script src="assets/js/dashboard/init.js"></script>
 
 </body>
 </html>

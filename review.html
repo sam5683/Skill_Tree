@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>SkillTree — Review</title>
+
+  <link rel="stylesheet" href="dist/output.css" />
+  <link rel="stylesheet" href="assets/css/base.css" />
+  <link rel="stylesheet" href="assets/css/layout.css" />
+  <link rel="stylesheet" href="assets/css/components.css" />
+  <link rel="stylesheet" href="assets/css/theme.css" />
+</head>
+
+<body class="dashboard-body">
+
+  <!-- Top Bar -->
+  <div class="p-4 flex justify-between items-center">
+    <button onclick="window.location.href='dashboard.html'" class="btn-primary">
+      ← Back to Dashboard
+    </button>
+
+    <div id="cardCounter" class="text-sm opacity-70">
+      0 / 0
+    </div>
+  </div>
+
+  <!-- Progress Bar -->
+  <div class="w-full px-6 mb-4">
+    <div class="w-full bg-white/10 h-2 rounded">
+      <div id="progressBar" class="bg-blue-500 h-2 rounded" style="width: 0%"></div>
+    </div>
+  </div>
+
+  <!-- Review Area -->
+  <div class="flex flex-col items-center justify-center h-[70vh]">
+
+    <div id="cardContainer" class="glass w-[650px] p-8 rounded-lg text-center">
+
+      <!-- Question -->
+      <div id="cardQuestion" class="text-xl mb-6">
+        Loading...
+      </div>
+
+      <!-- Answer -->
+      <div id="cardAnswer" class="hidden text-sm opacity-90 mb-6">
+      </div>
+
+      <!-- Show Answer -->
+      <button id="showAnswerBtn" class="btn-primary mb-4">
+        Show Answer
+      </button>
+
+      <!-- Rating Buttons -->
+      <div id="reviewButtons" class="hidden flex justify-center gap-3">
+        <button class="btn-primary" data-rating="again">Again</button>
+        <button class="btn-primary" data-rating="hard">Hard</button>
+        <button class="btn-primary" data-rating="good">Good</button>
+        <button class="btn-primary" data-rating="easy">Easy</button>
+      </div>
+
+    </div>
+
+    <!-- Session Complete Screen -->
+    <div id="sessionComplete" class="hidden mt-8 text-center">
+      <div class="text-xl mb-3">Review Complete 🎉</div>
+      <button onclick="window.location.href='dashboard.html'" class="btn-primary">
+        Back to Dashboard
+      </button>
+    </div>
+
+  </div>
+
+  <script src="assets/js/review.js"></script>
+</body>
+</html>
