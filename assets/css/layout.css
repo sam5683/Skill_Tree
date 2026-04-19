@@ -9,13 +9,16 @@
   height: 64px;
   border-bottom: 1px solid rgba(255,255,255,0.08);
   background: #0f172a;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
 }
 
 /* Layout grid */
 .app-layout {
   height: calc(100vh - 64px);
   display: grid;
-  grid-template-columns: 240px 320px 1fr;
+  grid-template-columns: 240px 300px 1fr;
 }
 
 /* Panels */
@@ -35,19 +38,21 @@
 
 .content-panel {
   background: #111827;
-  padding: 24px;
+  padding: 28px;
   display: flex;
   flex-direction: column;
+  gap: 18px; /* 🔥 spacing added */
   height: calc(100vh - 64px);
-  overflow: hidden;
+  overflow-y: auto;
 }
 
 /* Panel titles */
 .panel-header {
   font-size: 11px;
   text-transform: uppercase;
-  opacity: 0.6;
-  margin-bottom: 10px;
+  letter-spacing: 0.08em;
+  opacity: 0.5;
+  margin-bottom: 12px;
 }
 
 /* Empty state */
@@ -56,4 +61,20 @@
   font-size: 13px;
   text-align: center;
   margin-top: 40px;
+}
+
+/* 🔥 Mobile fix */
+@media (max-width: 768px) {
+  .app-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar,
+  .notes-panel {
+    display: none;
+  }
+
+  .content-panel {
+    padding: 16px;
+  }
 }

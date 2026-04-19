@@ -97,7 +97,6 @@ function setupCreateNote() {
     fetchNoteDetail(note.id);
   };
 }
-
 function setupRegenerateSummary() {
   const btn = document.getElementById("regenSummaryBtn");
   if (!btn) return;
@@ -111,24 +110,50 @@ function setupRegenerateSummary() {
     const token = requireToken();
     if (!token) return;
 
-    const res = await fetch(
-      `${API_BASE}/notes/${selectedNoteId}/regenerate-summary`,
-      {
-        method: "POST",
-        headers: { Authorization: `Bearer ${token}` },
-      }
-    );
+    const summaryDiv = document.getElementById("noteSummary");
 
-    if (!res.ok) {
-      alert("Summary failed");
-      return;
+    // 🔥 UX: show loading state
+    const originalText = btn.textContent;
+    btn.textContent = "Generating...";
+    btn.disabled = true;
+
+    if (summaryDiv) {
+      summaryDiv.textContent = "Generating summary...";
     }
 
-    const note = await res.json();
-    renderNoteDetail(note);
+    try {
+      const res = await fetch(
+        `${API_BASE}/notes/${selectedNoteId}/regenerate-summary`,
+        {
+          method: "POST",
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      if (!res.ok) {
+        throw new Error("Summary failed");
+      }
+
+      const note = await res.json();
+
+      // 🔥 re-render updated note (includes summary)
+      renderNoteDetail(note);
+
+    } catch (err) {
+      console.error(err);
+
+      if (summaryDiv) {
+        summaryDiv.textContent = "Failed to generate summary";
+      }
+
+      alert("Summary failed");
+    } finally {
+      // 🔥 restore button state
+      btn.textContent = originalText;
+      btn.disabled = false;
+    }
   };
 }
-
 function setupCleanDashboard() {
   const btn = document.getElementById("cleanBtn");
   if (!btn) return;
@@ -177,6 +202,62 @@ function setupFlashcards() {
 
     if (confirm("Flashcards generated. Go to Review now?")) {
       window.location.href = "review.html";
+    }
+  };
+}
+
+function setupImproveNote() {
+  const btn = document.getElementById("improveNoteBtn");
+  if (!btn) return;
+
+  btn.onclick = async () => {
+    if (!selectedNoteId) {
+      alert("Select a note first");
+      return;
+    }
+
+    const token = requireToken();
+    if (!token) return;
+
+    // loading state
+    btn.textContent = "Improving...";
+    btn.disabled = true;
+
+    try {
+      // get current note content from DOM
+      const content = selectedNote.content;
+
+      const res = await fetch(`${API_BASE}/notes/improve`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ content }),
+      });
+
+      if (!res.ok) {
+        throw new Error("Improve failed");
+      }
+
+      const data = await res.json();
+
+      // 🔥 preview (critical)
+      const preview = confirm(
+        "Replace note with improved version?\n\n(Press Cancel to keep original)"
+      );
+
+      if (preview) {
+        await updateNoteContent(selectedNoteId, data.improved_content);
+        fetchNoteDetail(selectedNoteId);
+      }
+
+    } catch (err) {
+      console.error(err);
+      alert("AI improve failed");
+    } finally {
+      btn.textContent = "✨ Improve";
+      btn.disabled = false;
     }
   };
 }

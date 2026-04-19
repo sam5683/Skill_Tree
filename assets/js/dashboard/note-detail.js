@@ -132,6 +132,10 @@ function parseNote(content) {
 // RENDER
 // -----------------------------
 function renderNoteDetail(note) {
+
+  // 🔥 IMPORTANT: set global state (this fixes your improve bug)
+  selectedNote = note;
+
   document.getElementById("noteTitle").textContent = note.title;
 
   const tagsContainer = document.getElementById("noteTags");
@@ -146,17 +150,28 @@ function renderNoteDetail(note) {
 
   // CONTENT
   const contentDiv = document.getElementById("noteContent");
-  contentDiv.innerHTML = parseNote(note.content);
+  contentDiv.innerHTML = formatNote(note.content);
 
   // SUMMARY
-  document.getElementById("noteSummary").textContent = note.summary || "";
+  const summaryDiv = document.getElementById("noteSummary");
+  summaryDiv.innerHTML = formatNote(note.summary || "");
 
-  // SUMMARY TIME
+  // SUMMARY TIME (🔥 improved visibility)
   const dateDiv = document.getElementById("summaryUpdated");
+
   if (note.updated_at) {
+    const date = new Date(note.updated_at);
+
     dateDiv.textContent =
       "Last summary update: " +
-      new Date(note.updated_at).toLocaleString();
+      date.toLocaleString(undefined, {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit" // 🔥 added so you SEE updates
+      });
   } else {
     dateDiv.textContent = "";
   }
@@ -165,4 +180,61 @@ function renderNoteDetail(note) {
   document.getElementById("editNoteBtn").onclick = () => {
     enableEditMode(note);
   };
+}
+
+// -----------------------------
+// FORMATTER (🔥 IMPROVED)
+// -----------------------------
+function formatNote(text) {
+  if (!text) return "";
+
+  let formatted = text;
+
+  // CODE BLOCK
+  formatted = formatted.replace(
+    /```([\s\S]*?)```/g,
+    `<pre class="bg-black text-green-400 p-3 rounded mt-2 overflow-x-auto">$1</pre>`
+  );
+
+  // HEADINGS (=== and --- style)
+  formatted = formatted.replace(
+    /\*\*(.*?)\*\*\n=+/g,
+    `<h1 class="text-xl font-bold mt-4">$1</h1>`
+  );
+
+  formatted = formatted.replace(
+    /\*\*(.*?)\*\*\n-+/g,
+    `<h2 class="text-lg font-semibold mt-3">$1</h2>`
+  );
+
+  // BOLD
+  formatted = formatted.replace(
+    /\*\*(.*?)\*\*/g,
+    `<strong>$1</strong>`
+  );
+
+  // BULLETS (group properly)
+  const lines = formatted.split("\n");
+  let inList = false;
+  let result = "";
+
+  for (let line of lines) {
+    if (line.trim().startsWith("* ")) {
+      if (!inList) {
+        result += '<ul class="mt-2 ml-5 list-disc">';
+        inList = true;
+      }
+      result += `<li>${line.trim().substring(2)}</li>`;
+    } else {
+      if (inList) {
+        result += "</ul>";
+        inList = false;
+      }
+      result += line + "<br>";
+    }
+  }
+
+  if (inList) result += "</ul>";
+
+  return result;
 }

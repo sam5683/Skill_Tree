@@ -16,132 +16,6 @@ function setupEditNote() {
 
 
 // -----------------------------
-// Enable Inline Edit Mode
-// -----------------------------
-function enableEditMode(note) {
-  const contentDiv = document.getElementById("noteContent");
-
-  const textarea = document.createElement("textarea");
-  textarea.value = note.content;
-
-  // 🔥 Improved UX styles
-  textarea.className =
-    "w-full p-3 bg-[#0f172a] text-white rounded-lg border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500";
-  
-  textarea.style.minHeight = "300px";
-  textarea.style.lineHeight = "1.6";
-
-  // 🔥 Placeholder (guides structure)
-  textarea.placeholder = `Write structured notes like:
-
-# Topic Name
-
-## Key Points
-- Point 1
-- Point 2
-
-## Explanation
-Explain in simple terms...
-
-Tip:
-Use # for headings
-Use - for bullet points`;
-
-  contentDiv.innerHTML = "";
-  contentDiv.appendChild(textarea);
-
-
-  // -----------------------------
-  // Auto resize
-  // -----------------------------
-  function autoResize() {
-    textarea.style.height = "auto";
-    textarea.style.height = textarea.scrollHeight + "px";
-  }
-
-  autoResize();
-
-  textarea.addEventListener("input", autoResize);
-
-
-  // -----------------------------
-  // Helper Buttons (minimal)
-  // -----------------------------
-  const helperBar = document.createElement("div");
-  helperBar.className = "flex gap-2 mt-2";
-
-  const hBtn = document.createElement("button");
-  hBtn.textContent = "# Heading";
-  hBtn.className = "text-xs opacity-70";
-
-  const bulletBtn = document.createElement("button");
-  bulletBtn.textContent = "- Bullet";
-  bulletBtn.className = "text-xs opacity-70";
-
-  helperBar.appendChild(hBtn);
-  helperBar.appendChild(bulletBtn);
-
-  contentDiv.appendChild(helperBar);
-
-  // Insert text helpers
-  function insertText(text) {
-    const start = textarea.selectionStart;
-    const end = textarea.selectionEnd;
-
-    const before = textarea.value.substring(0, start);
-    const after = textarea.value.substring(end);
-
-    textarea.value = before + text + after;
-
-    textarea.focus();
-    textarea.selectionStart = textarea.selectionEnd = start + text.length;
-
-    autoResize();
-  }
-
-  hBtn.onclick = () => insertText("\n# ");
-  bulletBtn.onclick = () => insertText("\n- ");
-
-
-  // -----------------------------
-  // Buttons
-  // -----------------------------
-  const buttonRow = document.createElement("div");
-  buttonRow.className = "flex gap-3 mt-3";
-
-  const saveBtn = document.createElement("button");
-  saveBtn.className = "btn-primary";
-  saveBtn.textContent = "Save";
-
-  const cancelBtn = document.createElement("button");
-  cancelBtn.className = "opacity-60 text-xs";
-  cancelBtn.textContent = "Cancel";
-
-  buttonRow.appendChild(saveBtn);
-  buttonRow.appendChild(cancelBtn);
-
-  contentDiv.appendChild(buttonRow);
-
-
-  // -----------------------------
-  // Save
-  // -----------------------------
-  saveBtn.onclick = async () => {
-    await updateNoteContent(note.id, textarea.value);
-    fetchNoteDetail(note.id);
-    fetchNotes();
-  };
-
-  // -----------------------------
-  // Cancel
-  // -----------------------------
-  cancelBtn.onclick = () => {
-    fetchNoteDetail(note.id);
-  };
-}
-
-
-// -----------------------------
 // Update Note Content
 // -----------------------------
 async function updateNoteContent(noteId, content) {
@@ -154,8 +28,217 @@ async function updateNoteContent(noteId, content) {
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({
-      content: content
-    }),
+    body: JSON.stringify({ content }),
   });
+}
+
+
+// -----------------------------
+// OCR Integration (Create Note Modal)
+// -----------------------------
+function setupOCR() {
+  const ocrBtn = document.getElementById("ocrBtn");
+  const fileInput = document.getElementById("ocrInput");
+  const textarea = document.getElementById("newNoteContent");
+
+  if (!ocrBtn || !fileInput || !textarea) return;
+
+  ocrBtn.onclick = () => fileInput.click();
+
+  fileInput.addEventListener("change", async () => {
+    if (!fileInput.files.length) return;
+
+    const token = localStorage.getItem("access_token");
+    if (!token) {
+      alert("Not authenticated");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("file", fileInput.files[0]);
+
+    ocrBtn.textContent = "Processing...";
+    ocrBtn.disabled = true;
+
+    try {
+      const res = await fetch(`${API_BASE}/notes/ocr`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      });
+
+      if (!res.ok) throw new Error("OCR failed");
+
+      const data = await res.json();
+      const text = data.extracted_text?.trim();
+
+      if (!text) {
+        alert("No readable text found");
+        return;
+      }
+
+      textarea.value =
+        textarea.value.trim() === ""
+          ? text
+          : textarea.value + "\n\n" + text;
+
+    } catch (err) {
+      console.error(err);
+      alert("OCR failed");
+    } finally {
+      ocrBtn.textContent = "Upload Image";
+      ocrBtn.disabled = false;
+      fileInput.value = "";
+    }
+  });
+}
+
+
+// -----------------------------
+// Enable Edit Mode
+// -----------------------------
+function enableEditMode(note) {
+  const contentDiv = document.getElementById("noteContent");
+
+  const textarea = document.createElement("textarea");
+  textarea.value = note.content;
+
+  textarea.className =
+    "w-full p-3 bg-[#0f172a] text-white rounded-lg border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500";
+
+  textarea.style.minHeight = "300px";
+
+  textarea.placeholder = `# Topic
+- Key point
+- Explanation`;
+
+  contentDiv.innerHTML = "";
+  contentDiv.appendChild(textarea);
+
+  // Auto resize
+  function autoResize() {
+    textarea.style.height = "auto";
+    textarea.style.height = textarea.scrollHeight + "px";
+  }
+
+  autoResize();
+  textarea.addEventListener("input", autoResize);
+
+  // -----------------------------
+  // Helper Buttons
+  // -----------------------------
+  const helperBar = document.createElement("div");
+  helperBar.className = "flex gap-2 mt-2";
+
+  const hBtn = document.createElement("button");
+  hBtn.textContent = "#";
+  hBtn.className = "text-xs opacity-70";
+
+  const bulletBtn = document.createElement("button");
+  bulletBtn.textContent = "-";
+  bulletBtn.className = "text-xs opacity-70";
+
+  helperBar.appendChild(hBtn);
+  helperBar.appendChild(bulletBtn);
+  contentDiv.appendChild(helperBar);
+
+  function insertText(text) {
+    const start = textarea.selectionStart;
+    textarea.value =
+      textarea.value.slice(0, start) + text + textarea.value.slice(start);
+
+    textarea.focus();
+    autoResize();
+  }
+
+  hBtn.onclick = () => insertText("\n# ");
+  bulletBtn.onclick = () => insertText("\n- ");
+
+  // -----------------------------
+  // Buttons row
+  // -----------------------------
+  const buttonRow = document.createElement("div");
+  buttonRow.className = "flex gap-3 mt-3";
+
+  const saveBtn = document.createElement("button");
+  saveBtn.className = "btn-primary";
+  saveBtn.textContent = "Save";
+
+  const cancelBtn = document.createElement("button");
+  cancelBtn.className = "opacity-60 text-xs";
+  cancelBtn.textContent = "Cancel";
+
+  // OCR Button
+  const ocrBtn = document.createElement("button");
+  ocrBtn.textContent = "Image → Text";
+  ocrBtn.className = "btn-primary text-xs";
+
+  const fileInput = document.createElement("input");
+  fileInput.type = "file";
+  fileInput.accept = "image/*";
+  fileInput.hidden = true;
+
+  ocrBtn.onclick = () => fileInput.click();
+
+  fileInput.addEventListener("change", async () => {
+    if (!fileInput.files.length) return;
+
+    const token = localStorage.getItem("access_token");
+    if (!token) return;
+
+    const formData = new FormData();
+    formData.append("file", fileInput.files[0]);
+
+    ocrBtn.textContent = "Processing...";
+    ocrBtn.disabled = true;
+
+    try {
+      const res = await fetch(`${API_BASE}/notes/ocr`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData,
+      });
+
+      if (!res.ok) throw new Error("OCR failed");
+
+      const data = await res.json();
+      const text = data.extracted_text?.trim();
+
+      if (!text) {
+        alert("No readable text found");
+        return;
+      }
+
+      textarea.value += "\n\n" + text;
+      autoResize();
+
+    } catch (err) {
+      alert("OCR failed");
+    } finally {
+      ocrBtn.textContent = "Image → OCR";
+      ocrBtn.disabled = false;
+      fileInput.value = "";
+    }
+  });
+
+  buttonRow.appendChild(ocrBtn);
+  buttonRow.appendChild(saveBtn);
+  buttonRow.appendChild(cancelBtn);
+
+  contentDiv.appendChild(buttonRow);
+  contentDiv.appendChild(fileInput);
+
+  // Save
+  saveBtn.onclick = async () => {
+    await updateNoteContent(note.id, textarea.value);
+    fetchNoteDetail(note.id);
+    fetchNotes();
+  };
+
+  // Cancel
+  cancelBtn.onclick = () => {
+    fetchNoteDetail(note.id);
+  };
 }

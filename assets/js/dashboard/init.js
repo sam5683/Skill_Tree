@@ -11,6 +11,8 @@ document.addEventListener("DOMContentLoaded", () => {
   setupRegenerateSummary();
   setupFlashcards();
   setupSearch();
+  setupOCR();
+  setupImproveNote();
 
   // Optional
   if (typeof setupCleanDashboard === "function") {
