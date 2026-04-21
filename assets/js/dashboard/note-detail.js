@@ -15,7 +15,7 @@ async function fetchNoteDetail(noteId) {
     renderNoteDetail(note);
 
   } catch (err) {
-    console.error("Failed to fetch note detail:", err);
+    alert("Something went wrong. Please try again.");
   }
 }
 

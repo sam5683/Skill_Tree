@@ -25,8 +25,13 @@
 /* ================= DIVIDER ================= */
 .section-divider {
   height: 1px;
-  background: rgba(255,255,255,0.08);
-  margin: 18px 0;
+  margin: 12px 0;
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(255,255,255,0.25),
+    transparent
+  );
 }
 
 /* ================= NOTE LIST ================= */
@@ -105,7 +110,7 @@
 
 /* Scroll area */
 .note-scroll {
-  height : 100%;
+  height: 100%;
   white-space: pre-wrap;
   line-height: 1.8;
   overflow-y: auto;
@@ -127,8 +132,189 @@
   white-space: pre-wrap;
 }
 
+/* ================= CONTENT PANEL FIX ================= */
 .content-panel {
   display: flex;
   flex-direction: column;
-  height: calc(110vh - 64px);
+  height: calc(100vh - 64px);
+}
+
+/* ================= CLEAN DIVIDER ================= */
+.divider {
+  height: 1px;
+  margin: 16px 0;
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(255,255,255,0.2),
+    transparent
+  );
+}
+
+/* ================= CONTENT PRIORITY FIX ================= */
+
+/* Make content area expand */
+.note-main {
+  flex: 1;
+  min-height: 0; /* prevents overflow bugs */
+  display: flex;
+}
+
+/* Content takes more readable width */
+.note-content {
+  flex: 1;
+  max-width: 800px; /* normal mode */
+}
+
+/* override in read mode */
+.read-mode .note-content {
+  max-width: 100%;
+}
+/* Reduce summary dominance */
+.note-summary-section {
+  max-height: 150px;
+  overflow-y: auto;
+  opacity: 0.95;
+}
+
+/* Slightly tighter summary */
+.note-summary {
+  font-size: 13px;
+  padding: 12px;
+}
+
+/* ================= READ MODE (FINAL CLEAN) ================= */
+
+/* remove dashboard completely */
+.read-mode .sidebar,
+.read-mode .notes-panel,
+.read-mode .note-summary-section,
+.read-mode #improveNoteBtn,
+.read-mode #regenSummaryBtn,
+.read-mode #deleteNoteBtn,
+.read-mode #editNoteBtn,
+.read-mode .dashboard-header {
+  display: none !important;
+}
+
+/* full layout */
+.read-mode .app-layout {
+  grid-template-columns: 1fr;
+}
+
+/* full background (book feel) */
+.read-mode .dashboard-body {
+  background: #0b0f19;
+}
+
+/* content container */
+.read-mode .content-panel {
+  width: 100%;
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 48px 28px;
+
+  background: #0a0c16;
+
+  height: auto;
+  overflow: visible;
+}
+
+/* center main block */
+.read-mode .note-main {
+  display: block;
+  padding-left: 40px;
+  padding-right: 40px;
+}
+
+/* title (like chapter title) */
+.read-mode #noteTitle {
+  font-size: 30px;
+  font-weight: 700;
+  margin-bottom: 18px;
+  letter-spacing: 0.3px;
+}
+
+/* remove "Tags:" label noise */
+.read-mode #noteTags::before {
+  content: "";
+}
+
+/* main text (book style) */
+.read-mode .note-content {
+  max-width: 850px;        /* book-like width */
+  font-size: 16px;         /* slightly bigger */
+  line-height: 2.2;        /* key for readability */
+  letter-spacing: 0.2px;
+  color: #d4d4d8;          /* softer than white */
+}
+
+/* paragraph spacing (critical for readability) */
+.read-mode .note-content br {
+  display: block;
+  margin-bottom: 14px;
+}
+
+/* remove internal scroll */
+.read-mode .note-scroll {
+  height: auto !important;
+  overflow: visible !important;
+}
+
+/* action bar (minimal) */
+.read-mode .top-actions,
+.read-mode .flex.gap-3 {
+  position: absolute;
+  top: 24px;
+  right: 40px;
+  opacity: 0.6;
+}
+
+/* buttons cleaner */
+.read-mode button {
+  font-size: 13px;
+  opacity: 0.7;
+}
+
+.read-mode button:hover {
+  opacity: 1;
+}
+
+/* divider softer */
+.read-mode .divider {
+  margin: 24px 0;
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(255,255,255,0.12),
+    transparent
+  );
+}
+
+
+/* ================= FLASHCARD ================= */
+
+.flashcard {
+  background: rgba(20, 25, 40, 0.85);
+  backdrop-filter: blur(12px);
+  border-radius: 16px;
+  box-shadow:
+    0 10px 30px rgba(0,0,0,0.5),
+    inset 0 1px rgba(255,255,255,0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.flashcard:hover {
+  transform: translateY(-3px);
+  box-shadow:
+    0 20px 40px rgba(0,0,0,0.6);
+}
+
+/* ================= REVIEW BACKGROUND ================= */
+
+body.dashboard-body {
+  background:
+    radial-gradient(circle at 20% 20%, rgba(59,130,246,0.15), transparent 40%),
+    radial-gradient(circle at 80% 80%, rgba(168,85,247,0.12), transparent 40%),
+    #020617;
 }

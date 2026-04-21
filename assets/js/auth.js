@@ -13,8 +13,7 @@
   // Lightweight selectors
   const $ = (s, ctx = document) => ctx.querySelector(s);
   const $$ = (s, ctx = document) => Array.from(ctx.querySelectorAll(s));
-  const API_BASE = "http://127.0.0.1:8000/api/v1";
-  const signinModal = $("#signinModal");
+  const API_BASE = window.API_BASE || "http://127.0.0.1:8000/api/v1";
   const signupModal = $("#signupModal");
   const cursorEl = $("#cursorWhiteHole");
 
@@ -273,8 +272,10 @@
     });
 
     if (!res.ok) {
-      pwErr.textContent = "Invalid credentials";
-      return;
+       const err = await res.json().catch(() => ({}));
+       console.error("LOGIN ERROR:", err);
+       pwErr.textContent = err.detail || "Login failed";
+       return;
     }
 
     const data = await res.json();
@@ -286,7 +287,7 @@
     window.location.href = "dashboard.html";
 
   } catch (err) {
-    pwErr.textContent = "Network error";
+    pwErr.textContent = "Something went wrong. Please try again.";
   }
 });
 }
@@ -488,7 +489,7 @@
       };
 
       try {
-        const res = await fetch(`${API_BASE}/register`, {
+        const res = await fetch(`${API_BASE}/auth/register`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload)
@@ -496,14 +497,15 @@
 
         if (!res.ok) {
           const d = await res.json().catch(() => ({}));
-          return alert(d.message || "Signup failed");
+          return alert(d.detail || "Signup failed");
         }
-        const data = await res.json();
-        localStorage.setItem("access_token", data.access_token);
-        window.location.href = "dashboard.html";
+        await res.json();
+        alert(`Account created successfully.\nUsername: ${uname}\nPlease login.`);
+       // redirect to login instead of dashboard
+        window.location.href = "index.html";
 
       } catch (err) {
-        alert("Network error");
+         alert("Something went wrong. Please try again."); 
       }
     });
   }

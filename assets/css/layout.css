@@ -1,61 +1,118 @@
+/* =========================================================
+   🎯 BASE LAYOUT
+   Purpose:
+   - Define global structure
+   - Keep dark theme clean and stable
+========================================================= */
+
 .dashboard-body {
   background: #0b1220;
   color: #e5e7eb;
   font-family: ui-sans-serif, system-ui;
 }
 
-/* Header */
+
+/* =========================================================
+   🧭 HEADER
+========================================================= */
+
 .dashboard-header {
   height: 64px;
-  border-bottom: 1px solid rgba(255,255,255,0.08);
-  background: #0f172a;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  background: rgba(15,23,42,0.9);
+
   display: flex;
   align-items: center;
-  padding: 0 20px;
+  justify-content: space-between;
+
+  padding: 0 24px;
+  backdrop-filter: blur(8px); /* subtle premium feel */
 }
 
-/* Layout grid */
+
+/* =========================================================
+   🧱 MAIN GRID
+   Purpose:
+   - Better proportions
+   - Content gets more space
+========================================================= */
+
 .app-layout {
   height: calc(100vh - 64px);
   display: grid;
-  grid-template-columns: 240px 300px 1fr;
+
+  /* 🔥 KEY CHANGE: better balance */
+  grid-template-columns: 200px 280px 1fr;
 }
 
-/* Panels */
+
+/* =========================================================
+   📂 SIDEBAR (SKILLS)
+========================================================= */
+
 .sidebar {
   background: #0b1220;
-  border-right: 1px solid rgba(255,255,255,0.06);
-  padding: 16px;
+  border-right: 1px solid rgba(255,255,255,0.04);
+
+  padding: 16px 14px;
   overflow-y: auto;
 }
+
+
+/* =========================================================
+   🗂 NOTES PANEL
+========================================================= */
 
 .notes-panel {
   background: #0f172a;
-  border-right: 1px solid rgba(255,255,255,0.06);
-  padding: 16px;
+  border-right: 1px solid rgba(255,255,255,0.04);
+
+  padding: 16px 14px;
   overflow-y: auto;
 }
+
+
+/* =========================================================
+   📄 CONTENT PANEL (MOST IMPORTANT)
+   Purpose:
+   - More breathing space
+   - Center focus on reading
+========================================================= */
 
 .content-panel {
-  background: #111827;
-  padding: 28px;
+  background: linear-gradient(
+    180deg,
+    #0f172a,
+    #111827
+  );
+
+  padding: 40px 60px;   /* 🔥 BIG FIX: more horizontal space */
+
   display: flex;
   flex-direction: column;
-  gap: 18px; /* 🔥 spacing added */
-  height: calc(100vh - 64px);
+
+  gap: 12px;            /* reduced from 16 → tighter layout */
   overflow-y: auto;
 }
 
-/* Panel titles */
+
+/* =========================================================
+   🧾 PANEL TITLES
+========================================================= */
+
 .panel-header {
   font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  opacity: 0.5;
-  margin-bottom: 12px;
+  opacity: 0.45;
+  margin-bottom: 10px;
 }
 
-/* Empty state */
+
+/* =========================================================
+   📭 EMPTY STATE
+========================================================= */
+
 .empty-state {
   opacity: 0.5;
   font-size: 13px;
@@ -63,8 +120,30 @@
   margin-top: 40px;
 }
 
-/* 🔥 Mobile fix */
+
+/* =========================================================
+   🎚 SCROLLBAR (SUBTLE)
+========================================================= */
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.12);
+  border-radius: 10px;
+}
+
+
+/* =========================================================
+   📱 MOBILE (SIMPLIFIED)
+   Purpose:
+   - Focus only on content
+   - Remove side clutter
+========================================================= */
+
 @media (max-width: 768px) {
+
   .app-layout {
     grid-template-columns: 1fr;
   }
@@ -75,6 +154,7 @@
   }
 
   .content-panel {
-    padding: 16px;
+    padding: 20px 16px;
   }
+
 }

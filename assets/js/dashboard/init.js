@@ -12,6 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
   setupFlashcards();
   setupSearch();
   setupOCR();
+  setupReadMode()
   setupImproveNote();
 
   // Optional

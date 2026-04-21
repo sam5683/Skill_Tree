@@ -1,23 +1,21 @@
 /* ==========================================================================
-   flatpickr.css — Dark Modern Calendar (FINAL PERFECT VERSION)
+   flatpickr.css — Dark Modern Calendar (Balanced + Readable)
    ========================================================================== */
 
 /* Calendar Container */
 .flatpickr-calendar {
-  background: rgba(12, 14, 20, 0.96) !important;
+  background: rgba(10, 12, 18, 0.96) !important;
   border: 1px solid rgba(255, 255, 255, 0.08) !important;
-  color: #e6f0ff !important;
+  color: #e6edf7 !important;
   border-radius: 14px !important;
-  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.6) !important;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.65) !important;
   padding: 10px !important;
   min-width: 300px;
-  width: auto !important;
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(8px);
 }
 
 /* ==========================================================================
-   Month/Year Header — FIXED brightness
+   Month / Year Header
    ========================================================================== */
 
 .flatpickr-months {
@@ -27,29 +25,36 @@
   justify-content: space-between !important;
 }
 
-/* Month name (e.g., January) */
-.flatpickr-current-month .cur-month {
-  color: #ffffff !important;
-  font-size: 1.05rem !important;
-  font-weight: 700 !important;
+/* Fix alignment */
+.flatpickr-current-month {
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px;
 }
 
-/* Year text */
+/* Month dropdown (MAIN FIX) */
+.flatpickr-monthDropdown-months {
+  color: #ffffff !important;
+  font-weight: 600 !important;
+  background: transparent !important;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+/* Year */
 .flatpickr-current-month input.cur-year {
   color: #ffffff !important;
-  font-size: 1.05rem !important;
-  font-weight: 700 !important;
+  font-weight: 600 !important;
   background: transparent !important;
   border: none !important;
+  opacity: 0.95;
 }
 
-/* ==========================================================================
-   FIXED Up/Down Year Arrows (the invisible ones)
-   ========================================================================== */
-
+/* Year arrows */
 .flatpickr-current-month .numInputWrapper span.arrowUp:after,
 .flatpickr-current-month .numInputWrapper span.arrowDown:after {
-  border-color: rgba(255, 255, 255, 0.85) transparent !important;
+  border-color: rgba(255, 255, 255, 0.8) transparent !important;
 }
 
 .flatpickr-current-month .numInputWrapper span.arrowUp:hover:after,
@@ -58,33 +63,12 @@
 }
 
 /* ==========================================================================
-   Month Dropdown
-   ========================================================================== */
-
-.flatpickr-monthDropdown-months {
-  background: rgba(20, 22, 30, 0.98) !important;
-  border-radius: 8px !important;
-  padding: 6px 0 !important;
-}
-
-.flatpickr-monthDropdown-months option {
-  background: rgba(20, 22, 30, 0.98) !important;
-  color: #ffffff !important;
-  padding: 6px 10px !important;
-  font-size: 0.95rem !important;
-}
-
-.flatpickr-monthDropdown-months option:hover {
-  background: rgba(255, 255, 255, 0.12) !important;
-}
-
-/* ==========================================================================
-   Navigation Arrows (Previous / Next Month)
+   Navigation Arrows
    ========================================================================== */
 
 .flatpickr-prev-month svg,
 .flatpickr-next-month svg {
-  fill: rgba(255, 255, 255, 0.9) !important;
+  fill: rgba(255, 255, 255, 0.75) !important;
   width: 18px !important;
   height: 18px !important;
   transition: 0.2s;
@@ -96,13 +80,14 @@
 }
 
 /* ==========================================================================
-   Weekdays
+   Weekdays (less aggressive, better hierarchy)
    ========================================================================== */
 
 .flatpickr-weekday {
-  color: rgba(255, 255, 255, 0.85) !important;
-  font-weight: 600 !important;
-  font-size: 0.8rem !important;
+  color: rgba(255, 255, 255, 0.55) !important;
+  font-weight: 500 !important;
+  font-size: 0.78rem !important;
+  letter-spacing: 0.3px;
 }
 
 /* ==========================================================================
@@ -110,30 +95,49 @@
    ========================================================================== */
 
 .flatpickr-day {
-  color: #dbeafe !important;
+  color: rgba(255, 255, 255, 0.88) !important;
   border-radius: 8px !important;
   padding: 6px !important;
   margin: 2px !important;
-  transition: background 0.2s ease, color 0.2s ease;
+  transition: all 0.18s ease;
 }
 
+/* Hover */
 .flatpickr-day:hover {
-  background: rgba(255, 255, 255, 0.12) !important;
+  background: rgba(255, 255, 255, 0.08) !important;
 }
 
+/* Selected (cleaner contrast) */
 .flatpickr-day.selected {
-  background: linear-gradient(90deg, #4ade80, #3b82f6) !important;
-  color: #062023 !important;
+  background: linear-gradient(135deg, #4ade80, #3b82f6) !important;
+  color: #031417 !important;
+  font-weight: 600;
 }
 
+/* Today (subtle, not loud) */
 .flatpickr-day.today {
-  border: 1px solid rgba(255, 255, 255, 0.25) !important;
-  color: white !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+  color: #ffffff !important;
 }
 
+/* Disabled */
 .flatpickr-day.flatpickr-disabled {
   opacity: 0.25 !important;
   color: rgba(255, 255, 255, 0.35) !important;
+}
+
+/* ==========================================================================
+   Dropdown options (kept strong but not heavy)
+   ========================================================================== */
+
+.flatpickr-monthDropdown-months option {
+  background: #141722 !important;
+  color: #ffffff !important;
+  padding: 6px 10px !important;
+}
+
+.flatpickr-monthDropdown-months option:hover {
+  background: rgba(255, 255, 255, 0.12) !important;
 }
 
 /* ==========================================================================

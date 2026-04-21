@@ -4,19 +4,126 @@
   <meta charset="UTF-8" />
   <title>SkillTree — Review</title>
 
+  <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SkillTree — Dashboard</title>
+
+
+  <meta http-equiv="Content-Security-Policy"
+content="
+  default-src 'self';
+  connect-src 'self' http://127.0.0.1:8000;
+  img-src 'self' data:;
+  style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net;
+  script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net;
+">
+
   <link rel="stylesheet" href="dist/output.css" />
   <link rel="stylesheet" href="assets/css/base.css" />
   <link rel="stylesheet" href="assets/css/layout.css" />
   <link rel="stylesheet" href="assets/css/components.css" />
   <link rel="stylesheet" href="assets/css/theme.css" />
+  <link rel="stylesheet" href="assets/css/utilities.css" />
+
+
+  <link rel="stylesheet" href="dist/output.css" />
+  <link rel="stylesheet" href="assets/css/base.css" />
+  <link rel="stylesheet" href="assets/css/layout.css" />
+  <link rel="stylesheet" href="assets/css/components.css" />
+  <link rel="stylesheet" href="assets/css/theme.css" />
+
+  <style>
+    body.dashboard-body {
+      background:
+        radial-gradient(circle at 50% 30%, rgba(255,255,255,0.05), transparent 40%),
+        #0b0f1a;
+    }
+
+    .review-wrapper {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .review-center {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .flashcard {
+      width: 640px;
+      height: 440px;
+      padding: 36px;
+      border-radius: 16px;
+
+      background: rgba(255,255,255,0.04);
+      backdrop-filter: blur(12px);
+
+      box-shadow:
+        0 10px 30px rgba(0,0,0,0.5),
+        inset 0 0 0 1px rgba(255,255,255,0.06);
+
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    #cardMeta {
+      font-size: 11px;
+      opacity: 0.5;
+      margin-bottom: 6px;
+    }
+
+    #cardQuestion {
+      font-size: 24px;
+      line-height: 1.6;
+    }
+
+    #cardAnswer {
+      font-size: 17px;
+      line-height: 1.6;
+      margin-top: 12px;
+    }
+
+    .action-btn {
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 14px;
+      transition: 0.2s;
+    }
+
+    .btn-again {
+      background: #ef4444;
+    }
+
+    .btn-again:hover {
+      background: #dc2626;
+    }
+
+    /* 🔥 SRS feedback */
+    #srsFeedback {
+      font-size: 12px;
+      opacity: 0.7;
+      margin-top: 8px;
+      height: 16px;
+    }
+
+  </style>
 </head>
 
 <body class="dashboard-body">
 
-  <!-- Top Bar -->
+<div class="review-wrapper">
+
+  <!-- TOP BAR -->
   <div class="p-4 flex justify-between items-center">
     <button onclick="window.location.href='dashboard.html'" class="btn-primary">
-      ← Back to Dashboard
+      ← Back
     </button>
 
     <div id="cardCounter" class="text-sm opacity-70">
@@ -24,63 +131,107 @@
     </div>
   </div>
 
-  <!-- Progress Bar -->
-  <div class="w-full px-6 mb-4">
+  <!-- PROGRESS -->
+  <div class="w-full px-10">
     <div class="w-full bg-white/10 h-2 rounded">
-      <div id="progressBar" class="bg-blue-500 h-2 rounded" style="width: 0%"></div>
+      <div id="progressBar"
+           class="bg-blue-500 h-2 rounded transition-all duration-300"></div>
     </div>
   </div>
 
-  <!-- Review Area -->
-  <div class="flex flex-col items-center justify-center h-[70vh]">
+  <!-- CENTER -->
+  <div class="review-center">
 
-    <div id="cardContainer" class="glass w-[650px] p-8 rounded-lg text-center">
+    <!-- FLASHCARD -->
+    <div id="cardContainer" class="flashcard text-center">
 
-      <!-- Question -->
-      <div id="cardQuestion" class="text-xl mb-6">
-        Loading...
+      <div>
+        <!-- 🔥 CARD META -->
+        <div id="cardMeta"></div>
+
+        <!-- QUESTION -->
+        <div id="cardQuestion" class="font-semibold">
+          Loading...
+        </div>
+
+        <!-- ANSWER -->
+        <div id="cardAnswer" class="hidden opacity-90"></div>
       </div>
 
-      <!-- Answer -->
-      <div id="cardAnswer" class="hidden text-sm opacity-90 mb-6">
-      </div>
+      <!-- ACTION AREA -->
+      <div>
 
-      <!-- Show Answer -->
-      <button id="showAnswerBtn" class="btn-primary mb-4">
-        Show Answer
-      </button>
+        <div class="mt-6 flex justify-center">
+          <button id="showAnswerBtn"
+                  class="btn-primary action-btn">
+            Show Answer (Space)
+          </button>
+        </div>
 
-      <!-- Rating Buttons -->
-      <div id="reviewButtons" class="hidden flex justify-center gap-3">
-        <button class="btn-primary" data-rating="again">Again</button>
-        <button class="btn-primary" data-rating="hard">Hard</button>
-        <button class="btn-primary" data-rating="good">Good</button>
-        <button class="btn-primary" data-rating="easy">Easy</button>
+        <div id="reviewButtons"
+             class="hidden flex justify-center gap-4 mt-6">
+
+          <button class="action-btn btn-again text-white" data-rating="again">
+            Again
+          </button>
+
+          <button class="action-btn bg-yellow-500 hover:bg-yellow-600 text-white"
+                  data-rating="hard">
+            Hard
+          </button>
+
+          <button class="action-btn bg-green-500 hover:bg-green-600 text-white"
+                  data-rating="good">
+            Good
+          </button>
+
+          <button class="action-btn bg-blue-500 hover:bg-blue-600 text-white"
+                  data-rating="easy">
+            Easy
+          </button>
+
+        </div>
+
+        <!-- 🔥 SRS FEEDBACK SLOT -->
+        <div id="srsFeedback"></div>
+
       </div>
 
     </div>
 
-    <!-- Session Complete Screen -->
-    <div id="sessionComplete" class="hidden mt-12 text-center">
+    <!-- SESSION COMPLETE -->
+    <div id="sessionComplete" class="hidden text-center">
 
-      <div class="text-2xl font-semibold mb-3">
-        Review Complete 🎉
+      <div class="text-3xl font-semibold mb-4">
+        🎉 Session Complete
       </div>
 
-      <!-- 🔥 NEW: Feedback -->
-      <div id="reviewStats" class="text-sm opacity-70 mb-2"></div>
+      <div id="reviewStats" class="opacity-80 mb-4"></div>
 
       <div class="text-sm opacity-50 mb-6">
-        Come back tomorrow for your next session.
+        Come back tomorrow to reinforce memory
       </div>
 
-      <button onclick="window.location.href='dashboard.html'" class="btn-primary">
-        Back to Dashboard
-      </button>
+      <div class="flex justify-center gap-4">
+        <button onclick="window.location.href='dashboard.html'"
+                class="btn-primary">
+          Dashboard
+        </button>
+
+        <button onclick="reviewAgain()"
+                class="btn-primary">
+          Review Again
+        </button>
+      </div>
+
     </div>
 
   </div>
 
-  <script src="assets/js/review.js"></script>
+</div>
+
+<script src="assets/js/config.js"></script>
+<script src="assets/js/review.js"></script>
+
 </body>
 </html>

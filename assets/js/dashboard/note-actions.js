@@ -13,23 +13,24 @@ function setupDeleteNote() {
     const token = requireToken();
     if (!token) return;
 
-    const res = await fetch(`${API_BASE}/notes/${selectedNoteId}`, {
-      method: "DELETE",
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    try {
+      const res = await fetch(`${API_BASE}/notes/${selectedNoteId}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
-    if (!res.ok) {
-      alert("Delete failed");
-      return;
+      if (!res.ok) throw new Error("Failed to delete note");
+
+      selectedNoteId = null;
+
+      document.getElementById("noteTitle").textContent = "Select a note";
+      document.getElementById("noteContent").textContent =
+        "Click a note from the list to view its content.";
+
+      fetchNotes();
+    } catch (err) {
+      alert("Something went wrong. Please try again.");
     }
-
-    selectedNoteId = null;
-
-    document.getElementById("noteTitle").textContent = "Select a note";
-    document.getElementById("noteContent").textContent =
-      "Click a note from the list to view its content.";
-
-    fetchNotes();
   };
 }
 
@@ -77,24 +78,30 @@ function setupCreateNote() {
       return;
     }
 
-    const res = await fetch(`${API_BASE}/notes`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ title, content, tags }),
-    });
+    try {
+      const res = await fetch(`${API_BASE}/notes`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ title, content, tags }),
+      });
 
-    const note = await res.json();
+      if (!res.ok) throw new Error("Failed to create note");
 
-    modal.classList.add("hidden");
-    modal.classList.remove("flex");
+      const note = await res.json();
 
-    selectedNoteId = note.id;
+      modal.classList.add("hidden");
+      modal.classList.remove("flex");
 
-    await fetchNotes();
-    fetchNoteDetail(note.id);
+      selectedNoteId = note.id;
+
+      await fetchNotes();
+      fetchNoteDetail(note.id);
+    } catch (err) {
+      alert("Something went wrong. Please try again.");
+    }
   };
 }
 function setupRegenerateSummary() {
@@ -140,13 +147,12 @@ function setupRegenerateSummary() {
       renderNoteDetail(note);
 
     } catch (err) {
-      console.error(err);
 
       if (summaryDiv) {
         summaryDiv.textContent = "Failed to generate summary";
       }
 
-      alert("Summary failed");
+      alert("Something went wrong. Please try again.");
     } finally {
       // 🔥 restore button state
       btn.textContent = originalText;
@@ -187,21 +193,22 @@ function setupFlashcards() {
     const token = requireToken();
     if (!token) return;
 
-    const res = await fetch(
-      `${API_BASE}/flashcards/from-note/${selectedNoteId}`,
-      {
-        method: "POST",
-        headers: { Authorization: `Bearer ${token}` },
+    try {
+      const res = await fetch(
+        `${API_BASE}/flashcards/from-note/${selectedNoteId}`,
+        {
+          method: "POST",
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      if (!res.ok) throw new Error("Failed to generate flashcards");
+
+      if (confirm("Flashcards generated. Go to Review now?")) {
+        window.location.href = "review.html";
       }
-    );
-
-    if (!res.ok) {
-      alert("Flashcards failed");
-      return;
-    }
-
-    if (confirm("Flashcards generated. Go to Review now?")) {
-      window.location.href = "review.html";
+    } catch (err) {
+      alert("Something went wrong. Please try again.");
     }
   };
 }
@@ -253,11 +260,23 @@ function setupImproveNote() {
       }
 
     } catch (err) {
-      console.error(err);
-      alert("AI improve failed");
+      alert("Something went wrong. Please try again.");
     } finally {
       btn.textContent = "✨ Improve";
       btn.disabled = false;
     }
+  };
+}
+
+function setupReadMode() {
+  const btn = document.getElementById("readModeBtn");
+  if (!btn) return;
+
+  btn.onclick = () => {
+    document.body.classList.toggle("read-mode");
+
+    const isActive = document.body.classList.contains("read-mode");
+
+    btn.textContent = isActive ? "Exit" : "Read";
   };
 }

@@ -85,7 +85,6 @@ function setupOCR() {
           : textarea.value + "\n\n" + text;
 
     } catch (err) {
-      console.error(err);
       alert("OCR failed");
     } finally {
       ocrBtn.textContent = "Upload Image";

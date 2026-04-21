@@ -1,10 +1,18 @@
-<!DOCTYPE html>
-<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>SkillTree — Dashboard</title>
 
+  <meta http-equiv="Content-Security-Policy"
+  content="
+    default-src 'self';
+    connect-src 'self' http://127.0.0.1:8000;
+    img-src 'self' data:;
+    style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net;
+    script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net;
+  ">
+
+  <!-- CSS -->
   <link rel="stylesheet" href="dist/output.css" />
   <link rel="stylesheet" href="assets/css/base.css" />
   <link rel="stylesheet" href="assets/css/layout.css" />
@@ -12,8 +20,11 @@
   <link rel="stylesheet" href="assets/css/theme.css" />
   <link rel="stylesheet" href="assets/css/utilities.css" />
 
-  <script src="assets/js/auth-guard.js"></script>
+  <!-- JS (ORDER MATTERS) -->
+  <script src="assets/js/config.js"></script>     
+  <script src="assets/js/auth-guard.js"></script> 
 </head>
+
 
 <body class="dashboard-body">
 
@@ -69,47 +80,53 @@
       </div>
     </section>
 
-    <!-- NOTE CONTENT PANEL -->
-    <section class="content-panel">
+    
+  <!-- NOTE CONTENT PANEL -->
+<section class="content-panel flex flex-col">
 
-      <!-- Title + Actions -->
-      <div class="flex justify-between items-center mb-4">
-        <h2 id="noteTitle" class="text-lg font-semibold">
-          Select a note
-        </h2>
+  <!-- HEADER -->
+  <div class="note-header">
+    <div class="flex justify-between items-center mb-2">
+      <h2 id="noteTitle" class="text-lg font-semibold">Select a note</h2>
 
-        <div class="flex gap-4 text-xs opacity-70">
-          <button id="editNoteBtn">Edit</button>
-          <button id="improveNoteBtn">✨ Improve notes</button>
-          <button id="regenSummaryBtn">Summary</button>
-          <button id="generateFlashcardsBtn">Flashcards</button>
-          <button id="deleteNoteBtn" class="text-red-400">Delete</button>
-        </div>
+      <div class="flex gap-3 text-xs opacity-70">
+        <button id="editNoteBtn">Edit</button>
+        <button id="readModeBtn">Read mode</button>
+        <button id="improveNoteBtn">✨ Improve</button>
+        <button id="regenSummaryBtn">Summary</button>
+        <button id="generateFlashcardsBtn">Flashcards</button>
+        <button id="deleteNoteBtn" class="text-red-400">Delete</button>
       </div>
+    </div>
 
-      <!-- TAGS -->
-      <div class="note-block">
-        <div class="note-label">Tags</div>
-        <div id="noteTags" class="flex gap-2 flex-wrap"></div>
-      </div>
+    <!-- TAGS -->
+    <div class="flex items-center gap-2 text-xs opacity-80 mb-2">
+      <span class="opacity-50">Tags:</span>
+      <div id="noteTags" class="flex gap-2 flex-wrap"></div>
+    </div>
+  </div>
 
-      <div class="section-divider"></div>
+  <!-- 🔥 DIVIDER (Header → Content) -->
+  <div class="divider"></div>
 
-      <!-- CONTENT SCROLL AREA -->
-      <div class="note-content-box">
-        <div id="noteContent" class="note-content note-scroll"></div>
-      </div>
+  <!-- CONTENT AREA -->
+  <div class="note-main flex-1 overflow-hidden">
+    <div id="noteContent" class="note-content note-scroll"></div>
+  </div>
 
-      <div class="section-divider"></div>
+  <!-- 🔥 DIVIDER (Content → Summary) -->
+  <div class="divider"></div>
 
-      <!-- SUMMARY -->
-      <div class="note-block">
-        <div class="note-label">Summary</div>
-        <div id="noteSummary" class="note-summary"></div>
-        <div id="summaryUpdated" class="summary-date"></div>
-      </div>
+  <!-- SUMMARY -->
+  <div class="note-summary-section mt-2">
+    <div class="text-xs opacity-50 mb-1">Summary</div>
 
-    </section>
+    <div id="noteSummary" class="note-summary"></div>
+
+    <div id="summaryUpdated" class="summary-date mt-1"></div>
+  </div>
+
+</section>
 
   </main>
 <!-- CREATE NOTE MODAL -->

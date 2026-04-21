@@ -1,37 +1,185 @@
-/* ===== Base ===== */
+/* =========================================================
+   🎯 BASE / BACKGROUND
+   Purpose:
+   - Adds depth (subtle gradient)
+   - Keeps dark theme but not flat
+========================================================= */
+
 .dashboard-body {
-  background: linear-gradient(180deg, #0b1220, #0f172a);
+  background:
+    radial-gradient(
+      circle at 20% 10%,
+      rgba(59,130,246,0.08),
+      transparent 30%
+    ),
+    #0b1220;
+
   color: #e5e7eb;
   font-family: ui-sans-serif, system-ui;
 }
 
-/* ===== Buttons ===== */
-.btn-primary {
-  background: #3b82f6;
-  color: white;
-  border-radius: 8px;
-  padding: 6px 12px;
-  transition: all 0.2s ease;
+
+
+/* =========================================================
+   🧠 NOTE TITLE
+   Purpose:
+   - Make title feel like a "main focus"
+   - Slight gradient = modern feel
+========================================================= */
+
+#noteTitle {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 4px;
+
+  background: linear-gradient(90deg, #60a5fa, #3b82f6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
-.btn-primary:hover {
-  background: #2563eb;
+
+
+/* =========================================================
+   🏷 TAGS (COMPRESSED)
+   Purpose:
+   - Reduce vertical space usage
+   - Keep tags inline instead of block
+========================================================= */
+
+#noteTags {
+  margin: 2px 0 4px 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+}
+
+/* Add "Tags:" label automatically */
+#noteTags::before {
+  content: "Tags:";
+  opacity: 0.6;
+  font-size: 11px;
+}
+
+.tag {
+  padding: 1px 3px;
+  font-size: 11px;
+  border-radius: 4px;
+  background: rgba(59,130,246,0.2);
+}
+
+
+
+/* =========================================================
+   📄 CONTENT (MOST IMPORTANT SECTION)
+   Purpose:
+   - Improve readability
+   - Limit width for easier reading
+   - Increase line spacing
+========================================================= */
+
+#noteContent {
+  max-width: 780px;   /* prevents full-width text (hard to read) */
+  line-height: 1.8;   /* breathing room between lines */
+  font-size: 15px;
+  margin-top: 2px;
+}
+
+
+
+/* =========================================================
+   📌 SECTION DIVIDER (IMPORTANT FIX)
+   Purpose:
+   - Replace large gaps with clean separation
+========================================================= */
+
+.section-divider {
+  border-top: 1px solid rgba(255,255,255,0.08);
+  margin: 12px 0;
+}
+
+
+
+/* =========================================================
+   🧾 SECTION TITLE (like "Summary")
+   Purpose:
+   - Small label, not dominant
+========================================================= */
+
+.section-title {
+  font-size: 12px;
+  opacity: 0.6;
+  margin-bottom: 6px;
+}
+
+
+
+/* =========================================================
+   🧠 SUMMARY CARD
+   Purpose:
+   - Keep it secondary to content
+   - Reduce excessive spacing
+========================================================= */
+
+#noteSummary {
+  margin-top: 12px;          /* reduced (was too big before) */
+  padding: 14px;
+
+  background: rgba(255,255,255,0.05);
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.06);
+
+  max-width: 580px;
+  line-height: 1.7;
+}
+
+
+
+/* =========================================================
+   ⚙️ ACTION BUTTONS
+   Purpose:
+   - Make them feel clickable (not plain text)
+========================================================= */
+
+.top-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.top-actions button {
+  background: rgba(255,255,255,0.06);
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  transition: 0.2s ease;
+}
+
+.top-actions button:hover {
+  background: rgba(59,130,246,0.2);
   transform: translateY(-1px);
 }
 
-/* ===== Notes List ===== */
+
+
+/* =========================================================
+   🗂 NOTES LIST (LEFT PANEL)
+   Purpose:
+   - Make notes feel selectable
+   - Slight depth + hover feedback
+========================================================= */
+
 .note-item {
   padding: 10px;
   border-radius: 8px;
   background: rgba(255,255,255,0.03);
   border: 1px solid rgba(255,255,255,0.04);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: 0.2s ease;
 }
 
 .note-item:hover {
   background: rgba(255,255,255,0.08);
-  transform: translateY(-2px);
 }
 
 .note-item.active {
@@ -39,42 +187,32 @@
   border: 1px solid rgba(59,130,246,0.4);
 }
 
-/* ===== Tags ===== */
-.tag {
-  background: rgba(59,130,246,0.2);
-  padding: 3px 8px;
-  border-radius: 6px;
-  font-size: 11px;
-}
 
-/* ===== Content Readability ===== */
-#noteContent {
-  line-height: 1.7;
-  font-size: 14px;
-  max-width: 720px;
-}
 
-/* ===== Summary Card ===== */
-#noteSummary {
-  background: rgba(255,255,255,0.05);
-  padding: 14px;
-  border-radius: 10px;
-  border: 1px solid rgba(255,255,255,0.08);
-  line-height: 1.6;
-}
+/* =========================================================
+   🔘 PRIMARY BUTTON
+   Purpose:
+   - Main CTA (Add Note etc.)
+========================================================= */
 
-/* ===== Actions (Edit / Improve / Summary) ===== */
-.top-actions button {
-  padding: 6px 10px;
-  border-radius: 6px;
+.btn-primary {
+  background: #3b82f6;
+  color: white;
+  border-radius: 8px;
+  padding: 6px 12px;
   transition: 0.2s;
 }
 
-.top-actions button:hover {
-  background: rgba(255,255,255,0.1);
+.btn-primary:hover {
+  background: #2563eb;
 }
 
-/* ===== Input ===== */
+
+
+/* =========================================================
+   🔍 SEARCH INPUT
+========================================================= */
+
 .search-input {
   background: rgba(255,255,255,0.06);
   outline: none;
@@ -87,12 +225,25 @@
   color: rgba(255,255,255,0.5);
 }
 
-/* ===== Scrollbar ===== */
-::-webkit-scrollbar {
-  width: 6px;
+
+
+/* =========================================================
+   🧠 FLASHCARD (LIGHT UPGRADE ONLY)
+   Purpose:
+   - Slight interaction
+   - Keep simple (no overdesign)
+========================================================= */
+
+.flashcard {
+  background: rgba(255,255,255,0.06);
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+  font-size: 16px;
+  transition: 0.2s;
 }
 
-::-webkit-scrollbar-thumb {
-  background: rgba(255,255,255,0.15);
-  border-radius: 10px;
+.flashcard:hover {
+  background: rgba(59,130,246,0.15);
+  transform: scale(1.02);
 }

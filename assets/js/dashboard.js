@@ -28,7 +28,7 @@ function createWindow() {
       responseHeaders: {
         ...details.responseHeaders,
         'Content-Security-Policy': [
-          "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-hashes' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https://www.svgrepo.com https://via.placeholder.com; connect-src 'self' http://localhost:8080; font-src 'self' data: https://cdnjs.cloudflare.com;"
+          "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-hashes' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https://www.svgrepo.com https://via.placeholder.com; connect-src 'self'; font-src 'self' data: https://cdnjs.cloudflare.com;"
         ]
       }
     });
@@ -36,9 +36,7 @@ function createWindow() {
 
   mainWindow.loadFile('dashboard.html').then(() => {
     mainWindow.show();
-    console.log('Loaded dashboard.html successfully');
   }).catch(err => {
-    console.error('Failed to load dashboard.html:', err);
   });
 
   if (isDev) mainWindow.webContents.openDevTools({ mode: 'detach' });
@@ -48,7 +46,6 @@ function createWindow() {
   });
 
   mainWindow.on('unresponsive', () => {
-    console.warn('Window unresponsive, attempting reload...');
     mainWindow.reload();
   });
 
@@ -67,19 +64,14 @@ app.whenReady().then(() => {
     if (mainWindow) {
       const treePath = path.join(__dirname, 'dashboard.html');
       mainWindow.loadFile(treePath).then(() => {
-        console.log('Successfully redirected to dashboard.html');
       }).catch(err => {
-        console.error('Failed to load dashboard.html:', err);
         event.sender.send('redirect-error', 'Failed to load the tree page. Please try again.');
       });
     } else {
-      console.error('Main window is not available, creating new window');
       mainWindow = createWindow();
       const treePath = path.join(__dirname, 'dashboard.html');
       mainWindow.loadFile(treePath).then(() => {
-        console.log('Fallback window loaded dashboard.html');
       }).catch(err => {
-        console.error('Failed to load fallback window:', err);
         event.sender.send('redirect-error', 'Failed to load the tree page. Please try again.');
       });
     }
@@ -90,9 +82,7 @@ app.whenReady().then(() => {
     if (mainWindow) {
       const indexPath = path.join(__dirname, '..', 'index.html');
       mainWindow.loadFile(indexPath).then(() => {
-        console.log('Successfully redirected to main index.html');
       }).catch(err => {
-        console.error('Failed to load main index.html:', err);
       });
     }
   });
@@ -103,7 +93,6 @@ app.whenReady().then(() => {
 });
 
 process.on('uncaughtException', (error) => {
-  console.error('Uncaught Exception:', error);
 });
 
 const isSingleInstance = app.requestSingleInstanceLock();

@@ -40,7 +40,7 @@ async function fetchNotes() {
     }
 
   } catch (err) {
-    console.error("Fetch failed", err);
+    alert("Something went wrong. Please try again.");
   }
 }
 
