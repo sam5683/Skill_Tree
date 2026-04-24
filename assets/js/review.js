@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-const API_BASE = window.API_BASE || "http://127.0.0.1:8000/api/v1";
+const API_BASE = window.API_BASE;
 let cards = [];
 let sessionCards = [];
 let currentIndex = 0;

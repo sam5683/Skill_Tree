@@ -13,13 +13,22 @@ function setupDeleteNote() {
     const token = requireToken();
     if (!token) return;
 
+    const originalText = deleteBtn.textContent;
+    deleteBtn.textContent = "Deleting...";
+    deleteBtn.disabled = true;
+
     try {
       const res = await fetch(`${API_BASE}/notes/${selectedNoteId}`, {
         method: "DELETE",
-        headers: { Authorization: `Bearer ${token}` },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
 
-      if (!res.ok) throw new Error("Failed to delete note");
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.detail || "Failed to delete note");
+      }
 
       selectedNoteId = null;
 
@@ -28,8 +37,13 @@ function setupDeleteNote() {
         "Click a note from the list to view its content.";
 
       fetchNotes();
+
     } catch (err) {
-      alert("Something went wrong. Please try again.");
+      console.error("DELETE ERROR:", err);
+      alert(err.message || "Something went wrong.");
+    } finally {
+      deleteBtn.textContent = originalText;
+      deleteBtn.disabled = false;
     }
   };
 }
@@ -192,6 +206,10 @@ function setupFlashcards() {
 
     const token = requireToken();
     if (!token) return;
+
+    const originalText = btn.textContent;
+    btn.textContent = "Generating...";
+    btn.disabled = true;
 
     try {
       const res = await fetch(

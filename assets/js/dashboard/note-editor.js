@@ -32,10 +32,6 @@ async function updateNoteContent(noteId, content) {
   });
 }
 
-
-// -----------------------------
-// OCR Integration (Create Note Modal)
-// -----------------------------
 function setupOCR() {
   const ocrBtn = document.getElementById("ocrBtn");
   const fileInput = document.getElementById("ocrInput");
@@ -69,9 +65,15 @@ function setupOCR() {
         body: formData,
       });
 
-      if (!res.ok) throw new Error("OCR failed");
-
+      //parse first
       const data = await res.json();
+
+      //error handling
+      if (!res.ok) {
+        alert(data.detail || "OCR failed");
+        return;
+      }
+
       const text = data.extracted_text?.trim();
 
       if (!text) {
@@ -79,13 +81,16 @@ function setupOCR() {
         return;
       }
 
+      
+      const labeledText = `--- Extracted from Image ---\n${text}`;
+
       textarea.value =
         textarea.value.trim() === ""
-          ? text
-          : textarea.value + "\n\n" + text;
+          ? labeledText
+          : textarea.value + "\n\n" + labeledText;
 
     } catch (err) {
-      alert("OCR failed");
+      alert("OCR failed. Please try again.");
     } finally {
       ocrBtn.textContent = "Upload Image";
       ocrBtn.disabled = false;
@@ -93,8 +98,6 @@ function setupOCR() {
     }
   });
 }
-
-
 // -----------------------------
 // Enable Edit Mode
 // -----------------------------
@@ -200,7 +203,7 @@ function enableEditMode(note) {
         body: formData,
       });
 
-      if (!res.ok) throw new Error("OCR failed");
+      if (!res.ok){alert(data.detail || "OCR failed"); return;}
 
       const data = await res.json();
       const text = data.extracted_text?.trim();

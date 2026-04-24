@@ -13,7 +13,7 @@
   // Lightweight selectors
   const $ = (s, ctx = document) => ctx.querySelector(s);
   const $$ = (s, ctx = document) => Array.from(ctx.querySelectorAll(s));
-  const API_BASE = window.API_BASE || "http://127.0.0.1:8000/api/v1";
+  const API_BASE = window.API_BASE;
   const signupModal = $("#signupModal");
   const cursorEl = $("#cursorWhiteHole");
 
@@ -75,7 +75,7 @@
 
         <div class="auth-group">
           <label>Email</label>
-          <input id="loginEmail" type="email" placeholder="your@email.com" autocomplete="email">
+          <input id="loginEmail" name="user_email_input" type="email" placeholder="your@email.com" autocomplete="off">
           <div class="email-suggest" id="loginEmailSuggest"></div>
           <div class="field-error" id="loginEmailError"></div>
         </div>
@@ -83,7 +83,7 @@
         <div class="auth-group">
           <label>Password</label>
           <div style="position:relative;">
-            <input id="loginPassword" type="password" placeholder="Your password" autocomplete="current-password" style="width:100%; padding-right:44px;">
+            <input  id="loginPassword"  name="user_password_input" type="password" placeholder="Your password" autocomplete="new-password">
             <button class="eye-btn" id="loginEye" aria-label="toggle password" style="position:absolute; right:12px; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; z-index:10;">👁</button>
           </div>
           <div class="field-error" id="loginPwError"></div>
@@ -125,7 +125,7 @@
 
         <div class="auth-group">
           <label>Email</label>
-          <input id="regEmail" type="email" placeholder="your@email.com" autocomplete="email">
+          <input id="regEmail" type="email" placeholder="your@email.com" autocomplete="off">
           <div class="email-suggest" id="regEmailSuggest"></div>
           <div class="field-error" id="regEmailErr"></div>
         </div>
@@ -245,10 +245,13 @@
       });
     }
 
-    $("#loginBtn").addEventListener("click", async () => {
+ const loginBtn = $("#loginBtn");
+
+loginBtn.addEventListener("click", async () => {
   emailErr.textContent = "";
   pwErr.textContent = "";
 
+  // ✅ VALIDATION FIRST
   if (!/^\S+@\S+\.\S+$/.test(email.value)) {
     emailErr.textContent = "Enter a valid email";
     return;
@@ -259,6 +262,11 @@
     return;
   }
 
+  // 🔥 loading state AFTER validation
+  const originalText = loginBtn.textContent;
+  loginBtn.textContent = "Signing in...";
+  loginBtn.disabled = true;
+
   try {
     const res = await fetch(`${API_BASE}/auth/login`, {
       method: "POST",
@@ -266,21 +274,20 @@
         "Content-Type": "application/x-www-form-urlencoded",
       },
       body: new URLSearchParams({
-        username: email.value, // OAuth2 expects "username"
+        username: email.value,
         password: pw.value,
       }),
     });
 
     if (!res.ok) {
-       const err = await res.json().catch(() => ({}));
-       console.error("LOGIN ERROR:", err);
-       pwErr.textContent = err.detail || "Login failed";
-       return;
+      const err = await res.json().catch(() => ({}));
+      console.error("LOGIN ERROR:", err);
+      pwErr.textContent = err.detail || "Login failed";
+      return;
     }
 
     const data = await res.json();
 
-    // ✅ store token exactly once
     localStorage.setItem("access_token", data.access_token);
     localStorage.setItem("token_type", data.token_type);
 
@@ -288,6 +295,9 @@
 
   } catch (err) {
     pwErr.textContent = "Something went wrong. Please try again.";
+  } finally {
+    loginBtn.textContent = originalText;
+    loginBtn.disabled = false;
   }
 });
 }
@@ -489,7 +499,7 @@
       };
 
       try {
-        const res = await fetch(`${API_BASE}/auth/register`, {
+        const res = await fetch(`${API_BASE}/register`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload)
