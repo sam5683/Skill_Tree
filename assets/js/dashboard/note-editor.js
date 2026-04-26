@@ -102,6 +102,7 @@ function setupOCR() {
 // Enable Edit Mode
 // -----------------------------
 function enableEditMode(note) {
+  toggleActionButtons(false);
   const contentDiv = document.getElementById("noteContent");
 
   const textarea = document.createElement("textarea");
@@ -237,10 +238,12 @@ function enableEditMode(note) {
     await updateNoteContent(note.id, textarea.value);
     fetchNoteDetail(note.id);
     fetchNotes();
+    toggleActionButtons(true);
   };
 
   // Cancel
   cancelBtn.onclick = () => {
     fetchNoteDetail(note.id);
+    toggleActionButtons(true);
   };
 }

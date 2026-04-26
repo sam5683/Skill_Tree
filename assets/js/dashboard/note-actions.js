@@ -291,16 +291,28 @@ function setupImproveNote() {
     }
   };
 }
-
 function setupReadMode() {
   const btn = document.getElementById("readModeBtn");
   if (!btn) return;
 
   btn.onclick = () => {
-    document.body.classList.toggle("read-mode");
-
     const isActive = document.body.classList.contains("read-mode");
 
-    btn.textContent = isActive ? "Exit" : "Read";
+    if (!isActive) {
+      // ENTER READ MODE
+
+      // exit edit UI (important)
+      toggleActionButtons(false);
+
+      document.body.classList.add("read-mode");
+      btn.textContent = "Exit";
+
+    } else {
+      // EXIT READ MODE
+      document.body.classList.remove("read-mode");
+      btn.textContent = "Read";
+
+      toggleActionButtons(true);
+    }
   };
 }
