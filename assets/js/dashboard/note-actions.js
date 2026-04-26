@@ -1,3 +1,14 @@
+function toggleActionButtons(show) {
+  const actions = document.querySelectorAll(
+    "#editNoteBtn, #improveNoteBtn, #regenSummaryBtn, #generateFlashcardsBtn, #deleteNoteBtn"
+  );
+
+  actions.forEach(btn => {
+    if (btn) btn.style.display = show ? "inline-block" : "none";
+  });
+}
+
+
 function setupDeleteNote() {
   const deleteBtn = document.getElementById("deleteNoteBtn");
   if (!deleteBtn) return;

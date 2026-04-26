@@ -171,13 +171,15 @@
   flex: 1;
   min-height: 0; /* prevents overflow bugs */
   display: flex;
+  justify-content: center; 
   overflow-y: auto;
 }
 
 /* Content takes more readable width */
 .note-content {
   flex: 1;
-  max-width: 800px; /* normal mode */
+  width: 100%;
+  max-width: 800px;   /* keeps readability on desktop */
 }
 
 /* override in read mode */
