@@ -205,3 +205,17 @@
  }
 
 }
+
+/* =========================================================
+   🔙 BACK BUTTON (MOBILE ONLY)
+========================================================= */
+
+#backBtn {
+  display: none;   /* default = hidden everywhere */
+}
+
+@media (max-width: 768px) {
+  #backBtn {
+    display: block;  /* show only on mobile */
+  }
+}
