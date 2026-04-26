@@ -32,7 +32,7 @@ function createWindow() {
         script-src 'self' 'unsafe-inline' 'unsafe-hashes' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com; \
         style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; \
         img-src 'self' data: https://www.svgrepo.com https://via.placeholder.com; \
-        connect-src 'self'https://skilltree-backend-fkf6.onrender.com; \
+        connect-src 'self'https://skilltree-backend-fkf6.onrender.com;\
         font-src 'self' data: https://cdnjs.cloudflare.com;"
         ]
       }

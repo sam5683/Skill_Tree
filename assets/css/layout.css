@@ -200,4 +200,8 @@
     flex-direction: column;
   }
 
+  .notes-panel.hidden-mobile {
+  display: none !important;
+ }
+
 }

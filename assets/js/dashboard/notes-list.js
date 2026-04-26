@@ -97,7 +97,7 @@ function renderNotesList(notes) {
 
       //  MOBILE SWITCH
       if (window.innerWidth < 768) {
-        document.querySelector('.notes-panel').style.display = 'none';
+        document.querySelector('.notes-panel').classList.add('hidden-mobile');
         document.querySelector('.content-panel').classList.add('active');
       }
     });
@@ -110,7 +110,7 @@ function renderNotesList(notes) {
 //#endregion
 document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("backBtn")?.addEventListener("click", () => {
-    document.querySelector('.notes-panel').style.display = 'block';
+    document.querySelector('.notes-panel').classList.remove('hidden-mobile');
     document.querySelector('.content-panel').classList.remove('active');
   });
 });
