@@ -83,6 +83,9 @@ content="
     
   <!-- NOTE CONTENT PANEL -->
 <section class="content-panel flex flex-col">
+  <button id="backBtn" class="md:hidden mb-2 text-sm opacity-70">
+  ← Back
+  </button>
 
   <!-- HEADER -->
   <div class="note-header">
@@ -110,7 +113,7 @@ content="
   <div class="divider"></div>
 
   <!-- CONTENT AREA -->
-  <div class="note-main flex-1 overflow-hidden">
+  <div class="note-main flex-1 overflow-y-auto">  </div>
     <div id="noteContent" class="note-content note-scroll"></div>
   </div>
 

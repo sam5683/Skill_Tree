@@ -3,6 +3,12 @@ async function fetchNotes() {
   if (!token) return;
 
   try {
+
+    const container = document.getElementById("notesList");
+    if (container) {
+    container.innerHTML = `<div class="text-sm opacity-60">Loading...</div>`;
+    }
+
     let url = `${API_BASE}/notes`;
 
     const params = new URLSearchParams();
@@ -43,7 +49,6 @@ async function fetchNotes() {
     alert("Something went wrong. Please try again.");
   }
 }
-
 function renderNotesList(notes) {
   const container = document.getElementById("notesList");
   if (!container) return;
@@ -89,14 +94,23 @@ function renderNotesList(notes) {
     item.addEventListener("click", () => {
       selectedNoteId = note.id;
       fetchNoteDetail(note.id);
-      fetchNotes();
 
-    if (window.innerWidth < 768) {
-    document.querySelector('.notes-panel').style.display = 'none';
-    document.querySelector('.content-panel').classList.add('active');
-    }
+      //  MOBILE SWITCH
+      if (window.innerWidth < 768) {
+        document.querySelector('.notes-panel').style.display = 'none';
+        document.querySelector('.content-panel').classList.add('active');
+      }
     });
 
     container.appendChild(item);
   });
 }
+
+
+//#endregion
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("backBtn")?.addEventListener("click", () => {
+    document.querySelector('.notes-panel').style.display = 'block';
+    document.querySelector('.content-panel').classList.remove('active');
+  });
+});
