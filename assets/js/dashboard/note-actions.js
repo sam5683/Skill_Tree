@@ -91,6 +91,9 @@ function setupCreateNote() {
       alert("Title and content required");
       return;
     }
+    
+    saveBtn.textContent = "Saving...";
+    saveBtn.disabled = true;
 
     try {
       const res = await fetch(`${API_BASE}/notes`, {
@@ -115,6 +118,9 @@ function setupCreateNote() {
       fetchNoteDetail(note.id);
     } catch (err) {
       alert("Something went wrong. Please try again.");
+
+      saveBtn.textContent = "Retry";
+      saveBtn.disabled = false;
     }
   };
 }

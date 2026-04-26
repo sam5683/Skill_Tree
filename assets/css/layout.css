@@ -39,12 +39,23 @@
 
 .app-layout {
   height: calc(100vh - 64px);
-  display: grid;
-
-  /* 🔥 KEY CHANGE: better balance */
-  grid-template-columns: 200px 280px 1fr;
+  display: flex;
 }
 
+/* widths instead of grid */
+.sidebar {
+  width: 200px;
+  flex-shrink: 0;
+}
+
+.notes-panel {
+  width: 280px;
+  flex-shrink: 0;
+}
+
+.content-panel {
+  flex: 1;
+}
 
 /* =========================================================
    📂 SIDEBAR (SKILLS)
@@ -86,12 +97,13 @@
     #111827
   );
 
-  padding: 40px 60px;   /* 🔥 BIG FIX: more horizontal space */
-
+  padding: 32px 40px;
+  max-width: 100%;
+  
   display: flex;
   flex-direction: column;
+  gap: 12px;
 
-  gap: 12px;            /* reduced from 16 → tighter layout */
   overflow-y: auto;
 }
 
@@ -144,17 +156,48 @@
 
 @media (max-width: 768px) {
 
+  /* Switch to vertical layout */
   .app-layout {
-    grid-template-columns: 1fr;
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 64px);
   }
 
-  .sidebar,
+  /* Sidebar becomes overlay (hidden by default) */
+  .sidebar {
+    position: fixed;
+    top: 64px;
+    left: 0;
+    width: 240px;
+    height: calc(100vh - 64px);
+    background: #0b1220;
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+    z-index: 50;
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  /* Notes list becomes default screen */
   .notes-panel {
-    display: none;
+    display: block;
+    width: 100%;
+    height: 100%;
   }
 
+  /* Content panel hidden initially */
   .content-panel {
-    padding: 20px 16px;
+    display: none;
+    padding: 16px;
+    height: 100%;
+  }
+
+  /* When active (you toggle this via JS) */
+  .content-panel.active {
+    display: flex;
+    flex-direction: column;
   }
 
 }

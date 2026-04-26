@@ -90,6 +90,11 @@ function renderNotesList(notes) {
       selectedNoteId = note.id;
       fetchNoteDetail(note.id);
       fetchNotes();
+
+    if (window.innerWidth < 768) {
+    document.querySelector('.notes-panel').style.display = 'none';
+    document.querySelector('.content-panel').classList.add('active');
+    }
     });
 
     container.appendChild(item);
