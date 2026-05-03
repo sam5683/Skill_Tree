@@ -80,7 +80,8 @@
 ========================================================= */
 
 #noteContent {
-  max-width: 720px;   /* prevents full-width text (hard to read) */
+  width:100%;
+  max-width: 900px;   /* prevents full-width text (hard to read) */
   line-height: 1.9;   /* breathing room between lines */
   font-size: 15px;
   margin-top: 2px;
