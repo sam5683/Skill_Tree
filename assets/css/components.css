@@ -197,39 +197,44 @@
   padding: 12px;
 }
 
-/* ================= READ MODE (CLEAN + STABLE) ================= */
+/* ================= READ MODE  ================= */
 
-/* Hide dashboard clutter */
+/* Activate base */
+.read-mode {
+  background: #0a0c16;
+}
+
+/* Remove all dashboard clutter */
 .read-mode .sidebar,
 .read-mode .notes-panel,
 .read-mode .dashboard-header,
 .read-mode #noteSummary,
+.read-mode .note-summary-section,
 .read-mode #improveNoteBtn,
 .read-mode #regenSummaryBtn,
 .read-mode #generateFlashcardsBtn,
-.read-mode #deleteNoteBtn {
+.read-mode #deleteNoteBtn,
+.read-mode .section-divider,
+.read-mode hr {
   display: none !important;
 }
 
-/* Layout full screen */
+/* Kill layout constraints */
 .read-mode .app-layout {
-  display: flex;
+  display: block; /* 🔥 was flex — causes layout bugs */
 }
 
-/* Background (true reading feel) */
-.read-mode .dashboard-body {
-  background: #0b0f19;
-}
-
-/* Content container */
+/* Remove gradient / panel styling */
 .read-mode .content-panel {
   width: 100%;
-  padding: 60px 20px;
-  background: #0a0c16;
+  max-width: 100%;
+  padding: 40px 16px;
+
+  background: transparent; /* 🔥 removes dark band */
   overflow: visible;
 }
 
-/* Main wrapper */
+/* Center readable column */
 .read-mode .note-main {
   max-width: 720px;
   margin: 0 auto;
@@ -242,12 +247,12 @@
   margin-bottom: 20px;
 }
 
-/* Tags minimal */
+/* Remove "Tags:" label noise */
 .read-mode #noteTags::before {
   content: "";
 }
 
-/* Main content */
+/* Content (core reading area) */
 .read-mode #noteContent {
   width: 100%;
   font-size: 17px;
@@ -255,23 +260,23 @@
   color: #e4e4e7;
 }
 
-/* Better paragraph spacing */
+/* Paragraph spacing */
 .read-mode #noteContent br {
   display: block;
-  margin-bottom: 14px;
+  margin-bottom: 12px;
 }
 
-/* Remove scroll containers */
+/* Remove nested scroll */
 .read-mode .note-scroll {
   height: auto !important;
   overflow: visible !important;
 }
 
-/* Minimal action (top right) */
+/* Minimal top action */
 .read-mode .top-actions {
   position: fixed;
-  top: 20px;
-  right: 24px;
+  top: 16px;
+  right: 20px;
   opacity: 0.6;
 }
 
@@ -282,7 +287,6 @@
 .read-mode .top-actions button:hover {
   opacity: 1;
 }
-
 /* ================= FLASHCARD ================= */
 
 .flashcard {
