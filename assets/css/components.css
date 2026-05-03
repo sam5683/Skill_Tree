@@ -224,7 +224,7 @@
 /* content container */
 .read-mode .content-panel {
   width: 100%;
-  max-width: 980px;
+  max-width: 100%;
   margin: 0;
   padding: 48px 28px;
 
@@ -237,8 +237,8 @@
 /* center main block */
 .read-mode .note-main {
   display: block;
-  padding-left: 40px;
-  padding-right: 40px;
+  padding-left: 0;
+  padding-right: 0;
 }
 
 /* title (like chapter title) */
