@@ -243,13 +243,13 @@ function enableEditMode(note) {
     await updateNoteContent(note.id, textarea.value);
     fetchNoteDetail(note.id);
     fetchNotes();
-    document.body.classList.remove("edit-mode");   
+    document.body.classList.remove("edit-mode", "read-mode");   
     toggleActionButtons("default");
   };
 
   // Cancel
   cancelBtn.onclick = () => {
     fetchNoteDetail(note.id);
-    document.body.classList.remove("edit-mode");
+    document.body.classList.remove("edit-mode", "read-mode");
     toggleActionButtons("default");  
   };}

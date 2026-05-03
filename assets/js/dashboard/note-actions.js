@@ -6,29 +6,28 @@ function toggleActionButtons(mode) {
   const deleteBtn = document.getElementById("deleteNoteBtn");
   const readBtn = document.getElementById("readModeBtn");
 
-  // RESET everything first
-  [editBtn, improveBtn, summaryBtn, flashBtn, deleteBtn, readBtn]
-    .forEach(btn => {
-      if (btn) btn.style.display = "none";
-    });
+  const all = [editBtn, improveBtn, summaryBtn, flashBtn, deleteBtn, readBtn];
+
+  // hide everything first
+  all.forEach(btn => {
+    if (btn) btn.style.display = "none";
+  });
 
   if (mode === "default") {
-    // normal dashboard view
-    [editBtn, improveBtn, summaryBtn, flashBtn, deleteBtn, readBtn]
-      .forEach(btn => {
-        if (btn) btn.style.display = "inline-block";
-      });
+    // normal dashboard
+    all.forEach(btn => {
+      if (btn) btn.style.display = "inline-block";
+    });
   }
 
   if (mode === "edit") {
-    // ONLY edit-related controls
-    if (improveBtn) improveBtn.style.display = "inline-block";
-    if (summaryBtn) summaryBtn.style.display = "inline-block";
+    // NOTHING from top bar
+    // edit UI is handled inside textarea section (Save/Cancel/OCR)
   }
 
   if (mode === "read") {
-    // minimal UI
-    if (editBtn) editBtn.style.display = "inline-block";
+    // ONLY exit button (read button becomes exit)
+    if (readBtn) readBtn.style.display = "inline-block";
   }
 }
 
@@ -325,6 +324,7 @@ function setupImproveNote() {
     }
   };
 }
+
 function setupReadMode() {
   const btn = document.getElementById("readModeBtn");
   if (!btn) return;
@@ -333,14 +333,17 @@ function setupReadMode() {
     const isActive = document.body.classList.contains("read-mode");
 
     if (!isActive) {
-      // ENTER
+      // ENTER READ
+      document.body.classList.remove("edit-mode");   // 🔥 important
       document.body.classList.add("read-mode");
+
       toggleActionButtons("read");
-      btn.textContent = "Exit";
+      btn.textContent = isActive ? "Read" : "Exit";
 
     } else {
-      // EXIT
-      document.body.classList.remove("read-mode"); // ✅ THIS IS KEY
+      // EXIT READ
+      document.body.classList.remove("read-mode");
+
       toggleActionButtons("default");
       btn.textContent = "Read";
     }
