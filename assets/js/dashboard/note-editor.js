@@ -10,10 +10,13 @@ function setupEditNote() {
 
   editBtn.onclick = () => {
     if (!selectedNote) return;
+
+    // 🔥 CRITICAL FIX
+    document.body.classList.remove("read-mode");
+
     enableEditMode(selectedNote);
   };
 }
-
 
 // -----------------------------
 // Update Note Content

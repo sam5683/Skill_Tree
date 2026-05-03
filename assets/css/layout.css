@@ -190,19 +190,32 @@
   .notes-panel.hidden-mobile {
   display: none !important;
  }
-
-}
-
-/* =========================================================
-   🔙 BACK BUTTON (MOBILE ONLY)
-========================================================= */
-
-#backBtn {
-  display: none;   /* default = hidden everywhere */
-}
-
-@media (max-width: 768px) {
-  #backBtn {
-    display: block;  /* show only on mobile */
+ 
+  /* ===== Header Fix ===== */
+  .note-header {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
   }
+
+  /* ===== Buttons Fix ===== */
+  .top-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .top-actions button {
+    font-size: 12px;
+    padding: 4px 8px;
+  }
+
+  /* ===== Content Fix ===== */
+  #noteContent {
+    width: 100%;
+    max-width: 100%;
+    font-size: 14px;
+    line-height: 1.7;
+  }
+
 }

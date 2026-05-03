@@ -310,20 +310,16 @@ function setupReadMode() {
     const isActive = document.body.classList.contains("read-mode");
 
     if (!isActive) {
-      // ENTER READ MODE
-
-      // exit edit UI (important)
-      toggleActionButtons(false);
-
+      // ENTER
       document.body.classList.add("read-mode");
+      toggleActionButtons(false);
       btn.textContent = "Exit";
 
     } else {
-      // EXIT READ MODE
-      document.body.classList.remove("read-mode");
-      btn.textContent = "Read";
-
+      // EXIT
+      document.body.classList.remove("read-mode"); // ✅ THIS IS KEY
       toggleActionButtons(true);
+      btn.textContent = "Read";
     }
   };
 }
