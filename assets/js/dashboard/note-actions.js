@@ -335,13 +335,13 @@ function setupReadMode() {
     if (!isActive) {
       // ENTER
       document.body.classList.add("read-mode");
-      toggleActionButtons(false);
+      toggleActionButtons("read");
       btn.textContent = "Exit";
 
     } else {
       // EXIT
       document.body.classList.remove("read-mode"); // ✅ THIS IS KEY
-      toggleActionButtons(true);
+      toggleActionButtons("default");
       btn.textContent = "Read";
     }
   };

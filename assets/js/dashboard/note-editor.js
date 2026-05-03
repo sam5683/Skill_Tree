@@ -107,7 +107,7 @@ function setupOCR() {
 // Enable Edit Mode
 // -----------------------------
 function enableEditMode(note) {
-  toggleActionButtons(false);
+  toggleActionButtons("edit");
   const contentDiv = document.getElementById("noteContent");
 
   const textarea = document.createElement("textarea");
@@ -209,7 +209,7 @@ function enableEditMode(note) {
         body: formData,
       });
 
-      if (!res.ok){alert(data.detail || "OCR failed"); return;}
+      if (!res.ok) {const errorData = await res.json();alert(errorData.detail || "OCR failed");return;}
 
       const data = await res.json();
       const text = data.extracted_text?.trim();
@@ -243,12 +243,13 @@ function enableEditMode(note) {
     await updateNoteContent(note.id, textarea.value);
     fetchNoteDetail(note.id);
     fetchNotes();
-    toggleActionButtons(true);
+    document.body.classList.remove("edit-mode");   
+    toggleActionButtons("default");
   };
 
   // Cancel
   cancelBtn.onclick = () => {
     fetchNoteDetail(note.id);
-    toggleActionButtons(true);
-  };
-}
+    document.body.classList.remove("edit-mode");
+    toggleActionButtons("default");  
+  };}
