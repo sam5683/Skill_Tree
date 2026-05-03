@@ -348,6 +348,18 @@ document.addEventListener("keydown", (e) => {
 });
 
 // -----------------------------
+// 🔙 BACK TO DASHBOARD BUTTON
+// -----------------------------
+const backBtn = document.getElementById("backToDashboard");
+
+if (backBtn) {
+    backBtn.addEventListener("click", () => {
+        window.location.href = "dashboard.html";
+    });
+}
+
+// -----------------------------
 loadDueCards();
 
 });
+

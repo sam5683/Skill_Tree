@@ -1,10 +1,14 @@
 document.addEventListener("DOMContentLoaded", () => {
   requireToken();
 
-  // Load notes
+  // =============================
+  // DATA LOAD
+  // =============================
   fetchNotes();
 
-  // Setup UI actions
+  // =============================
+  // CORE FEATURES
+  // =============================
   setupCreateNote();
   setupEditNote();
   setupDeleteNote();
@@ -12,10 +16,24 @@ document.addEventListener("DOMContentLoaded", () => {
   setupFlashcards();
   setupSearch();
   setupOCR();
-  setupReadMode()
+  setupReadMode();
   setupImproveNote();
 
-  // Optional
+  // =============================
+  // NAVIGATION FIX (LOGO CLICK)
+  // =============================
+  const logo = document.getElementById("logoBtn");
+
+  if (logo) {
+    logo.addEventListener("click", () => {
+      document.querySelector('.notes-panel')?.classList.remove('hidden-mobile');
+      document.querySelector('.content-panel')?.classList.remove('active');
+    });
+  }
+
+  // =============================
+  // OPTIONAL CLEAN UI
+  // =============================
   if (typeof setupCleanDashboard === "function") {
     setupCleanDashboard();
   }

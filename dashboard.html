@@ -6,7 +6,7 @@
   <meta http-equiv="Content-Security-Policy"
 content="
   default-src 'self';
-  connect-src 'self'https://skilltree-backend-fkf6.onrender.com https:;
+  connect-src 'self' https://skilltree-backend-fkf6.onrender.com https:;
   img-src 'self' data:;
   style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net;
   script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net;
@@ -30,7 +30,7 @@ content="
 
   <!-- HEADER -->
   <header class="dashboard-header flex items-center justify-between px-6">
-    <div class="text-xl font-semibold">
+    <div id="logoBtn" class="text-xl font-semibold cursor-pointer">
       SkillTree
     </div>
 
@@ -88,11 +88,8 @@ content="
   <!-- HEADER -->
   <div class="note-header">
     <div class="flex justify-between items-center mb-2">
-      <button id="backBtn" class="md:hidden mb-2 text-sm opacity-70">
-           ← Back
-      </button>
-      <h2 id="noteTitle" class="text-lg font-semibold">Select a note</h2>
-
+       <h2 id="noteTitle" class="text-lg font-semibold">Select a note</h2>
+       
       <div class="flex flex-wrap gap-2 text-xs">
         <button id="editNoteBtn">Edit</button>
         <button id="readModeBtn">Read mode</button>
@@ -114,8 +111,10 @@ content="
   <div class="divider"></div>
 
   <!-- CONTENT AREA -->
-  <div class="note-main flex-1 overflow-y-auto">  </div>
-    <div id="noteContent" class="note-content note-scroll"></div>
+  <div class="note-main flex-1">
+  <div class="note-scroll">
+    <div id="noteContent" class="note-content"></div>
+  </div>
   </div>
 
   <!-- 🔥 DIVIDER (Content → Summary) -->
