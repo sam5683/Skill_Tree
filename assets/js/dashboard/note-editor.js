@@ -9,12 +9,14 @@ function setupEditNote() {
   if (!editBtn) return;
 
   editBtn.onclick = () => {
-    if (!selectedNote) return;
+  if (!selectedNote) return;
 
-    // 🔥 CRITICAL FIX
-    document.body.classList.remove("read-mode");
+  document.body.classList.remove("read-mode");
+  document.body.classList.add("edit-mode");
 
-    enableEditMode(selectedNote);
+  toggleActionButtons("edit");
+
+  enableEditMode(selectedNote);
   };
 }
 

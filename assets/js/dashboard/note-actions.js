@@ -1,13 +1,36 @@
-function toggleActionButtons(show) {
-  const actions = document.querySelectorAll(
-    "#editNoteBtn, #improveNoteBtn, #regenSummaryBtn, #generateFlashcardsBtn, #deleteNoteBtn"
-  );
+function toggleActionButtons(mode) {
+  const editBtn = document.getElementById("editNoteBtn");
+  const improveBtn = document.getElementById("improveNoteBtn");
+  const summaryBtn = document.getElementById("regenSummaryBtn");
+  const flashBtn = document.getElementById("generateFlashcardsBtn");
+  const deleteBtn = document.getElementById("deleteNoteBtn");
+  const readBtn = document.getElementById("readModeBtn");
 
-  actions.forEach(btn => {
-    if (btn) btn.style.display = show ? "inline-block" : "none";
-  });
+  // RESET everything first
+  [editBtn, improveBtn, summaryBtn, flashBtn, deleteBtn, readBtn]
+    .forEach(btn => {
+      if (btn) btn.style.display = "none";
+    });
+
+  if (mode === "default") {
+    // normal dashboard view
+    [editBtn, improveBtn, summaryBtn, flashBtn, deleteBtn, readBtn]
+      .forEach(btn => {
+        if (btn) btn.style.display = "inline-block";
+      });
+  }
+
+  if (mode === "edit") {
+    // ONLY edit-related controls
+    if (improveBtn) improveBtn.style.display = "inline-block";
+    if (summaryBtn) summaryBtn.style.display = "inline-block";
+  }
+
+  if (mode === "read") {
+    // minimal UI
+    if (editBtn) editBtn.style.display = "inline-block";
+  }
 }
-
 
 function setupDeleteNote() {
   const deleteBtn = document.getElementById("deleteNoteBtn");

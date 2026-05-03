@@ -197,114 +197,91 @@
   padding: 12px;
 }
 
-/* ================= READ MODE (FINAL CLEAN) ================= */
+/* ================= READ MODE (CLEAN + STABLE) ================= */
 
-/* remove dashboard completely */
+/* Hide dashboard clutter */
 .read-mode .sidebar,
 .read-mode .notes-panel,
-.read-mode .note-summary-section,
+.read-mode .dashboard-header,
+.read-mode #noteSummary,
 .read-mode #improveNoteBtn,
 .read-mode #regenSummaryBtn,
-.read-mode #deleteNoteBtn,
-.read-mode #editNoteBtn,
-.read-mode .dashboard-header {
+.read-mode #generateFlashcardsBtn,
+.read-mode #deleteNoteBtn {
   display: none !important;
 }
 
-/* full layout */
+/* Layout full screen */
 .read-mode .app-layout {
-  grid-template-columns: 1fr;
+  display: flex;
 }
 
-/* full background (book feel) */
+/* Background (true reading feel) */
 .read-mode .dashboard-body {
   background: #0b0f19;
 }
 
-/* content container */
+/* Content container */
 .read-mode .content-panel {
   width: 100%;
-  max-width: 100%;
-  margin: 0;
-  padding: 48px 28px;
-
+  padding: 60px 20px;
   background: #0a0c16;
-
-  height: auto;
   overflow: visible;
 }
 
-/* center main block */
+/* Main wrapper */
 .read-mode .note-main {
-  display: block;
-  padding-left: 0;
-  padding-right: 0;
+  max-width: 720px;
+  margin: 0 auto;
 }
 
-/* title (like chapter title) */
+/* Title */
 .read-mode #noteTitle {
-  font-size: 30px;
+  font-size: 28px;
   font-weight: 700;
-  margin-bottom: 18px;
-  letter-spacing: 0.3px;
+  margin-bottom: 20px;
 }
 
-/* remove "Tags:" label noise */
+/* Tags minimal */
 .read-mode #noteTags::before {
   content: "";
 }
 
-/* main text (book style) */
-.read-mode .note-content {
-  max-width: 100%;        /* book-like width */
-  font-size: 16px;         /* slightly bigger */
-  line-height: 2.2;        /* key for readability */
-  letter-spacing: 0.2px;
-  color: #d4d4d8;          /* softer than white */
+/* Main content */
+.read-mode #noteContent {
+  width: 100%;
+  font-size: 17px;
+  line-height: 2.1;
+  color: #e4e4e7;
 }
 
-/* paragraph spacing (critical for readability) */
-.read-mode .note-content br {
+/* Better paragraph spacing */
+.read-mode #noteContent br {
   display: block;
   margin-bottom: 14px;
 }
 
-/* remove internal scroll */
+/* Remove scroll containers */
 .read-mode .note-scroll {
   height: auto !important;
   overflow: visible !important;
 }
 
-/* action bar (minimal) */
-.read-mode .top-actions,
-.read-mode .flex.gap-3 {
-  position: absolute;
-  top: 24px;
-  right: 40px;
+/* Minimal action (top right) */
+.read-mode .top-actions {
+  position: fixed;
+  top: 20px;
+  right: 24px;
   opacity: 0.6;
 }
 
-/* buttons cleaner */
-.read-mode button {
+.read-mode .top-actions button {
   font-size: 13px;
-  opacity: 0.7;
 }
 
-.read-mode button:hover {
+.read-mode .top-actions button:hover {
   opacity: 1;
 }
-
-/* divider softer */
-.read-mode .divider {
-  margin: 24px 0;
-  background: linear-gradient(
-    to right,
-    transparent,
-    rgba(255,255,255,0.12),
-    transparent
-  );
-}
-
 
 /* ================= FLASHCARD ================= */
 
