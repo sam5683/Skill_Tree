@@ -118,7 +118,7 @@
 /* ================= CONTENT BOX (SCROLL AREA) ================= */
 .note-content-box {
   flex: 1;
-  overflow: hidden;
+  overflow: visible;
 }
 
 /* Scroll area */
@@ -126,7 +126,7 @@
   height: 100%;
   white-space: pre-wrap;
   line-height: 1.8;
-  overflow-y: auto;
+  overflow-y: visible;
   font-size: 14px;
 }
 
@@ -149,7 +149,7 @@
 .content-panel {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 64px);
+  min-height: calc(100vh - 64px);
 }
 
 /* ================= CLEAN DIVIDER ================= */
@@ -226,7 +226,7 @@
 .read-mode .content-panel {
   width: 100%;
   max-width: 980px;
-  margin: 0 auto;
+  margin: 0;
   padding: 48px 28px;
 
   background: #0a0c16;
