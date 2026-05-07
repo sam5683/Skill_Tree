@@ -1,18 +1,32 @@
 async function fetchNotes() {
+
+  if (isLoadingNotes) return; // 🔥 prevent duplicate calls
+  isLoadingNotes = true;
+
   const token = requireToken();
-  if (!token) return;
+  if (!token) {
+    isLoadingNotes = false; // 🔥 FIX: release lock
+    return;
+  }
 
   try {
 
+    // CACHE CHECK 
+    if (notesCache) {
+      renderNotesList(notesCache);
+      updateFilterUI();
+      isLoadingNotes = false;
+      return;
+    }
+
     const container = document.getElementById("notesList");
     if (container) {
-    container.innerHTML = `<div class="text-sm opacity-60">Loading...</div>`;
+      container.innerHTML = `<div class="text-sm opacity-60">Loading...</div>`;
     }
 
     let url = `${API_BASE}/notes`;
 
     const params = new URLSearchParams();
-
     if (filterState.search) params.append("search", filterState.search);
     if (filterState.tag) params.append("tag", filterState.tag);
 
@@ -26,6 +40,9 @@ async function fetchNotes() {
     if (!res.ok) throw new Error();
 
     const notes = await res.json();
+
+    // 🔥 SAVE CACHE
+    notesCache = notes;
 
     renderNotesList(notes);
     updateFilterUI();
@@ -46,7 +63,9 @@ async function fetchNotes() {
     }
 
   } catch (err) {
-    alert("Something went wrong. Please try again.");
+    alert("Something went wrong.");
+  } finally {
+    isLoadingNotes = false; // 🔥 ALWAYS release lock
   }
 }
 function renderNotesList(notes) {

@@ -93,14 +93,14 @@
 
         <div class="auth-divider"><span>or</span></div>
 
-        <button class="google-btn">
+        <button class="google-btn" id="googleSigninBtn">
           <img src="assets/images/google.svg"> Continue with Google
         </button>
 
         <div class="auth-switch mt-2">
           <a href="#" id="goToSignup">Create an account</a>
         </div>
-      </div>
+        </div>
     `;
   }
 
@@ -169,7 +169,7 @@
 
         <div class="auth-divider"><span>or</span></div>
 
-        <button class="google-btn">
+        <button class="google-btn" id="googleSignupBtn">
           <img src="assets/images/google.svg"> Sign up with Google
         </button>
       </div>
@@ -220,86 +220,93 @@
   /* ------------------------------
      Signin setup
   ------------------------------ */
-  function setupSignin() {
-    $("#xSignIn").addEventListener("click", closeAll);
-    $("#goToSignup").addEventListener("click", e => {
-      e.preventDefault();
-      closeAll();
-      openModal("signup");
+function setupSignin() {
+  $("#xSignIn").addEventListener("click", closeAll);
+  $("#goToSignup").addEventListener("click", e => {
+    e.preventDefault();
+    closeAll();
+    openModal("signup");
+  });
+
+  const email = $("#loginEmail");
+  const emailErr = $("#loginEmailError");
+  const pw = $("#loginPassword");
+  const pwErr = $("#loginPwError");
+
+  setupEmailSuggestions(email, $("#loginEmailSuggest"));
+
+  // toggle eye
+  const loginEye = $("#loginEye");
+  if (loginEye) {
+    loginEye.addEventListener("click", () => {
+      const isPw = pw.type === "password";
+      pw.type = isPw ? "text" : "password";
+      loginEye.textContent = isPw ? "🙈" : "👁";
     });
-
-    const email = $("#loginEmail");
-    const emailErr = $("#loginEmailError");
-    const pw = $("#loginPassword");
-    const pwErr = $("#loginPwError");
-
-    setupEmailSuggestions(email, $("#loginEmailSuggest"));
-
-    // toggle eye for signin
-    const loginEye = $("#loginEye");
-    if (loginEye) {
-      loginEye.addEventListener("click", () => {
-        const isPw = pw.type === "password";
-        pw.type = isPw ? "text" : "password";
-        loginEye.textContent = isPw ? "🙈" : "👁";
-      });
-    }
-
- const loginBtn = $("#loginBtn");
-
-loginBtn.addEventListener("click", async () => {
-  emailErr.textContent = "";
-  pwErr.textContent = "";
-
-  // ✅ VALIDATION FIRST
-  if (!/^\S+@\S+\.\S+$/.test(email.value)) {
-    emailErr.textContent = "Enter a valid email";
-    return;
   }
 
-  if (pw.value.length < 8) {
-    pwErr.textContent = "Password too short";
-    return;
-  }
+  const loginBtn = $("#loginBtn");
 
-  // 🔥 loading state AFTER validation
-  const originalText = loginBtn.textContent;
-  loginBtn.textContent = "Signing in...";
-  loginBtn.disabled = true;
+  loginBtn.addEventListener("click", async () => {
+    emailErr.textContent = "";
+    pwErr.textContent = "";
 
-  try {
-    const res = await fetch(`${API_BASE}/auth/login`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: new URLSearchParams({
-        username: email.value,
-        password: pw.value,
-      }),
-    });
-
-    if (!res.ok) {
-      const err = await res.json().catch(() => ({}));
-      console.error("LOGIN ERROR:", err);
-      pwErr.textContent = err.detail || "Login failed";
+    if (!/^\S+@\S+\.\S+$/.test(email.value)) {
+      emailErr.textContent = "Enter a valid email";
       return;
     }
 
-    const data = await res.json();
+    if (pw.value.length < 8) {
+      pwErr.textContent = "Password too short";
+      return;
+    }
 
-    localStorage.setItem("access_token", data.access_token);
-    localStorage.setItem("token_type", data.token_type);
+    const originalText = loginBtn.textContent;
+    loginBtn.textContent = "Signing in...";
+    loginBtn.disabled = true;
 
-    window.location.href = "dashboard.html";
+    try {
+      const res = await fetch(`${API_BASE}/auth/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: new URLSearchParams({
+          username: email.value,
+          password: pw.value,
+        }),
+      });
 
-  } catch (err) {
-    pwErr.textContent = "Something went wrong. Please try again.";
-  } finally {
-    loginBtn.textContent = originalText;
-    loginBtn.disabled = false;
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        pwErr.textContent = err.detail || "Login failed";
+        return;
+      }
+
+      const data = await res.json();
+
+      localStorage.setItem("access_token", data.access_token);
+      localStorage.setItem("token_type", data.token_type);
+
+      window.location.href = "dashboard.html";
+
+    } catch (err) {
+      pwErr.textContent = "Something went wrong. Please try again.";
+    } finally {
+      loginBtn.textContent = originalText;
+      loginBtn.disabled = false;
+    }
+  });
+
+  // ✅ CORRECT PLACE — OUTSIDE login handler
+  const googleBtn = $("#googleSigninBtn");
+  if (googleBtn) {
+    googleBtn.classList.add("coming-soon");
+
+    googleBtn.addEventListener("click", () => {
+      showToast("Google login coming soon");
+    });
   }
-});
 }
 
   /* ------------------------------
@@ -507,17 +514,31 @@ loginBtn.addEventListener("click", async () => {
 
         if (!res.ok) {
           const d = await res.json().catch(() => ({}));
-          return alert(d.detail || "Signup failed");
+          showToast(d.detail || "Signup failed"); 
+          return;
         }
         await res.json();
-        alert(`Account created successfully.\nUsername: ${uname}\nPlease login.`);
-       // redirect to login instead of dashboard
-        window.location.href = "index.html";
+        showToast(`Account created. Username: ${uname}`);
+        closeAll();
+        openModal("signin");
 
       } catch (err) {
-         alert("Something went wrong. Please try again."); 
+         showToast("Something went wrong. Please try again."); 
       }
     });
+
+    // ==============================
+   // 🔥 ADD THIS EXACTLY HERE
+  // ==============================
+    const googleBtn = $("#googleSignupBtn");
+
+      if (googleBtn) {
+      googleBtn.classList.add("coming-soon");
+
+      googleBtn.addEventListener("click", () => {
+      showToast("Google signup coming soon");
+      });
+      }
   }
 
   // Initialize nothing until modal opens (we only bind when modals are mounted)
