@@ -27,24 +27,13 @@ const sessionComplete = document.getElementById("sessionComplete");
 const reviewStats = document.getElementById("reviewStats");
 
 // -----------------------------
-function getToken() {
-    return localStorage.getItem("access_token");
-}
-
-// -----------------------------
 // LOAD CARDS
 // -----------------------------
 async function loadDueCards() {
-    const token = getToken();
-
-    if (!token) {
-        window.location.href = "index.html";
-        return;
-    }
 
     try {
         const res = await fetch(`${API_BASE}/flashcards/due`, {
-            headers: { "Authorization": `Bearer ${token}` }
+            credentials: "include"
         });
 
         if (!res.ok) throw new Error("Failed to load due cards");
@@ -210,12 +199,6 @@ function showSRSFeedback(data) {
 // RATE CARD (🔥 FIXED)
 // -----------------------------
 async function rateCard(rating) {
-    const token = getToken();
-
-    if (!token) {
-        window.location.href = "index.html";
-        return;
-    }
 
     const card = cards[currentIndex];
 
@@ -227,9 +210,9 @@ async function rateCard(rating) {
     try {
         const res = await fetch(`${API_BASE}/flashcards/review/${card.id}`, {
             method: "POST",
+            credentials:"include",
             headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`
+                "Content-Type": "application/json"
             },
             body: JSON.stringify({ rating })
         });

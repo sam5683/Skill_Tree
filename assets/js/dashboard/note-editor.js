@@ -24,13 +24,11 @@ function setupEditNote() {
 // Update Note Content
 // -----------------------------
 async function updateNoteContent(noteId, content) {
-  const token = localStorage.getItem("access_token");
-  if (!token) return;
-
+ 
   await fetch(`${API_BASE}/notes/${noteId}`, {
     method: "PUT",
+    credentials:"include",
     headers: {
-      Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
     },
     body: JSON.stringify({ content }),
@@ -49,12 +47,6 @@ function setupOCR() {
   fileInput.addEventListener("change", async () => {
     if (!fileInput.files.length) return;
 
-    const token = localStorage.getItem("access_token");
-    if (!token) {
-      alert("Not authenticated");
-      return;
-    }
-
     const formData = new FormData();
     formData.append("file", fileInput.files[0]);
 
@@ -64,9 +56,7 @@ function setupOCR() {
     try {
       const res = await fetch(`${API_BASE}/notes/ocr`, {
         method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        credentials:"include",
         body: formData,
       });
 
@@ -193,9 +183,6 @@ function enableEditMode(note) {
   fileInput.addEventListener("change", async () => {
     if (!fileInput.files.length) return;
 
-    const token = localStorage.getItem("access_token");
-    if (!token) return;
-
     const formData = new FormData();
     formData.append("file", fileInput.files[0]);
 
@@ -205,7 +192,7 @@ function enableEditMode(note) {
     try {
       const res = await fetch(`${API_BASE}/notes/ocr`, {
         method: "POST",
-        headers: { Authorization: `Bearer ${token}` },
+        credentials:"include",
         body: formData,
       });
 

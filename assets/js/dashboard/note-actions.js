@@ -43,9 +43,6 @@ function setupDeleteNote() {
 
     if (!confirm("Delete this note permanently?")) return;
 
-    const token = requireToken();
-    if (!token) return;
-
     const originalText = deleteBtn.textContent;
     deleteBtn.textContent = "Deleting...";
     deleteBtn.disabled = true;
@@ -53,9 +50,7 @@ function setupDeleteNote() {
     try {
       const res = await fetch(`${API_BASE}/notes/${selectedNoteId}`, {
         method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        credentials: "include",
       });
 
       if (!res.ok) {
@@ -109,9 +104,7 @@ function setupCreateNote() {
   };
 
   saveBtn.onclick = async () => {
-    const token = requireToken();
-    if (!token) return;
-
+  
     const title = titleInput.value.trim();
     const content = contentInput.value.trim();
     const tagsRaw = tagsInput.value.trim();
@@ -131,8 +124,8 @@ function setupCreateNote() {
     try {
       const res = await fetch(`${API_BASE}/notes`, {
         method: "POST",
+        credentials:"include",
         headers: {
-          Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ title, content, tags }),
@@ -167,9 +160,6 @@ function setupRegenerateSummary() {
       return;
     }
 
-    const token = requireToken();
-    if (!token) return;
-
     const summaryDiv = document.getElementById("noteSummary");
 
     // 🔥 UX: show loading state
@@ -186,7 +176,7 @@ function setupRegenerateSummary() {
         `${API_BASE}/notes/${selectedNoteId}/regenerate-summary`,
         {
           method: "POST",
-          headers: { Authorization: `Bearer ${token}` },
+          credentials:"include",
         }
       );
 
@@ -243,9 +233,6 @@ function setupFlashcards() {
       return;
     }
 
-    const token = requireToken();
-    if (!token) return;
-
     const originalText = btn.textContent;
     btn.textContent = "Generating...";
     btn.disabled = true;
@@ -255,7 +242,7 @@ function setupFlashcards() {
         `${API_BASE}/flashcards/from-note/${selectedNoteId}`,
         {
           method: "POST",
-          headers: { Authorization: `Bearer ${token}` },
+          credentials:"include",
         }
       );
 
@@ -280,9 +267,6 @@ function setupImproveNote() {
       return;
     }
 
-    const token = requireToken();
-    if (!token) return;
-
     // loading state
     btn.textContent = "Improving...";
     btn.disabled = true;
@@ -293,9 +277,9 @@ function setupImproveNote() {
 
       const res = await fetch(`${API_BASE}/notes/improve`, {
         method: "POST",
+        credentials:"include",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({ content }),
       });

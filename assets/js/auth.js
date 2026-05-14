@@ -268,6 +268,7 @@ function setupSignin() {
     try {
       const res = await fetch(`${API_BASE}/auth/login`, {
         method: "POST",
+        credentials: "include",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
         },
@@ -283,10 +284,7 @@ function setupSignin() {
         return;
       }
 
-      const data = await res.json();
-
-      localStorage.setItem("access_token", data.access_token);
-      localStorage.setItem("token_type", data.token_type);
+      await res.json();
 
       window.location.href = "dashboard.html";
 

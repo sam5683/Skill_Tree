@@ -1,10 +1,8 @@
 async function fetchNoteDetail(noteId) {
-  const token = requireToken();
-  if (!token) return;
 
   try {
     const res = await fetch(`${API_BASE}/notes/${noteId}`, {
-      headers: { Authorization: `Bearer ${token}` },
+      credentials:"include",
     });
 
     if (!res.ok) throw new Error();

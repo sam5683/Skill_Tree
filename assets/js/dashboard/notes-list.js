@@ -1,13 +1,10 @@
 async function fetchNotes() {
 
+  let isLoadingNotes = false;
+  let notesCache = null;
+
   if (isLoadingNotes) return; // 🔥 prevent duplicate calls
   isLoadingNotes = true;
-
-  const token = requireToken();
-  if (!token) {
-    isLoadingNotes = false; // 🔥 FIX: release lock
-    return;
-  }
 
   try {
 
@@ -34,7 +31,7 @@ async function fetchNotes() {
     if (queryString) url += `?${queryString}`;
 
     const res = await fetch(url, {
-      headers: { Authorization: `Bearer ${token}` },
+      credentials:"include",
     });
 
     if (!res.ok) throw new Error();
