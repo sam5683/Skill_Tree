@@ -299,10 +299,9 @@ function setupSignin() {
   // ✅ CORRECT PLACE — OUTSIDE login handler
   const googleBtn = $("#googleSigninBtn");
   if (googleBtn) {
-    googleBtn.classList.add("coming-soon");
-
-    googleBtn.addEventListener("click", () => {
-      showToast("Google login coming soon");
+      googleBtn.addEventListener("click", () => {
+      window.location.href =
+      `${API_BASE}/auth/google/login`;
     });
   }
 }
@@ -525,21 +524,17 @@ function setupSignin() {
       }
     });
 
-    // ==============================
-   // 🔥 ADD THIS EXACTLY HERE
-  // ==============================
-    const googleBtn = $("#googleSignupBtn");
+// ==============================
+// GOOGLE SIGNUP
+// ==============================
+const googleBtn = $("#googleSignupBtn");
 
-      if (googleBtn) {
-      googleBtn.classList.add("coming-soon");
-
-      googleBtn.addEventListener("click", () => {
-      showToast("Google signup coming soon");
-      });
-      }
+if (googleBtn) {
+  googleBtn.addEventListener("click", () => {
+    window.location.href =
+      `${API_BASE}/auth/google/login`;
+  });
+}
   }
-
-  // Initialize nothing until modal opens (we only bind when modals are mounted)
-  // Exports: none
 })();
 
