@@ -34,7 +34,14 @@ async function fetchNotes() {
       credentials:"include",
     });
 
-    if (!res.ok) throw new Error();
+    if (!res.ok) {
+
+    const text = await res.text();
+
+    console.error("BACKEND RESPONSE:", text);
+
+    throw new Error(`Request failed: ${res.status}`);
+    }
 
     const notes = await res.json();
 
@@ -60,7 +67,8 @@ async function fetchNotes() {
     }
 
   } catch (err) {
-    alert("Something went wrong.");
+    console.error("FULL ERROR:", err);
+    alert(err.message || "Something failed");
   } finally {
     isLoadingNotes = false; // 🔥 ALWAYS release lock
   }

@@ -5,7 +5,11 @@ async function fetchNoteDetail(noteId) {
       credentials:"include",
     });
 
-    if (!res.ok) throw new Error();
+    if (!res.ok) {
+    const text = await res.text();
+    console.error("BACKEND RESPONSE:", text);
+    throw new Error(`Request failed: ${res.status}`);
+}
 
     const note = await res.json();
 
@@ -13,7 +17,8 @@ async function fetchNoteDetail(noteId) {
     renderNoteDetail(note);
 
   } catch (err) {
-    alert("Something went wrong. Please try again.");
+    console.error("FULL ERROR:", err);
+    alert(err.message || "Something failed");
   }
 }
 

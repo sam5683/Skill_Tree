@@ -143,7 +143,8 @@ function setupCreateNote() {
       await fetchNotes();
       fetchNoteDetail(note.id);
     } catch (err) {
-      alert("Something went wrong. Please try again.");
+      console.error("FULL ERROR:", err);
+      alert(err.message || "Something failed");
 
       saveBtn.textContent = "Retry";
       saveBtn.disabled = false;
@@ -195,7 +196,9 @@ function setupRegenerateSummary() {
         summaryDiv.textContent = "Failed to generate summary";
       }
 
-      alert("Something went wrong. Please try again.");
+      console.error("FULL ERROR:", err);
+      alert(err.message || "Something failed");
+
     } finally {
       // 🔥 restore button state
       btn.textContent = originalText;
@@ -252,7 +255,8 @@ function setupFlashcards() {
         window.location.href = "review.html";
       }
     } catch (err) {
-      alert("Something went wrong. Please try again.");
+      console.error("FULL ERROR:", err);
+      alert(err.message || "Something failed");
     }
   };
 }
@@ -301,7 +305,9 @@ function setupImproveNote() {
       }
 
     } catch (err) {
-      alert("Something went wrong. Please try again.");
+      console.error("FULL ERROR:", err);
+      alert(err.message || "Something failed");
+      
     } finally {
       btn.textContent = "✨ Improve";
       btn.disabled = false;

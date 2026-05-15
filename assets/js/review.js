@@ -52,7 +52,8 @@ async function loadDueCards() {
 
         renderCard(true);
     } catch (err) {
-        alert("Something went wrong. Please try again.");
+        console.error("FULL ERROR:", err);
+        alert(err.message || "Something failed");
     }
 }
 
