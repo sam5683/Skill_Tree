@@ -83,7 +83,7 @@ content="
     
   <!-- NOTE CONTENT PANEL -->
 <section class="content-panel flex flex-col">
- 
+
 
   <!-- HEADER -->
   <div class="note-header">
@@ -127,6 +127,74 @@ content="
     <div id="noteSummary" class="note-summary"></div>
 
     <div id="summaryUpdated" class="summary-date mt-1"></div>
+
+      <!-- 🔥 DIVIDER (Summary → AI Chat) -->
+  <div class="divider"></div>
+
+  <!-- AI CHAT -->
+  <div class="AI-chat-section flex flex-col mt-3">
+
+    <!-- CHAT HEADER -->
+    <div class="flex items-center justify-between mb-2">
+
+      <div class="flex items-center gap-2">
+
+        <!-- Bunny Icon -->
+        <div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-sm">
+          🐇
+        </div>
+
+        <div>
+          <div class="text-sm font-semibold">
+            AI
+          </div>
+
+          <div class="text-[11px] opacity-50">
+            AI Learning Assistant
+          </div>
+        </div>
+
+      </div>
+
+      <div class="text-xs opacity-40">
+        Ask anything
+      </div>
+
+    </div>
+
+    <!-- CHAT MESSAGES -->
+    <div
+      id="messages"
+      class="flex flex-col gap-3 overflow-y-auto max-h-[300px] pr-2 mb-3"
+    >
+
+      <div class="text-xs opacity-40">
+        I'm  ready to help you learn.
+      </div>
+
+    </div>
+
+    <!-- CHAT INPUT -->
+    <div class="flex gap-2">
+
+      <input
+        id="chatInput"
+        type="text"
+        placeholder="Ask me anything..."
+        class="flex-1 px-3 py-2 rounded text-sm bg-white/10 outline-none"
+      />
+
+      <button
+        id="sendBtn"
+        class="btn-primary"
+      >
+        Send
+      </button>
+
+    </div>
+
+  </div>
+
   </div>
 
 </section>
@@ -194,6 +262,7 @@ content="
   <script src="assets/js/dashboard/note-actions.js"></script>
   <script src="assets/js/dashboard/filters.js"></script>
   <script src="assets/js/dashboard/init.js"></script>
+  <script src="assets/js/ai-chat.js"></script>
 
 </body>
 </html>

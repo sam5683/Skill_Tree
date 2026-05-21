@@ -273,6 +273,7 @@ input[type="password"]::-webkit-credentials-auto-fill-button {
 
 @media (max-width: 640px) {
   .auth-card {
+    width: 100%;
     max-width: 520px;
     padding: 20px;
   }

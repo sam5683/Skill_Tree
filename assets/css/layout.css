@@ -1,3 +1,8 @@
+* {
+  min-width: 0;
+  box-sizing: border-box;
+}
+
 
 /* =========================================================
    🧭 HEADER
@@ -13,7 +18,8 @@
   justify-content: space-between;
 
   padding: 0 24px;
-  backdrop-filter: blur(8px); /* subtle premium feel */
+  -webkit-backdrop-filter: blur(8px);
+   backdrop-filter: blur(8px);
 }
 
 
